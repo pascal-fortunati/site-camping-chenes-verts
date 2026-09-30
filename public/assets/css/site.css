@@ -1,0 +1,556 @@
+/* Base styles for the public site.
+   No third-party resource, no web font loaded from a remote host.
+   Text opacity is never used: it silently breaks contrast ratios. */
+
+:root {
+    /* Contrastes mesurés sur blanc : 14,8:1 · 7,6:1 · 8,6:1 — le minimum
+       exigé est 4,5:1. Le blanc sur la couleur de lien atteint 8,6:1. */
+    --couleur-texte: #1f2933;
+    --couleur-texte-doux: #4a5560;
+    --couleur-lien: #8b1f5e;
+    --couleur-fond: #ffffff;
+    --couleur-fond-doux: #f6f3f4;
+    --couleur-trait: #d6dbe0;
+    /* Contrastes mesurés sur blanc : 6,5:1 et 9,1:1. */
+    --couleur-erreur: #b3261e;
+    --couleur-succes: #14532d;
+    --largeur: 60rem;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--couleur-fond);
+    color: var(--couleur-texte);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--couleur-lien);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--couleur-lien);
+    outline-offset: 2px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ── Lien d'évitement ─────────────────────────────────────────────────── */
+
+.lien-evitement {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--couleur-fond);
+    color: var(--couleur-texte);
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--couleur-lien);
+}
+
+.lien-evitement:focus {
+    left: 0;
+    z-index: 10;
+}
+
+/* ── En-tête et menu ──────────────────────────────────────────────────── */
+
+.en-tete {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: baseline;
+    justify-content: space-between;
+    max-width: var(--largeur);
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem;
+    border-bottom: 1px solid var(--couleur-trait);
+}
+
+.en-tete__nom {
+    margin: 0;
+    font-size: 1.375rem;
+    font-weight: 700;
+}
+
+.en-tete__nom a {
+    color: var(--couleur-texte);
+    text-decoration: none;
+}
+
+.en-tete__slogan {
+    margin: 0.25rem 0 0;
+    color: var(--couleur-texte-doux);
+}
+
+.menu__liste {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu__liste a {
+    display: inline-block;
+    padding: 0.25rem 0;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+}
+
+.menu__liste a:hover,
+.menu__liste a[aria-current="page"] {
+    border-bottom-color: var(--couleur-lien);
+}
+
+/* ── Contenu ──────────────────────────────────────────────────────────── */
+
+main {
+    max-width: var(--largeur);
+    margin: 0 auto;
+    padding: 0 1.25rem 3rem;
+}
+
+h1,
+.bloc-hero__titre {
+    font-size: 2.25rem;
+    line-height: 1.15;
+    margin: 2rem 0 1rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    margin: 2.5rem 0 0.75rem;
+}
+
+h3 {
+    font-size: 1.1875rem;
+    margin: 1.75rem 0 0.5rem;
+}
+
+.bloc {
+    margin: 2.5rem 0;
+}
+
+/* ── Bandeau d'ouverture ──────────────────────────────────────────────── */
+
+.bloc-hero {
+    margin-top: 1.5rem;
+}
+
+.bloc-hero__image {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.bloc-hero__titre {
+    margin-top: 1.5rem;
+}
+
+.bloc-hero__accroche {
+    font-size: 1.1875rem;
+    color: var(--couleur-texte-doux);
+    max-width: 44rem;
+}
+
+.bouton {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    background: var(--couleur-lien);
+    color: #ffffff;          /* 7.9:1 sur la couleur de lien */
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.bouton:hover {
+    background: #6f1a4c;
+}
+
+/* ── Texte et image ───────────────────────────────────────────────────── */
+
+.bloc-texte-image {
+    display: grid;
+    gap: 1.5rem 2.5rem;
+    align-items: start;
+}
+
+@media (min-width: 48rem) {
+
+    .bloc-texte-image {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .bloc-texte-image--gauche .bloc-texte-image__texte {
+        order: 2;
+    }
+}
+
+.bloc-texte-image__image {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.bloc-texte-image__texte > :first-child {
+    margin-top: 0;
+}
+
+/* ── Coordonnées ──────────────────────────────────────────────────────── */
+
+.bloc-contact {
+    background: var(--couleur-fond-doux);
+    padding: 1.5rem;
+    border-radius: 6px;
+}
+
+.bloc-contact > :first-child {
+    margin-top: 0;
+}
+
+.bloc-contact__details {
+    display: grid;
+    gap: 1rem 2.5rem;
+}
+
+@media (min-width: 48rem) {
+    .bloc-contact__details {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.bloc-contact__coordonnees {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.bloc-contact__coordonnees li + li {
+    margin-top: 0.25rem;
+}
+
+.bloc-contact__horaire,
+.pied__horaire {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    max-width: 20rem;
+}
+
+.bloc-contact__horaires,
+.pied__horaires {
+    margin: 0;
+}
+
+.bloc-contact__horaires dt,
+.pied__horaires dt {
+    font-weight: 600;
+}
+
+.bloc-contact__horaires dd,
+.pied__horaires dd {
+    margin: 0;
+    color: var(--couleur-texte-doux);
+}
+
+address {
+    font-style: normal;
+}
+
+/* ── Témoignages ──────────────────────────────────────────────────────────
+   Exemple : les styles d'un type de section vivent ici, sous un nom qui
+   reprend celui du partial. Voir docs/guide-integration.md. */
+
+.bloc-temoignages__introduction {
+    max-width: 44rem;
+    color: var(--couleur-texte-doux);
+}
+
+.temoignages {
+    display: grid;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@media (min-width: 48rem) {
+    .temoignages {
+        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    }
+}
+
+.temoignage {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: var(--couleur-fond-doux);
+    border-radius: 6px;
+}
+
+.temoignage__portrait {
+    flex: 0 0 auto;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.temoignage__contenu {
+    margin: 0;
+}
+
+.temoignage blockquote {
+    margin: 0;
+}
+
+.temoignage blockquote p {
+    margin: 0;
+}
+
+.temoignage figcaption {
+    margin-top: 0.75rem;
+    font-weight: 600;
+}
+
+.temoignage__fonction {
+    display: block;
+    font-weight: 400;
+    color: var(--couleur-texte-doux);
+    font-size: 0.9375rem;
+}
+
+/* ── Actualités ───────────────────────────────────────────────────────── */
+
+.actualites {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.actualite-resume {
+    display: grid;
+    gap: 1rem 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--couleur-trait);
+}
+
+@media (min-width: 40rem) {
+    .actualite-resume {
+        grid-template-columns: 14rem 1fr;
+        align-items: start;
+    }
+}
+
+.actualite-resume__image,
+.actualite__image {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.actualite-resume h2 {
+    margin: 0.25rem 0 0.5rem;
+}
+
+.actualite-resume h2 a {
+    text-decoration: none;
+}
+
+.actualite-resume h2 a:hover {
+    text-decoration: underline;
+}
+
+.actualite-resume p:last-child {
+    margin-bottom: 0;
+}
+
+.actualite__meta {
+    margin: 2rem 0 0;
+    color: var(--couleur-texte-doux);
+    font-size: 0.9375rem;
+}
+
+.actualite-resume .actualite__meta {
+    margin-top: 0;
+}
+
+.actualite__categorie::before {
+    content: "·";
+    margin: 0 0.4rem;
+}
+
+.actualite__image {
+    margin: 1.5rem 0;
+}
+
+.actualite__retour {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--couleur-trait);
+}
+
+/* ── Pied de page ─────────────────────────────────────────────────────── */
+
+.pied {
+    border-top: 1px solid var(--couleur-trait);
+    background: var(--couleur-fond-doux);
+}
+
+.pied__colonnes {
+    display: grid;
+    gap: 2rem;
+    max-width: var(--largeur);
+    margin: 0 auto;
+    padding: 2rem 1.25rem 2.5rem;
+}
+
+@media (min-width: 48rem) {
+    .pied__colonnes {
+        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    }
+}
+
+.pied__titre {
+    font-size: 1.0625rem;
+    margin: 0 0 0.5rem;
+}
+
+.pied__liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pied__liste li + li {
+    margin-top: 0.25rem;
+}
+
+.pied__legal {
+    max-width: var(--largeur);
+    margin: 0 auto;
+    padding: 1rem 1.25rem 2rem;
+    border-top: 1px solid var(--couleur-trait);
+}
+
+.pied__liens-legaux {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9375rem;
+}
+
+/* ── Formulaire ───────────────────────────────────────────────────────── */
+
+/* Champ-piège anti-spam : hors écran, mais toujours trouvé par les robots.
+   `display: none` le rendrait invisible aux robots, donc inopérant. */
+.formulaire__piege {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.formulaire {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 34rem;
+    margin-top: 1.5rem;
+}
+
+.formulaire__champ {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+}
+
+.formulaire label {
+    font-weight: 600;
+}
+
+.formulaire input[type="text"],
+.formulaire input[type="email"],
+.formulaire textarea {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--couleur-trait);
+    border-radius: 4px;
+    background: var(--couleur-fond);
+    color: var(--couleur-texte);
+    font: inherit;
+}
+
+.formulaire textarea {
+    resize: vertical;
+}
+
+.formulaire [aria-invalid="true"] {
+    border-color: var(--couleur-erreur);
+}
+
+.formulaire__erreur {
+    color: var(--couleur-erreur);
+    font-size: 0.9375rem;
+}
+
+.formulaire__consentement {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
+    align-items: start;
+    margin: 0;
+}
+
+.formulaire__consentement label {
+    font-weight: 400;
+}
+
+.formulaire__consentement .formulaire__erreur {
+    grid-column: 2;
+}
+
+/* Le bouton d'envoi est un <button> : sans cela il garde la bordure et la
+   police du navigateur, contrairement aux liens portant la même classe. */
+button.bouton {
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.message {
+    margin: 0 0 1.5rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid;
+    border-radius: 4px;
+}
+
+.message--succes {
+    background: #eef6f0;
+    border-color: var(--couleur-succes);
+}
+
+.message--erreur {
+    background: #fdf1f0;
+    border-color: var(--couleur-erreur);
+}

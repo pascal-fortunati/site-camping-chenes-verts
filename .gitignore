@@ -1,0 +1,45 @@
+# ─── Documents de pilotage : LOCAL UNIQUEMENT, jamais commités ───
+CLAUDE.md
+SPEC.md
+/docs/planning/
+*.local.md
+
+# ─── Secrets / environnement ───
+.env
+.env.local
+!.env.example
+
+# ─── Cockpit : installé par `php bin/install-cockpit.php`, jamais versionné ───
+# La configuration et le modèle de contenu vivent dans /cockpit et sont copiés
+# dans /public/admin à l'installation.
+/public/admin/
+
+# ─── Données d'exécution : base SQLite, index, gabarits compilés, tests ───
+/var/
+.phpunit.result.cache
+
+# ─── Cache de pages : HTML rendu, servi directement par Apache ───
+/public/cache/
+
+# ─── Couleurs du client, écrites depuis l'identité du site ───
+/public/assets/css/couleurs.css
+
+# ─── Médias envoyés depuis l'administration ───
+# Le dossier est ignoré, mais sa règle d'accès est livrée avec le site.
+/public/medias/*
+!/public/medias/.htaccess
+
+# ─── Dépendances ───
+/vendor/
+node_modules/
+
+# ─── Logs ───
+*.log
+
+# ─── Système / éditeurs ───
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp

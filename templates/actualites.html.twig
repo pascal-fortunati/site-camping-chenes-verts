@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% set categories = {
+    'actualite': 'Actualité',
+    'evenement': 'Événement',
+    'conseil': 'Conseil'
+} %}
+
+{% set resume = 'Les dernières actualités' ~ (site.nom ? ' de ' ~ site.nom : '') ~ '.' %}
+
+{# Nothing published yet: the page stays reachable, but has nothing to index —
+   and nothing to claim as its own address either. #}
+{% set canonique = articles is empty ? null : canonique|default(null) %}
+
+{% block title %}Actualités{% if site.nom %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block head %}
+    {% if articles is empty %}<meta name="robots" content="noindex">{% endif %}
+{% endblock %}
+
+{% block main %}
+    <h1 class="page__titre">Actualités</h1>
+
+    {% if articles is empty %}
+        <p>Aucune actualité pour le moment.</p>
+    {% else %}
+        <ul class="actualites">
+            {% for article in articles %}
+                <li class="actualite-resume">
+
+                    {% if article.image %}
+                        {# Decorative here: the title next to it says the same thing. #}
+                        <a href="/actualites/{{ article.slug }}" tabindex="-1" aria-hidden="true">
+                            {% include 'partials/image.html.twig' with {
+                                asset: article.image,
+                                alt: '',
+                                classe: 'actualite-resume__image',
+                                sizes: '(min-width: 40rem) 14rem, 100vw'
+                            } only %}
+                        </a>
+                    {% endif %}
+
+                    <div class="actualite-resume__texte">
+                        <p class="actualite__meta">
+                            {% if article.date %}
+                                <time datetime="{{ article.date }}">{{ article.date|date('d/m/Y') }}</time>
+                            {% endif %}
+                            {% if article.categorie %}
+                                <span class="actualite__categorie">{{ categories[article.categorie]|default(article.categorie) }}</span>
+                            {% endif %}
+                        </p>
+
+                        <h2><a href="/actualites/{{ article.slug }}">{{ article.titre }}</a></h2>
+
+                        {% if article.resume %}
+                            <p>{{ article.resume }}</p>
+                        {% endif %}
+                    </div>
+
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

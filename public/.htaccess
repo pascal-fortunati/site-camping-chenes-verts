@@ -1,0 +1,144 @@
+ServerSignature Off
+Options -Indexes
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+
+    Options -MultiViews
+    RewriteEngine On
+
+    # ── HTTPS ─────────────────────────────────────────────────────────────
+    # Everything goes through HTTPS: the admin sends a password and an API key
+    # travels with every read. X-Forwarded-Proto covers hostings that terminate
+    # TLS ahead of Apache. Local names are left alone so development works
+    # without a certificate.
+
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteCond %{HTTP_HOST} !^localhost [NC]
+    RewriteCond %{HTTP_HOST} !^127\.0\.0\.1 [NC]
+    RewriteCond %{HTTP_HOST} !\.(local|test)$ [NC]
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # Nothing under the admin's storage is public: media are served from
+    # /medias. Said here rather than only inside public/admin/, whose own rules
+    # live in hidden files that an upload can silently leave behind.
+    #
+    # This rule looks dead when tested, and is not. mod_rewrite configuration
+    # is never inherited: as long as public/admin/.htaccess exists, its own
+    # RewriteEngine replaces this whole ruleset for anything under /admin/, and
+    # the refusal there comes from public/admin/storage/.htaccess instead. The
+    # rule below fires exactly when that file is missing — the case it is
+    # written for. Do not remove it because it appears to have no effect.
+    RewriteRule ^admin/storage(/|$) - [F,L]
+
+    # The admin and its API ship their own rules: never rewrite them here, and
+    # never serve them from the cache.
+    RewriteRule ^admin(/|$) - [L]
+
+    # The cache is not a public address of its own: it is only ever reached
+    # through the rewrites below. REDIRECT_STATUS is empty on a request coming
+    # from outside, and set once Apache has rewritten internally.
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^cache/ - [F,L]
+
+    # ── Cache de pages ────────────────────────────────────────────────────
+    # A page already rendered is served by Apache alone: PHP is not started.
+    # Only plain GET requests qualify — a query string means something the
+    # stored copy cannot answer.
+
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{QUERY_STRING} ^$
+    RewriteCond %{DOCUMENT_ROOT}/cache/index.html -f
+    RewriteRule ^$ cache/index.html [L,E=PAGE_CACHE:hit]
+
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{QUERY_STRING} ^$
+    RewriteCond %{DOCUMENT_ROOT}/cache/$1.html -f
+    RewriteRule ^([a-z0-9]+(?:-[a-z0-9]+)*)$ cache/$1.html [L,E=PAGE_CACHE:hit]
+
+    # News items sit one level down: /actualites/portes-ouvertes
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{QUERY_STRING} ^$
+    RewriteCond %{DOCUMENT_ROOT}/cache/$1/$2.html -f
+    RewriteRule ^([a-z0-9]+(?:-[a-z0-9]+)*)/([a-z0-9]+(?:-[a-z0-9]+)*)$ cache/$1/$2.html [L,E=PAGE_CACHE:hit]
+
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{QUERY_STRING} ^$
+    RewriteCond %{DOCUMENT_ROOT}/cache/$1 -f
+    RewriteRule ^(sitemap\.xml|robots\.txt)$ cache/$1 [L,E=PAGE_CACHE:hit]
+
+    # ── Rendu ─────────────────────────────────────────────────────────────
+    # Anything that exists on disk is served as is; everything else is a page.
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . index.php [L]
+
+</IfModule>
+
+<IfModule mod_headers.c>
+
+    # Says who answered: the web server from disk, or PHP. Apache renames the
+    # variable to REDIRECT_* once it has rewritten internally, which is
+    # precisely the case here.
+    Header set X-Page-Cache "hit" env=REDIRECT_PAGE_CACHE
+
+    # Pages are revalidated on every visit, so emptying the cache takes effect
+    # at once rather than waiting for a copy held by a visitor to expire.
+    <FilesMatch "\.(html|xml|txt)$">
+        Header set Cache-Control "public, max-age=0, must-revalidate"
+    </FilesMatch>
+
+    # ── Sécurité ──────────────────────────────────────────────────────────
+
+    # Marks the admin so the rules below can leave it out.
+    SetEnvIf Request_URI "^/admin(/|$)" ADMIN_AREA
+
+    # Cockpit already sets this one on the admin; setting it again there would
+    # simply send it twice.
+    Header always set X-Content-Type-Options "nosniff" env=!ADMIN_AREA
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+    # Only sent over HTTPS: announcing it on a plain connection is meaningless
+    # and would lock out a site not yet served over TLS.
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+
+    # The public site loads nothing from anywhere else — no remote font, no
+    # image from a third party, no analytics. Saying so out loud turns any
+    # future slip into a blocked request instead of a silent leak.
+    #
+    # The admin is left out: Cockpit's own interface relies on inline scripts
+    # and styles, and hardening it belongs to Cockpit, not to this file.
+    Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'" env=!ADMIN_AREA
+    Header always set X-Frame-Options "DENY" env=!ADMIN_AREA
+
+    # Keeps the admin out of search results. Said here rather than in
+    # robots.txt: that file is public, so naming /admin there would hand its
+    # address to anyone reading it — and a Disallow line forbids crawling, not
+    # indexing. This header is sent only to the robot that asked for the page.
+    Header always set X-Robots-Tag "noindex, nofollow" env=ADMIN_AREA
+
+</IfModule>
+
+<IfModule mod_expires.c>
+
+    ExpiresActive On
+
+    # Media carry a unique name, so they never change behind their address.
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/avif "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+
+    # The stylesheet keeps the same address across deployments: an hour is the
+    # longest a visitor should keep an outdated copy.
+    ExpiresByType text/css "access plus 1 hour"
+
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain application/xml application/json image/svg+xml
+</IfModule>

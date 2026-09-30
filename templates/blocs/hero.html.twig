@@ -1,0 +1,31 @@
+{# Opening banner.
+
+   The illustration is an <img>, never a CSS background: a background image is
+   invisible to search engines, cannot carry a description, and is fetched late.
+   Above the fold, it is loaded eagerly and given priority. #}
+
+<section class="bloc bloc-hero">
+
+    {% include 'partials/image.html.twig' with {
+        asset: bloc.image,
+        alt: bloc.alt,
+        classe: 'bloc-hero__image',
+        sizes: '(min-width: 62rem) 960px, 100vw',
+        eager: premier
+    } only %}
+
+    <div class="bloc-hero__texte">
+        {% if titre %}
+            <h{{ niveau }} class="bloc-hero__titre">{{ titre }}</h{{ niveau }}>
+        {% endif %}
+
+        {% if bloc.accroche %}
+            <p class="bloc-hero__accroche">{{ bloc.accroche }}</p>
+        {% endif %}
+
+        {% if bloc.boutonTexte and bloc.boutonLien %}
+            <p><a class="bouton" href="{{ bloc.boutonLien }}">{{ bloc.boutonTexte }}</a></p>
+        {% endif %}
+    </div>
+
+</section>

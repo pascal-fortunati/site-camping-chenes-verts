@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% set categories = {
+    'actualite': 'Actualité',
+    'evenement': 'Événement',
+    'conseil': 'Conseil'
+} %}
+
+{% set resume = article.resume|default('') %}
+{% set typePartage = 'article' %}
+{% set datePartage = article.date|default('') %}
+{% set imagePartage = article.image|default(null) %}
+{% set imagePartageAlt = article.alt|default('') %}
+
+{% block title %}{{ article.titre }}{% if site.nom %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block main %}
+    <article class="actualite">
+
+        <p class="actualite__meta">
+            {% if article.date %}
+                <time datetime="{{ article.date }}">{{ article.date|date('d/m/Y') }}</time>
+            {% endif %}
+            {% if article.categorie %}
+                <span class="actualite__categorie">{{ categories[article.categorie]|default(article.categorie) }}</span>
+            {% endif %}
+        </p>
+
+        <h1 class="page__titre">{{ article.titre }}</h1>
+
+        {% include 'partials/image.html.twig' with {
+            asset: article.image,
+            alt: article.alt,
+            classe: 'actualite__image',
+            sizes: '(min-width: 62rem) 960px, 100vw',
+            eager: true
+        } only %}
+
+        {% if article.contenu %}
+            {# Rich text produced by the admin editor: intentionally not escaped. #}
+            <div class="actualite__contenu">{{ article.contenu|raw }}</div>
+        {% endif %}
+
+        <p class="actualite__retour"><a href="/actualites">Toutes les actualités</a></p>
+
+    </article>
+{% endblock %}

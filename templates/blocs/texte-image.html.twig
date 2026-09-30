@@ -1,0 +1,27 @@
+{# Text next to an illustration. Below the fold, so the image is loaded lazily.
+   Width and height are always written out: without them the page shifts as
+   images arrive. #}
+
+{% set position = bloc.positionImage|default('droite') %}
+
+<section class="bloc bloc-texte-image bloc-texte-image--{{ position }}">
+
+    <div class="bloc-texte-image__texte">
+        {% if titre %}
+            <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+        {% endif %}
+
+        {% if bloc.texte %}
+            {# Rich text produced by the admin editor: intentionally not escaped. #}
+            {{ bloc.texte|raw }}
+        {% endif %}
+    </div>
+
+    {% include 'partials/image.html.twig' with {
+        asset: bloc.image,
+        alt: bloc.alt,
+        classe: 'bloc-texte-image__image',
+        sizes: '(min-width: 48rem) 30rem, 100vw'
+    } only %}
+
+</section>

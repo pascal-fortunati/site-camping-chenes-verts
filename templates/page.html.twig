@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% set titreOnglet = page.seoTitre ?: page.titre %}
+{% set resume = page.seoDescription ?: site.description|default('') %}
+
+{# When the page opens on a banner, that banner carries the only <h1>; the page
+   title would otherwise be said twice, once as a heading and once as a banner. #}
+{% set premierBloc = page.blocs|first %}
+{% set titreDansBandeau = premierBloc and premierBloc.type == 'hero' %}
+
+{# The banner image stands for the page when a link to it is shared. #}
+{% set imagePartage = titreDansBandeau ? premierBloc.image|default(null) : null %}
+{% set imagePartageAlt = titreDansBandeau ? premierBloc.alt|default('') : '' %}
+
+{# The site name is appended only when the title does not already carry it,
+   so a hand-written SEO title never reads « … Bloom — Bloom ». #}
+{% block title %}{{ titreOnglet }}{% if site.nom and site.nom not in titreOnglet %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block main %}
+    {% if not titreDansBandeau %}
+        <h1 class="page__titre">{{ page.titre }}</h1>
+    {% endif %}
+
+    {% for bloc in page.blocs %}
+        {% include 'blocs/' ~ bloc.type ~ '.html.twig' with {
+            bloc: bloc,
+            site: site,
+            titre: titreDansBandeau and loop.first ? page.titre : bloc.titre,
+            niveau: titreDansBandeau and loop.first ? 1 : 2,
+            premier: loop.first,
+            slug: slug,
+            accueilSlug: accueilSlug,
+            contactActif: contactActif|default(false),
+            jetonContact: jetonContact|default(''),
+            formulaire: formulaire|default({})
+        } only %}
+    {% endfor %}
+{% endblock %}
