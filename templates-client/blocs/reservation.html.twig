@@ -69,6 +69,17 @@
             </div>
         {% endif %}
 
+        <div class="reservation">
+
+        <aside class="reservation__deroule" aria-labelledby="reservation-deroule">
+            <h{{ niveau + 1 }} id="reservation-deroule">Comment ça se passe</h{{ niveau + 1 }}>
+            <ol>
+                <li><b>Vous envoyez votre demande</b>Elle n’engage à rien.</li>
+                <li><b>Nous vous répondons par e-mail</b>{{ bloc.delaiReponse|default('') ? bloc.delaiReponse|first|upper ~ bloc.delaiReponse|slice(1) ~ '.' : '' }}</li>
+                <li><b>Nous confirmons votre séjour</b>Avec les disponibilités et le montant de l’acompte.</li>
+            </ol>
+        </aside>
+
         <form class="formulaire formulaire--reservation" method="post" action="/contact" novalidate>
 
             <input type="hidden" name="formulaire" value="reservation">
@@ -192,6 +203,8 @@
             <button type="submit" class="bouton">Envoyer ma demande</button>
 
         </form>
+
+        </div>
 
     {% endif %}
 

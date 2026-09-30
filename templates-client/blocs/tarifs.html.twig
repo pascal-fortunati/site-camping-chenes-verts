@@ -27,7 +27,7 @@
     <h{{ niveau + 1 }}>Les périodes</h{{ niveau + 1 }}>
     <ul class="tarifs__periodes">
         {% for periode in periodes %}
-            <li><b>{{ periode.nom }}</b>{{ periode.dates }}</li>
+            <li class="tarifs__p{{ loop.index }}"><b>{{ periode.nom }}</b>{{ periode.dates }}</li>
         {% endfor %}
     </ul>
 
@@ -38,7 +38,7 @@
                 <tr>
                     <th scope="col">Hébergement</th>
                     {% for periode in periodes %}
-                        <th scope="col">{{ periode.nom }}{% if periode.dates %}<span class="tarifs__dates">{{ periode.dates }}</span>{% endif %}</th>
+                        <th scope="col" class="tarifs__p{{ loop.index }}">{{ periode.nom }}</th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -47,9 +47,9 @@
                     <tr{% if ligne.ancre|default('') %} id="{{ ligne.ancre }}"{% endif %}>
                         <th scope="row">{{ ligne.hebergement }}</th>
                         {% for i in 1..4 %}
-                            <td>
-                                <span class="tarifs__etiquette">{{ periodes[i - 1].nom }}{% if periodes[i - 1].dates %} <span class="tarifs__dates">{{ periodes[i - 1].dates }}</span>{% endif %}</span>
-                                {{ _self.prix(attribute(ligne, 'prix' ~ i)|default(null)) }}
+                            <td class="tarifs__p{{ i }}">
+                                <span class="tarifs__etiquette">{{ periodes[i - 1].nom }}</span>
+                                <span class="tarifs__prix">{{ _self.prix(attribute(ligne, 'prix' ~ i)|default(null)) }}</span>
                             </td>
                         {% endfor %}
                     </tr>
@@ -78,10 +78,10 @@
         {% if bloc.supplements|default([]) is not empty %}
             <div class="tarifs__encart">
                 <h{{ niveau + 1 }}>Suppléments</h{{ niveau + 1 }}>
-                <ul>
+                <ul class="tarifs__liste-prix">
                     {% for s in bloc.supplements %}
                         {% if s.libelle|default('') %}
-                            <li>{{ s.libelle }}{% if s.prix|default('') %} : <b>{{ s.prix }}</b>{% endif %}.</li>
+                            <li><span>{{ s.libelle }}</span>{% if s.prix|default('') %} <b>{{ s.prix }}</b>{% endif %}</li>
                         {% endif %}
                     {% endfor %}
                 </ul>

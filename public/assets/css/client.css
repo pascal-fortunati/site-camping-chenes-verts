@@ -386,7 +386,7 @@ textarea:focus-visible {
     margin: 0;
     padding: 0.9rem 1.1rem;
     background: var(--blanc);
-    border-left: 5px solid var(--bois);
+    box-shadow: var(--ombre);
     border-radius: var(--rayon-petit);
 }
 
@@ -448,7 +448,6 @@ textarea:focus-visible {
     object-fit: cover;
 }
 
-.carte--sans-image { border-top: 6px solid var(--bois-clair); }
 
 .carte__corps {
     display: flex;
@@ -613,25 +612,60 @@ textarea:focus-visible {
 
 .bloc-tarifs__intro { margin: 0 0 1.5rem; }
 
+/* Une couleur par période, de la plus calme à la plus chargée (pastilles décoratives :
+   le nom de la période est toujours écrit à côté). */
+.tarifs__p1 { --saison: #A9C79A; }
+.tarifs__p2 { --saison: #5E8F4E; }
+.tarifs__p3 { --saison: var(--bois-clair); }
+.tarifs__p4 { --saison: var(--bois); }
+
+/* Les périodes : une légende, écrite une seule fois */
 .tarifs__periodes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
     margin: 0 0 2rem;
     padding: 0;
+    overflow: hidden;
     list-style: none;
+    background: var(--couleur-trait);   /* les filets entre les cases */
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+@media (min-width: 48rem) {
+    .tarifs__periodes { grid-template-columns: repeat(4, 1fr); }
 }
 
 .tarifs__periodes li {
     max-width: none;
-    padding: 0.75rem 1rem;
+    padding: 0.9rem 1.1rem;
     background: var(--blanc);
-    border-left: 4px solid var(--bois-clair);
-    border-radius: var(--rayon-petit);
+    color: var(--couleur-texte-doux);
+    font-size: 0.9375rem;
 }
 
-.tarifs__periodes b { display: block; }
+.tarifs__periodes b {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+    color: var(--couleur-texte);
+    font-size: 1rem;
+}
 
+.tarifs__periodes b::before,
+.tarifs__grille thead th:not(:first-child)::before,
+.tarifs__etiquette::before {
+    content: "";
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--saison);
+}
+
+/* La grille des prix */
 .tarifs__grille {
     width: 100%;
     border-collapse: separate;
@@ -644,7 +678,7 @@ textarea:focus-visible {
     table-layout: fixed;               /* quatre colonnes de prix de même largeur */
 }
 
-.tarifs__grille thead th:first-child { width: 28%; }
+.tarifs__grille thead th:first-child { width: 30%; }
 
 .tarifs__grille caption {
     caption-side: top;
@@ -654,37 +688,34 @@ textarea:focus-visible {
 }
 
 .tarifs__grille th,
-.tarifs__grille td { padding: 0.9rem 1.1rem; border-top: 1px solid var(--couleur-trait); }
+.tarifs__grille td { padding: 1rem 1.25rem; }
+.tarifs__grille tbody tr + tr > * { border-top: 1px solid var(--couleur-fond-doux); }
 
 .tarifs__grille thead th {
-    border-top: 0;
-    background: var(--couleur-fond-doux);
+    background: var(--vert-profond);
+    color: var(--sur-vert);
     text-align: right;
-    vertical-align: bottom;
-    font-size: 1.0625rem;
+    font-size: 1rem;
 }
+.tarifs__grille thead th:not(:first-child)::before { display: inline-block; margin-right: 0.45rem; }
 
 .tarifs__grille thead th:first-child,
 .tarifs__grille tbody th { text-align: left; }
+.tarifs__grille tbody th { font-family: var(--police-titres); font-size: 1.125rem; font-weight: 600; }
 
-.tarifs__grille td { text-align: right; font-weight: 700; }
+.tarifs__grille td { text-align: right; }
+.tarifs__prix { font-size: 1.1875rem; font-weight: 700; white-space: nowrap; }
+.tarifs__grille tbody tr { transition: background var(--transition); }
+.tarifs__grille tbody tr:hover { background: var(--couleur-fond); }
 
-.tarifs__dates {
-    display: block;
-    font-size: 0.875rem;               /* 14 px, minimum autorisé */
-    font-weight: 400;
-    color: var(--couleur-texte-doux);  /* 6,16:1 sur lin */
-}
-
-.tarifs__etiquette { display: none; }  /* libellé de période, téléphone seulement */
+.tarifs__etiquette { display: none; }  /* nom de la période, téléphone seulement */
 
 .tarifs__precisions { margin: 1rem 0 0; font-size: 0.9375rem; color: var(--couleur-texte-doux); }
 
-/* Téléphone : chaque ligne devient une carte. Jamais de défilement horizontal. */
+/* Téléphone : une carte par hébergement, les quatre prix en deux rangées. Jamais de défilement horizontal. */
 @media (max-width: 47.99rem) {
     .tarifs__grille,
     .tarifs__grille tbody,
-    .tarifs__grille tr,
     .tarifs__grille th,
     .tarifs__grille td { display: block; }
 
@@ -693,32 +724,37 @@ textarea:focus-visible {
     .tarifs__grille thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
     .tarifs__grille tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
         margin-bottom: 1rem;
         overflow: hidden;
-        background: var(--blanc);
+        background: var(--couleur-fond-doux);
         border-radius: var(--rayon);
         box-shadow: var(--ombre);
     }
+    .tarifs__grille tbody tr + tr > * { border-top: 0; }
 
     .tarifs__grille tbody th {
-        border-top: 0;
-        background: var(--couleur-fond-doux);
-        font-family: var(--police-titres);
-        font-size: 1.125rem;
-        font-weight: 600;
+        grid-column: 1 / -1;
+        padding: 0.8rem 1.1rem;
+        background: var(--vert-profond);
+        color: var(--sur-vert);
     }
 
-    .tarifs__grille td {
+    .tarifs__grille td { padding: 0.75rem 1.1rem; background: var(--blanc); text-align: left; }
+
+    .tarifs__etiquette {
         display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 1rem;
-        padding: 0.7rem 1.1rem;
+        align-items: center;
+        gap: 0.45rem;
+        color: var(--couleur-texte-doux);
+        font-size: 0.875rem;
     }
-
-    .tarifs__etiquette { display: block; text-align: left; font-weight: 400; }
+    .tarifs__prix { display: block; margin-top: 0.1rem; font-size: 1.25rem; }
 }
 
+/* Taxe, suppléments, séjour, conditions */
 .tarifs__complements {
     display: grid;
     gap: 1.25rem;
@@ -726,22 +762,38 @@ textarea:focus-visible {
     margin: 2.5rem 0 2rem;
 }
 
-@media (min-width: 48rem) {
-    .tarifs__complements { grid-template-columns: 1fr 1fr; }
+@media (min-width: 48rem) {                /* deux colonnes libres : pas de trou sous un encart court */
+    .tarifs__complements { display: block; columns: 2; column-gap: 1.25rem; }
+    .tarifs__encart { break-inside: avoid; margin-bottom: 1.25rem; }
 }
 
 .tarifs__encart {
-    padding: 1.25rem 1.5rem;
+    padding: 1.4rem 1.6rem;
     background: var(--blanc);
     border-radius: var(--rayon);
     box-shadow: var(--ombre);
 }
 
-.tarifs__encart--obligatoire { border-left: 5px solid var(--bois); }
-.tarifs__encart h3 { margin-top: 0; }
-.tarifs__encart ul { margin: 0; padding-left: 1.25rem; }
-.tarifs__encart li + li { margin-top: 0.35rem; }
+.tarifs__encart h3 { margin: 0 0 0.75rem; font-size: 1.1875rem; }
+.tarifs__encart ul { margin: 0; padding-left: 1.1rem; }
+.tarifs__encart li { max-width: none; }
+.tarifs__encart li::marker { color: var(--couleur-lien); }
+.tarifs__encart li + li { margin-top: 0.45rem; }
 .tarifs__encart p { margin: 0; }
+.tarifs__encart p + p,
+.tarifs__encart ul + p { margin-top: 0.75rem; }
+
+/* Suppléments : le libellé à gauche, le prix aligné à droite */
+.tarifs__encart .tarifs__liste-prix { padding: 0; list-style: none; }
+.tarifs__liste-prix li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.55rem 0;
+}
+.tarifs__encart .tarifs__liste-prix li + li { margin-top: 0; border-top: 1px dashed var(--couleur-trait); }
+.tarifs__liste-prix b { flex: none; max-width: 45%; text-align: right; color: var(--couleur-lien); }
 
 /* ── Coordonnées (section livrée) ───────────────────────────────────────── */
 
@@ -823,6 +875,84 @@ textarea:focus-visible {
     .formulaire button.bouton { width: 100%; }
 }
 
+/* Le formulaire et, à côté, le déroulé de la demande */
+.reservation { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 64rem) {
+    .reservation { grid-template-columns: minmax(0, 1fr) 21rem; gap: 2.5rem; }
+    .reservation__deroule { position: sticky; top: 7rem; grid-column: 2; grid-row: 1; }   /* avant le formulaire dans la page, à sa droite à l'écran */
+    .reservation .formulaire--reservation { grid-column: 1; grid-row: 1; }
+}
+.reservation .formulaire--reservation { max-width: none; }
+
+/* Deux étapes numérotées */
+.formulaire--reservation { counter-reset: etape; }
+.formulaire--reservation fieldset + fieldset { margin-top: 0.75rem; }
+.formulaire--reservation legend { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.75rem; font-size: 1.375rem; }
+.formulaire--reservation legend::before {
+    counter-increment: etape;
+    content: counter(etape);
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--vert-profond);
+    color: var(--sur-vert);
+    font-family: var(--police-texte);
+    font-size: 1rem;
+    font-weight: 700;
+}
+.formulaire--reservation :is(input, select, textarea) { transition: border-color var(--transition), box-shadow var(--transition); }
+.formulaire--reservation :is(input, select, textarea):hover { border-color: var(--couleur-lien); }
+.formulaire--reservation :is(input, select, textarea):focus { border-color: var(--couleur-lien); box-shadow: 0 0 0 4px var(--couleur-fond-doux); }
+.formulaire--reservation .formulaire__consentement {
+    padding: 1rem 1.1rem;
+    border-radius: var(--rayon-petit);
+    background: var(--couleur-fond);
+}
+.formulaire--reservation button.bouton { min-height: 52px; padding-inline: 1.75rem; font-size: 1.0625rem; }
+
+.reservation__deroule {
+    padding: 1.75rem;
+    border-radius: var(--rayon);
+    background: var(--vert-profond);
+    color: var(--sur-vert-doux);
+}
+.reservation__deroule h3 { margin: 0 0 1.25rem; color: var(--sur-vert); font-size: 1.3125rem; }
+.reservation__deroule ol { margin: 0; padding: 0; list-style: none; counter-reset: deroule; }
+.reservation__deroule li {
+    position: relative;
+    max-width: none;
+    padding: 0 0 1.4rem 3rem;
+    counter-increment: deroule;
+}
+.reservation__deroule li:last-child { padding-bottom: 0; }
+.reservation__deroule li::before {
+    content: counter(deroule);
+    position: absolute;
+    left: 0;
+    top: -0.1rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--sur-vert);
+    color: var(--vert-profond);
+    font-weight: 700;
+}
+.reservation__deroule li:not(:last-child)::after {     /* le fil qui relie les étapes */
+    content: "";
+    position: absolute;
+    left: calc(1rem - 1px);
+    top: 2.2rem;
+    bottom: 0.3rem;
+    width: 2px;
+    background: #2F5A3D;
+}
+.reservation__deroule b { display: block; color: var(--sur-vert); }
+
 .message { border-radius: var(--rayon-petit); }
 .message--succes, .message--erreur { color: var(--couleur-texte); }
 
@@ -874,3 +1004,222 @@ textarea:focus-visible {
    baisse aussi. Devant une autre section, la marge du haut de celle-ci garde l'espace habituel.
    (Un :has() ne peut pas en contenir un autre : d'où cette règle plutôt qu'un « :has(+ …) ».) */
 .bloc-texte-image:not(:has(.bloc-texte-image__image)) { margin-bottom: 2.5rem; }
+
+/* ═══ Finitions — au-delà de la maquette, même direction : vert, bois, crème ═══ */
+
+:root {
+    --vert-profond: #183A23;              /* fond du titre des pages, des coordonnées, du pied */
+    --sur-vert: #FFFFFF;                  /* 12,59:1 sur vert profond */
+    --sur-vert-doux: #C9DDBE;             /* 8,73:1 sur vert profond */
+    --transition: 220ms ease;
+    --icone-feuille: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 3C11 3 4.5 8.4 4.5 15.2c0 1.6.4 3 1.1 4.2L3.5 21.5l1.4 1.4 2.1-2.1c1.2.7 2.6 1.1 4.2 1.1C17.6 21.9 21.3 15.1 20 3zm-8.8 16.9c-1 0-2-.2-2.8-.6l7.3-7.3-1.4-1.4-7.3 7.3c-.4-.9-.6-1.8-.6-2.8 0-5.4 4.7-9.6 11.5-10-.1 8.3-2.6 14.8-6.7 14.8z'/%3E%3C/svg%3E");
+    --icone-calendrier: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2zm12 8H5v9h14v-9zM5 8h14V6H5v2z'/%3E%3C/svg%3E");
+    --icone-telephone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1l-2.2 2.2z'/%3E%3C/svg%3E");
+    --icone-courriel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm17 3.2-8 5-8-5V17h16V8.2zM19.3 7H4.7l7.3 4.6L19.3 7z'/%3E%3C/svg%3E");
+    --icone-lieu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.2-7 13-7 13S5 14.2 5 9a7 7 0 0 1 7-7zm0 4.5A2.5 2.5 0 1 0 12 11.5 2.5 2.5 0 0 0 12 6.5z'/%3E%3C/svg%3E");
+    --silhouette-feuillage: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 40' preserveAspectRatio='none'%3E%3Cpath fill='%23183A23' d='M0 40V26c6-10 16-12 24-6 4-12 18-15 26-5 6-11 21-11 26 1 7-9 19-8 24 2 5-10 18-12 25-3 7-9 20-7 24 3 4-4 8-5 11-4v26z'/%3E%3C/svg%3E");
+}
+
+html { scroll-behavior: smooth; }
+[id] { scroll-margin-top: 6.5rem; }    /* l'en-tête collant ne cache pas la cible d'un lien */
+
+/* En-tête : reste en haut ; une ombre apparaît au défilement (menu.js) */
+.en-tete { position: sticky; top: 0; z-index: 50; transition: box-shadow var(--transition); }
+.en-tete--defile { box-shadow: 0 6px 22px rgb(24 58 35 / 10%); }
+
+@media (min-width: 80rem) {
+    .en-tete__interieur { flex-wrap: nowrap; }             /* jamais de menu sous le logo */
+    .menu { margin-left: auto; }
+    .menu__liste { flex-wrap: nowrap; white-space: nowrap; }
+    .menu__liste a:not([href="/reserver"]) { position: relative; text-decoration: none; }
+    .menu__liste a:not([href="/reserver"])::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0.15rem;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--couleur-lien);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform var(--transition);
+    }
+    .menu__liste a:hover::after,
+    .menu__liste a[aria-current="page"]::after { transform: scaleX(1); }
+    .menu__liste a[href="/reserver"]:hover { box-shadow: inset 0 0 0 100vmax rgb(0 0 0 / 18%); }
+}
+
+/* Boutons et liens d'action : une flèche qui avance au survol */
+.bouton:not(.en-tete__reserver)::after,
+.carte__lien::after,
+.bloc-annonce__lien::after { content: "→"; display: inline-block; margin-left: 0.45rem; transition: transform var(--transition); }
+.bouton:hover::after,
+.carte__lien:hover::after,
+.bloc-annonce__lien:hover::after { transform: translateX(4px); }
+
+/* Bandeau d'accueil : plus généreux ; la carte de titre monte à l'arrivée */
+@media (min-width: 48rem) {
+    .bloc-hero__image { height: min(82vh, 44rem); }
+}
+.bloc-hero__texte { animation: monter 700ms cubic-bezier(.2, .7, .2, 1) both; }
+.bloc-hero__texte::before {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 4px;
+    margin-bottom: 1rem;
+    border-radius: 2px;
+    background: var(--bois-clair);
+}
+@keyframes monter { from { transform: translateY(28px); } to { transform: none; } }
+
+/* Titre des pages intérieures : une bande vert profond */
+.page__titre {
+    margin: 0 auto;
+    padding-block: 3rem 2.25rem;
+    color: var(--sur-vert);
+    background: var(--vert-profond);
+    box-shadow: 0 0 0 100vmax var(--vert-profond);
+    clip-path: inset(0 -100vmax);
+}
+.page__titre + .bloc-annonce { margin-top: 0; border-top: 0; }
+
+/* Titres de section : une petite feuille */
+.bloc-cartes > h2,
+.bloc-hebergements > h2,
+.bloc-tarifs > h2,
+.bloc-reservation > h2,
+.bloc-texte-image:has(.bloc-texte-image__image) h2 { display: flex; align-items: center; gap: 0.6rem; }
+.bloc-cartes > h2::before,
+.bloc-hebergements > h2::before,
+.bloc-tarifs > h2::before,
+.bloc-reservation > h2::before,
+.bloc-texte-image:has(.bloc-texte-image__image) h2::before {
+    content: "";
+    flex: none;
+    width: 1.35rem;
+    height: 1.35rem;
+    background: var(--couleur-lien);
+    mask: var(--icone-feuille) center / contain no-repeat;
+}
+
+/* Annonce : une icône de calendrier ; le nombre de places mis en avant */
+.bloc-annonce__dates::before {
+    content: "";
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0.5rem;
+    vertical-align: -0.15em;
+    background: var(--couleur-lien);
+    mask: var(--icone-calendrier) center / contain no-repeat;
+}
+.bloc-annonce__message b { color: var(--couleur-lien); font-size: 1.3em; }
+
+/* Texte et image : coins organiques, un cadre lin décalé */
+.bloc-texte-image__image { border-radius: 28px 28px 28px 96px; box-shadow: 18px 18px 0 var(--couleur-fond-doux); }
+.bloc-texte-image--gauche .bloc-texte-image__image { border-radius: 28px 28px 96px 28px; box-shadow: -18px 18px 0 var(--couleur-fond-doux); }
+.bloc-texte-image__image[alt^="Plan"] {      /* le plan d'accès se lit en entier */
+    aspect-ratio: auto;
+    object-fit: contain;
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+/* Cartes : sur une bande lin pleine largeur ; elles se soulèvent au survol */
+.bloc-cartes {
+    padding-block: 3rem;
+    background: var(--couleur-fond-doux);
+    box-shadow: 0 0 0 100vmax var(--couleur-fond-doux);
+    clip-path: inset(0 -100vmax);
+}
+.bloc-cartes + .bloc-cartes { margin-top: 0; padding-top: 0; }
+.bloc-cartes:has(+ .bloc-cartes) { margin-bottom: 0; }
+.page__titre + .bloc-cartes { margin-top: 0; }
+.carte { transition: transform var(--transition), box-shadow var(--transition); }
+.carte__image { transition: transform 600ms ease; }
+.carte:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgb(31 42 34 / 6%), 0 18px 38px rgb(31 42 34 / 14%); }
+.carte:hover .carte__image { transform: scale(1.05); }
+
+/* Fiches hébergement */
+.hebergement__corps > div:first-child { overflow: hidden; border-radius: var(--rayon-petit); }
+.hebergement__image { transition: transform 600ms ease; }
+.hebergement:hover .hebergement__image { transform: scale(1.03); }
+.hebergement__lien { display: inline-flex; align-items: center; gap: 0.45rem; }   /* la flèche reste avec le texte */
+.hebergement__lien::after { content: "→"; flex: none; transition: transform var(--transition); }
+.hebergement__lien:hover::after { transform: translateX(4px); }
+
+/* Coordonnées : un vrai appel à l'action, sur vert profond, avec icônes */
+.bloc-contact {
+    position: relative;
+    overflow: hidden;
+    background: var(--vert-profond);
+    color: var(--sur-vert-doux);
+}
+.bloc-contact > * { position: relative; z-index: 1; }
+.bloc-contact h2,
+.bloc-contact p,
+.bloc-contact a,
+.bloc-contact__horaires dt { color: var(--sur-vert); }
+.bloc-contact a:focus-visible { outline-color: var(--sur-vert); }
+.bloc-contact a { overflow-wrap: anywhere; }         /* l'adresse e-mail passe à la ligne au téléphone */
+.bloc-contact__coordonnees li > * { min-width: 0; }
+.bloc-contact__coordonnees li { display: flex; align-items: center; gap: 0.6rem; color: var(--sur-vert); }
+.bloc-contact__coordonnees li::before {
+    content: "";
+    flex: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    background: var(--sur-vert-doux);
+    mask: var(--icone-lieu) center / contain no-repeat;
+}
+.bloc-contact__coordonnees li:has(a[href^="tel"])::before { mask-image: var(--icone-telephone); }
+.bloc-contact__coordonnees li:has(a[href^="mailto"])::before { mask-image: var(--icone-courriel); }
+.bloc-contact__coordonnees address,
+.bloc-contact__horaires dd { color: var(--sur-vert-doux); }
+.bloc-contact::after {                       /* une grande feuille, décor */
+    content: "";
+    position: absolute;
+    right: -3rem;
+    bottom: -3.5rem;
+    width: 14rem;
+    height: 14rem;
+    background: #214A2D;
+    mask: var(--icone-feuille) center / contain no-repeat;
+    pointer-events: none;
+}
+
+/* Pied de page : vert profond, bordé d'une silhouette de feuillage */
+main { padding-bottom: calc(var(--espace-section) + 2.5rem); }
+main:has(> .bloc-cartes:last-child) { padding-bottom: 0; }      /* la bande lin rejoint le feuillage */
+main > .bloc-cartes:last-child { margin-bottom: 0; padding-bottom: 6rem; }
+.pied {
+    position: relative;
+    background: var(--vert-profond);
+    border-top: 0;
+    color: var(--sur-vert-doux);
+}
+.pied::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -39px;
+    height: 40px;
+    background: var(--silhouette-feuillage) bottom / 160px 40px repeat-x;
+    pointer-events: none;
+}
+.pied__titre,
+.pied__saisons dt,
+.pied a { color: var(--sur-vert); }
+.pied a:focus-visible { outline-color: var(--sur-vert); }
+.pied__classement,
+.pied__saisons dd { color: var(--sur-vert-doux); }
+.pied__legal { border-top-color: #2F5A3D; }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .carte:hover, .carte:hover .carte__image, .hebergement:hover .hebergement__image { transform: none; }
+}

@@ -35,4 +35,11 @@
             bouton.focus();
         }
     });
+
+    // Une ombre sous l'en-tête dès que la page défile.
+    function ombre() {
+        entete.classList.toggle('en-tete--defile', window.scrollY > 8);
+    }
+    window.addEventListener('scroll', ombre, { passive: true });
+    ombre();
 }());
