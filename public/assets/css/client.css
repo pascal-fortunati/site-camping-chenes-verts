@@ -1,15 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════════════
-   Camping Les Chênes Verts — styles propres au site.
-   Maquette de l'étape 03, destinée à devenir public/assets/css/client.css
-   à l'étape 05. Chargé après site.css (socle), qui n'est jamais modifié.
-
-   Règles du socle respectées :
-     · --couleur-lien et --couleur-texte ne sont PAS fixées ici : elles
-       viennent de « Identité du site » (valeurs de départ : #2B5A16, #1E2A1A).
-     · aucune transparence sur du texte, aucune ressource d'un autre site ;
-     · contrastes mesurés : voir charte-graphique.md.
-   ═══════════════════════════════════════════════════════════════════════ */
-
 /* ── Polices (fichiers dans le dépôt, licence SIL OFL à côté) ─────────── */
 
 @font-face {
@@ -379,6 +367,7 @@ textarea:focus-visible {
 }
 
 .bloc-hero + .bloc-annonce { margin-top: 0; }
+.bloc-hero:has(+ .bloc-annonce) { margin-bottom: 0; }   /* les marges voisines fusionnent : les deux à 0 */
 
 .bloc-annonce__interieur {
     display: grid;
@@ -404,9 +393,7 @@ textarea:focus-visible {
 .bloc-annonce__lien { display: inline-block; margin-top: 0.5rem; font-weight: 700; }
 
 @media (min-width: 48rem) {
-    .bloc-hero + .bloc-annonce { margin-top: 0; }
-
-.bloc-annonce__interieur { grid-template-columns: 1fr 1.2fr; }
+    .bloc-annonce__interieur { grid-template-columns: 1fr 1.2fr; }
 }
 
 /* ── Texte et image (section livrée) ────────────────────────────────────── */

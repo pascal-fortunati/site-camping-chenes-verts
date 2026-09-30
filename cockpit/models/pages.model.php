@@ -28,6 +28,16 @@ $isTemoignages = "data.type === 'temoignages'";
 $hasImage = "['hero', 'texte-image'].includes(data.type)";
 $hasTexte = "['texte-image', 'contact', 'formulaire'].includes(data.type)";
 
+// ── CAMPING LES CHÊNES VERTS — conditions des types propres au site (étape 06) ──
+$isAnnonce = "data.type === 'annonce'";
+$isCartes = "data.type === 'cartes'";
+$isHebergements = "data.type === 'hebergements'";
+$isTarifs = "data.type === 'tarifs'";
+$isReservation = "data.type === 'reservation'";
+$hasPresentation = "['cartes', 'hebergements', 'tarifs', 'reservation'].includes(data.type)";
+$hasMessageVide = "['cartes', 'hebergements', 'tarifs'].includes(data.type)";
+// ── fin CAMPING LES CHÊNES VERTS ──────────────────────────────────────────
+
 return [
     'name' => 'pages',
     'label' => 'Pages',
@@ -94,6 +104,13 @@ return [
                                 ['value' => 'contact', 'label' => 'Coordonnées'],
                                 ['value' => 'formulaire', 'label' => 'Formulaire de contact'],
                                 ['value' => 'temoignages', 'label' => 'Témoignages'],
+                                // ── CAMPING LES CHÊNES VERTS — types propres au site ──
+                                ['value' => 'annonce', 'label' => 'Annonce : saison et places disponibles'],
+                                ['value' => 'cartes', 'label' => 'Cartes (services, animations, visites…)'],
+                                ['value' => 'hebergements', 'label' => 'Fiches hébergement'],
+                                ['value' => 'tarifs', 'label' => 'Grille des tarifs'],
+                                ['value' => 'reservation', 'label' => 'Formulaire de demande de réservation'],
+                                // ── fin CAMPING LES CHÊNES VERTS ──
                             ],
                         ],
                     ],
@@ -248,6 +265,258 @@ return [
                         'condition' => $isContact,
                         'opts' => ['default' => true],
                     ],
+
+                    // ── CAMPING LES CHÊNES VERTS — champs des types propres au site (étape 06) ──
+                    // Ajouts groupés ici pour que la fusion d'une mise à jour du socle reste lisible.
+                    // Les gabarits correspondants sont dans templates-client/blocs/.
+
+                    // Communs à plusieurs types
+                    [
+                        'name' => 'presentation',
+                        'type' => 'text',
+                        'label' => 'Texte d’introduction',
+                        'info' => 'Une ou deux phrases courtes, sous le titre de la section. Facultatif.',
+                        'width' => '1-1',
+                        'condition' => $hasPresentation,
+                        'opts' => ['multiline' => true, 'maxlength' => 400],
+                    ],
+                    [
+                        'name' => 'messageVide',
+                        'type' => 'text',
+                        'label' => 'Message si la liste est vide',
+                        'info' => 'Affiché à la place de la liste tant qu’elle ne contient rien. Vide : un message par défaut s’affiche.',
+                        'width' => '1-1',
+                        'condition' => $hasMessageVide,
+                        'opts' => ['maxlength' => 200],
+                    ],
+
+                    // Annonce : les valeurs viennent de « Identité du site » (saison, places, heures)
+                    [
+                        'name' => 'annonceHeures',
+                        'type' => 'boolean',
+                        'label' => 'Afficher les heures d’arrivée et de départ',
+                        'info' => 'Les heures sont saisies dans « Identité du site », rubrique Saison.',
+                        'width' => '1-2',
+                        'condition' => $isAnnonce,
+                        'opts' => ['default' => false],
+                    ],
+                    [
+                        'name' => 'annonceLien',
+                        'type' => 'boolean',
+                        'label' => 'Afficher le lien « Demander une réservation »',
+                        'info' => 'Jamais affiché sur la page de réservation elle-même.',
+                        'width' => '1-2',
+                        'condition' => $isAnnonce,
+                        'opts' => ['default' => true],
+                    ],
+
+                    // Cartes
+                    [
+                        'name' => 'cartes',
+                        'type' => 'set',
+                        'label' => 'Cartes',
+                        'info' => 'Chaque carte apparaît dans la grille, dans cet ordre. La photo est facultative.',
+                        'multiple' => true,
+                        'width' => '1-1',
+                        'condition' => $isCartes,
+                        'opts' => [
+                            'display' => '${data.titre || \'Carte sans titre\'}',
+                            'fields' => [
+                                ['name' => 'titre', 'type' => 'text', 'label' => 'Titre', 'required' => true, 'width' => '1-1',
+                                    'info' => 'Le nom du service, de l’animation ou du lieu.', 'opts' => ['maxlength' => 80]],
+                                ['name' => 'repere', 'type' => 'text', 'label' => 'Repère', 'width' => '1-2',
+                                    'info' => 'Court : un jour, une période, une distance. Ex. : « Le mercredi · 15 € ».', 'opts' => ['maxlength' => 60]],
+                                ['name' => 'texte', 'type' => 'text', 'label' => 'Texte', 'width' => '1-2',
+                                    'info' => 'Une ou deux phrases courtes. Facultatif.', 'opts' => ['multiline' => true, 'maxlength' => 240]],
+                                ['name' => 'image', 'type' => 'asset', 'label' => 'Photo', 'width' => '1-2',
+                                    'info' => 'Facultative. Format paysage.', 'opts' => ['filter' => ['type' => 'image']]],
+                                ['name' => 'alt', 'type' => 'text', 'label' => 'Description de la photo', 'width' => '1-2',
+                                    'info' => 'Obligatoire dès qu’une photo est choisie : décrire ce que l’on voit.', 'opts' => ['maxlength' => 150]],
+                                ['name' => 'lienTexte', 'type' => 'text', 'label' => 'Texte du lien', 'width' => '1-2',
+                                    'info' => 'Facultatif. Ex. : « Voir le détail ».', 'opts' => ['maxlength' => 40]],
+                                ['name' => 'lienAdresse', 'type' => 'text', 'label' => 'Adresse du lien', 'width' => '1-2',
+                                    'info' => 'Une page du site (/hebergements) ou un site extérieur.', 'opts' => ['placeholder' => '/hebergements']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'finTexte',
+                        'type' => 'text',
+                        'label' => 'Bouton sous les cartes : texte',
+                        'info' => 'Facultatif. Laisser vide pour ne pas afficher de bouton.',
+                        'width' => '1-2',
+                        'condition' => $isCartes,
+                        'opts' => ['maxlength' => 40],
+                    ],
+                    [
+                        'name' => 'finLien',
+                        'type' => 'text',
+                        'label' => 'Bouton sous les cartes : adresse',
+                        'info' => 'Une page du site, par exemple /reserver.',
+                        'width' => '1-2',
+                        'condition' => $isCartes,
+                        'opts' => ['placeholder' => '/reserver'],
+                    ],
+
+                    // Fiches hébergement
+                    [
+                        'name' => 'hebergements',
+                        'type' => 'set',
+                        'label' => 'Fiches hébergement',
+                        'info' => 'Une fiche par type d’hébergement, dans cet ordre.',
+                        'multiple' => true,
+                        'width' => '1-1',
+                        'condition' => $isHebergements,
+                        'opts' => [
+                            'display' => '${data.nom || \'Hébergement sans nom\'}',
+                            'fields' => [
+                                ['name' => 'nom', 'type' => 'text', 'label' => 'Nom', 'required' => true, 'width' => '1-2',
+                                    'info' => 'Ex. : « Chalet ».', 'opts' => ['maxlength' => 80]],
+                                ['name' => 'ancre', 'type' => 'text', 'label' => 'Repère de lien', 'width' => '1-2',
+                                    'info' => 'Le même que dans la grille des tarifs, en minuscules et tirets (ex. : chalet). '
+                                        .'Le lien « Voir les prix » y conduit.', 'opts' => ['placeholder' => 'chalet']],
+                                ['name' => 'image', 'type' => 'asset', 'label' => 'Photo', 'width' => '1-2',
+                                    'info' => 'Format paysage.', 'opts' => ['filter' => ['type' => 'image']]],
+                                ['name' => 'alt', 'type' => 'text', 'label' => 'Description de la photo', 'width' => '1-2',
+                                    'info' => 'Obligatoire dès qu’une photo est choisie.', 'opts' => ['maxlength' => 150]],
+                                ['name' => 'reperes', 'type' => 'set', 'label' => 'Repères chiffrés', 'multiple' => true, 'width' => '1-1',
+                                    'info' => 'Surface, personnes, chambres… Même ordre sur toutes les fiches, pour comparer.',
+                                    'opts' => [
+                                        'display' => '${data.libelle || \'Repère\'}',
+                                        'fields' => [
+                                            ['name' => 'libelle', 'type' => 'text', 'label' => 'Libellé', 'width' => '1-2', 'info' => 'À gauche dans la fiche. Ex. : « Surface ».', 'opts' => ['placeholder' => 'Surface']],
+                                            ['name' => 'valeur', 'type' => 'text', 'label' => 'Valeur', 'width' => '1-2', 'info' => 'À droite, en gras. Ex. : « 35 m² ».', 'opts' => ['placeholder' => '35 m²']],
+                                        ],
+                                    ]],
+                                ['name' => 'equipements', 'type' => 'text', 'label' => 'Équipements', 'width' => '1-1',
+                                    'info' => 'Un équipement par ligne.', 'opts' => ['multiline' => true, 'maxlength' => 600]],
+                                ['name' => 'mention', 'type' => 'text', 'label' => 'Mention importante', 'width' => '1-1',
+                                    'info' => 'Facultatif, en évidence. Ex. : « Animaux non acceptés. »', 'opts' => ['maxlength' => 120]],
+                                ['name' => 'nombre', 'type' => 'number', 'label' => 'Nombre d’unités', 'width' => '1-3',
+                                    'info' => 'Dessine la vue de dessus : une case par unité. Vide ou 0 : pas de schéma.', 'opts' => []],
+                                ['name' => 'nomCourt', 'type' => 'text', 'label' => 'Nom sur chaque case', 'width' => '1-3',
+                                    'info' => 'Court. Ex. : « Chalet » donne Chalet 1, Chalet 2…', 'opts' => ['maxlength' => 12]],
+                                ['name' => 'pluriel', 'type' => 'text', 'label' => 'Nom au pluriel', 'width' => '1-3',
+                                    'info' => 'Pour le titre du schéma. Ex. : « chalets » donne « 4 chalets ».', 'opts' => ['maxlength' => 60]],
+                            ],
+                        ],
+                    ],
+
+                    // Grille des tarifs : exactement 4 périodes (une 5ᵉ demande une intervention)
+                    [
+                        'name' => 'periodes',
+                        'type' => 'set',
+                        'label' => 'Les 4 périodes',
+                        'info' => 'Le nom et les dates de chaque période. Ils s’affichent en tête des colonnes de la grille.',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => [
+                            'fields' => [
+                                ['name' => 'nom1', 'type' => 'text', 'label' => 'Période 1 : nom', 'width' => '1-2', 'info' => 'En tête de la colonne 1 de la grille.', 'opts' => ['placeholder' => 'Basse']],
+                                ['name' => 'dates1', 'type' => 'text', 'label' => 'Période 1 : dates', 'width' => '1-2', 'info' => 'Sous le nom de la période 1, en plus petit.', 'opts' => ['placeholder' => 'avril, mai, septembre']],
+                                ['name' => 'nom2', 'type' => 'text', 'label' => 'Période 2 : nom', 'width' => '1-2', 'info' => 'En tête de la colonne 2 de la grille.', 'opts' => ['placeholder' => 'Moyenne']],
+                                ['name' => 'dates2', 'type' => 'text', 'label' => 'Période 2 : dates', 'width' => '1-2', 'info' => 'Sous le nom de la période 2, en plus petit.', 'opts' => ['placeholder' => 'juin']],
+                                ['name' => 'nom3', 'type' => 'text', 'label' => 'Période 3 : nom', 'width' => '1-2', 'info' => 'En tête de la colonne 3 de la grille.', 'opts' => ['placeholder' => 'Haute']],
+                                ['name' => 'dates3', 'type' => 'text', 'label' => 'Période 3 : dates', 'width' => '1-2', 'info' => 'Sous le nom de la période 3, en plus petit.', 'opts' => []],
+                                ['name' => 'nom4', 'type' => 'text', 'label' => 'Période 4 : nom', 'width' => '1-2', 'info' => 'En tête de la colonne 4 de la grille.', 'opts' => ['placeholder' => 'Très haute']],
+                                ['name' => 'dates4', 'type' => 'text', 'label' => 'Période 4 : dates', 'width' => '1-2', 'info' => 'Sous le nom de la période 4, en plus petit.', 'opts' => []],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'lignes',
+                        'type' => 'set',
+                        'label' => 'Lignes de la grille',
+                        'info' => 'Une ligne par hébergement : son nom et ses 4 prix par nuit, en euros. À mettre à jour chaque janvier.',
+                        'multiple' => true,
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => [
+                            'display' => '${data.hebergement || \'Ligne sans nom\'}',
+                            'fields' => [
+                                ['name' => 'hebergement', 'type' => 'text', 'label' => 'Hébergement', 'required' => true, 'width' => '1-2', 'info' => 'En tête de ligne de la grille ; au téléphone, en titre du bloc de prix.', 'opts' => ['maxlength' => 80]],
+                                ['name' => 'ancre', 'type' => 'text', 'label' => 'Repère de lien', 'width' => '1-2',
+                                    'info' => 'Le même que sur la fiche hébergement (ex. : chalet).', 'opts' => []],
+                                ['name' => 'prix1', 'type' => 'number', 'label' => 'Prix période 1 (€)', 'width' => '1-4', 'info' => 'Dans la colonne 1. Le signe € s’ajoute seul.', 'opts' => []],
+                                ['name' => 'prix2', 'type' => 'number', 'label' => 'Prix période 2 (€)', 'width' => '1-4', 'info' => 'Dans la colonne 2. Le signe € s’ajoute seul.', 'opts' => []],
+                                ['name' => 'prix3', 'type' => 'number', 'label' => 'Prix période 3 (€)', 'width' => '1-4', 'info' => 'Dans la colonne 3. Le signe € s’ajoute seul.', 'opts' => []],
+                                ['name' => 'prix4', 'type' => 'number', 'label' => 'Prix période 4 (€)', 'width' => '1-4', 'info' => 'Dans la colonne 4. Le signe € s’ajoute seul.', 'opts' => []],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'precisions',
+                        'type' => 'text',
+                        'label' => 'Précisions sous la grille',
+                        'info' => 'Ce que comprend un prix. Ex. : « Emplacement : prix pour 2 personnes… ».',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => ['multiline' => true, 'maxlength' => 400],
+                    ],
+                    [
+                        'name' => 'taxe',
+                        'type' => 'text',
+                        'label' => 'Taxe de séjour',
+                        'info' => 'Obligatoire à l’affichage : l’encadré « Taxe de séjour » apparaît toujours.',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => ['multiline' => true, 'maxlength' => 300],
+                    ],
+                    [
+                        'name' => 'supplements',
+                        'type' => 'set',
+                        'label' => 'Suppléments',
+                        'info' => 'Chaque supplément apparaît dans l’encadré « Suppléments », dans cet ordre.',
+                        'multiple' => true,
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => [
+                            'display' => '${data.libelle || \'Supplément\'}',
+                            'fields' => [
+                                ['name' => 'libelle', 'type' => 'text', 'label' => 'Supplément', 'width' => '1-2', 'info' => 'Dans l’encadré « Suppléments ». Ex. : « Animal ».', 'opts' => ['placeholder' => 'Animal']],
+                                ['name' => 'prix', 'type' => 'text', 'label' => 'Prix', 'width' => '1-2', 'info' => 'Écrit en toutes lettres, avec l’unité. Ex. : « 4 € par nuit ».', 'opts' => ['placeholder' => '4 € par nuit']],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'sejour',
+                        'type' => 'wysiwyg',
+                        'label' => 'Durée du séjour',
+                        'info' => 'Encadré « Durée du séjour, arrivée et départ ». Les heures s’ajoutent seules, depuis « Identité du site ».',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => ['toolbar' => $toolbar],
+                    ],
+                    [
+                        'name' => 'conditions',
+                        'type' => 'wysiwyg',
+                        'label' => 'Acompte, caution et annulation',
+                        'info' => 'Obligatoire à l’affichage : l’encadré apparaît toujours, avec un lien vers les conditions générales de vente.',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => ['toolbar' => $toolbar],
+                    ],
+
+                    // Formulaire de demande de réservation (option A)
+                    [
+                        'name' => 'hebergementsProposes',
+                        'type' => 'text',
+                        'label' => 'Hébergements proposés dans le formulaire',
+                        'info' => 'Un par ligne, dans l’ordre de la liste « Hébergement souhaité ».',
+                        'width' => '1-1',
+                        'condition' => $isReservation,
+                        'opts' => ['multiline' => true, 'maxlength' => 600],
+                    ],
+                    [
+                        'name' => 'delaiReponse',
+                        'type' => 'text',
+                        'label' => 'Délai de réponse',
+                        'info' => 'Repris dans le message affiché après l’envoi. Ex. : « sous 48 heures en saison, 72 heures en hiver ».',
+                        'width' => '1-1',
+                        'condition' => $isReservation,
+                        'opts' => ['maxlength' => 120],
+                    ],
+                    // ── fin CAMPING LES CHÊNES VERTS ─────────────────────────────
                 ],
             ],
         ],

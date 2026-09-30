@@ -1,14 +1,3 @@
-{# Pied de page — copie de templates/partials/pied.html.twig pour le Camping Les Chênes Verts.
-
-   Recopié parce que la STRUCTURE change (maquette, étape 03, décision A6) :
-     · le classement du camping sous l'adresse ;
-     · les horaires de l'accueil par saison, en texte : la grille lundi–dimanche
-       du socle ne sait pas dire « avril à juin » et « juillet-août » ;
-     · un lien vers les conditions générales de vente.
-   Les champs horairesSaisons et classement sont ajoutés à l'identité du site à
-   l'étape 06 ; tant qu'ils sont vides, les horaires du socle restent affichés.
-   Contrepartie : relire ce fichier après une mise à jour du socle
-   (git log socle/main -- templates/partials/pied.html.twig). #}
 {% set jours = {
     'lundi': 'Lundi',
     'mardi': 'Mardi',

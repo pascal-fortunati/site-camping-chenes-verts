@@ -1,0 +1,59 @@
+{% set mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'] %}
+
+{% macro date_fr(date, mois, avecAnnee) %}
+    {%- set jour = date|date('j') -%}
+    {{- jour == '1' ? '1er' : jour }} {{ mois[date|date('n') - 1] }}{{ avecAnnee ? ' ' ~ date|date('Y') : '' -}}
+{% endmacro %}
+
+{% set ouverture = site.saisonOuverture|default('') %}
+{% set fermeture = site.saisonFermeture|default('') %}
+{% set places = site.placesDisponibles|default(0)|number_format(0, '', '') %}
+{% set heures = bloc.annonceHeures|default(false) and (site.heureArrivee|default('') or site.heureDepart|default('')) %}
+{% set aDire = (ouverture and fermeture) or places > 0 or heures %}
+
+{% if aDire %}
+    <section class="bloc bloc-annonce">
+        <div class="bloc-annonce__interieur">
+
+            <div>
+                {% if titre %}
+                    <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+                {% endif %}
+
+                {% if ouverture and fermeture %}
+                    {% set memeAnnee = ouverture|date('Y') == fermeture|date('Y') %}
+                    <p class="bloc-annonce__dates">
+                        Ouvert du {{ _self.date_fr(ouverture, mois, not memeAnnee) }} au {{ _self.date_fr(fermeture, mois, true) }}.
+                    </p>
+                {% endif %}
+
+                {% if heures %}
+                    <p class="bloc-annonce__heures">
+                        Locations :
+                        {%- if site.heureArrivee|default('') %} arrivée à partir de {{ site.heureArrivee }}{% endif %}
+                        {%- if site.heureArrivee|default('') and site.heureDepart|default('') %},{% endif %}
+                        {%- if site.heureDepart|default('') %} départ avant {{ site.heureDepart }}{% endif %}.
+                    </p>
+                {% endif %}
+            </div>
+
+            {# « ?? » et non « default » : une case décochée (false) doit rester décochée. #}
+            {% set lien = (bloc.annonceLien ?? true) and slug|default('') != 'reserver' %}
+            {% if places > 0 or lien %}
+                <div>
+                    {% if places > 0 %}
+                        <p class="bloc-annonce__message">
+                            Il reste <b>{{ places }}</b> {{ places > 1 ? 'places disponibles' : 'place disponible' }}.
+                        </p>
+                    {% endif %}
+
+                    {# Pas de lien vers la page où l'on se trouve déjà. #}
+                    {% if lien %}
+                        <a class="bloc-annonce__lien" href="/reserver">Demander une réservation</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </div>
+    </section>
+{% endif %}

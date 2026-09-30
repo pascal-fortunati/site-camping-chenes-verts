@@ -1,0 +1,46 @@
+<section class="bloc bloc-cartes">
+
+    {% if titre %}
+        <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+    {% endif %}
+
+    {% if bloc.presentation|default('') %}
+        <p class="bloc-cartes__introduction">{{ bloc.presentation }}</p>
+    {% endif %}
+
+    {% if bloc.cartes|default([]) is not empty %}
+        <ul class="cartes">
+            {% for carte in bloc.cartes %}
+                <li class="carte{{ carte.image|default(null) ? '' : ' carte--sans-image' }}">
+                    {% if carte.image|default(null) %}
+                        {% include 'partials/image.html.twig' with {
+                            asset: carte.image,
+                            alt: carte.alt,
+                            classe: 'carte__image',
+                            sizes: '(min-width: 64rem) 22rem, (min-width: 40rem) 45vw, 100vw'
+                        } only %}
+                    {% endif %}
+                    <div class="carte__corps">
+                        <h{{ niveau + 1 }} class="carte__titre">{{ carte.titre }}</h{{ niveau + 1 }}>
+                        {% if carte.repere|default('') %}
+                            <p class="carte__repere">{{ carte.repere }}</p>
+                        {% endif %}
+                        {% if carte.texte|default('') %}
+                            <p class="carte__texte">{{ carte.texte }}</p>
+                        {% endif %}
+                        {% if carte.lienTexte|default('') and carte.lienAdresse|default('') %}
+                            <a class="carte__lien" href="{{ carte.lienAdresse }}">{{ carte.lienTexte }}</a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="bloc-cartes__vide">{{ bloc.messageVide|default('Cette liste sera bientôt complétée.') }}</p>
+    {% endif %}
+
+    {% if bloc.finTexte|default('') and bloc.finLien|default('') %}
+        <p class="bloc-cartes__fin"><a class="bouton bouton--secondaire" href="{{ bloc.finLien }}">{{ bloc.finTexte }}</a></p>
+    {% endif %}
+
+</section>

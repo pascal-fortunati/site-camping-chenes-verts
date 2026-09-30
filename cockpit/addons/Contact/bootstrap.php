@@ -110,16 +110,31 @@ $this->module('contact')->extend([
         $from = (string) ($message['email'] ?? '');
         $site = (string) ($settings['nom'] ?? 'le site');
 
+        // ÉCART AU SOCLE — Camping Les Chênes Verts (option A) : une demande de
+        // réservation annonce le séjour en tête du courriel. Voir SUIVI-SITE.md.
+        $reservation = ($message['formulaire'] ?? '') === 'reservation';
+        $sejour = $reservation
+            ? "Demande de réservation\n"
+                .'Hébergement : '.($message['hebergement'] ?? '')."\n"
+                .'Du '.($message['arrivee'] ?? '').' au '.($message['depart'] ?? '').' ('.($message['nuits'] ?? '?')." nuits)\n"
+                .'Personnes : '.($message['personnes'] ?? '').', dont majeures : '.($message['majeurs'] ?? '')."\n"
+                .'Animaux : '.($message['animaux'] ?? 0)."\n"
+                .(($message['telephone'] ?? '') !== '' ? 'Téléphone : '.$message['telephone']."\n" : '')
+                ."\n"
+            : '';
+
         $body = "Nouveau message reçu depuis {$site}.\n\n"
+            .$sejour
             ."De : {$nom} <{$from}>\n"
             .'Reçu le : '.($message['envoyeLe'] ?? '')."\n"
             .'Page : '.($message['origine'] ?? '')."\n\n"
             ."Message :\n"
-            .($message['message'] ?? '')."\n\n"
+            .(($message['message'] ?? '') !== '' ? $message['message'] : '(aucun)')."\n\n"
             ."— Répondre directement à cet e-mail pour joindre l’expéditeur.\n";
 
         try {
-            $sent = $this->app->mailer->mail($to, "Message reçu depuis {$site}", $body, [
+            $objet = $reservation ? "Demande de réservation depuis {$site}" : "Message reçu depuis {$site}";
+            $sent = $this->app->mailer->mail($to, $objet, $body, [
                 // Sent from the site's own address so the receiving server
                 // accepts it; replying goes to the visitor.
                 'from' => $to,

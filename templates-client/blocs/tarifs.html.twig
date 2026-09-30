@@ -1,0 +1,120 @@
+{% set p = bloc.periodes|default({}) %}
+{% set periodes = [
+    { nom: p.nom1|default('Période 1'), dates: p.dates1|default('') },
+    { nom: p.nom2|default('Période 2'), dates: p.dates2|default('') },
+    { nom: p.nom3|default('Période 3'), dates: p.dates3|default('') },
+    { nom: p.nom4|default('Période 4'), dates: p.dates4|default('') }
+] %}
+
+{% macro prix(valeur) %}
+    {%- if valeur is not null and valeur != '' -%}
+        {{ valeur|number_format(valeur == valeur|round ? 0 : 2, ',', ' ') }} €
+    {%- else -%}
+        —
+    {%- endif -%}
+{% endmacro %}
+
+<section class="bloc bloc-tarifs">
+
+    {% if titre %}
+        <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+    {% endif %}
+
+    {% if bloc.presentation|default('') %}
+        <p class="bloc-tarifs__intro">{{ bloc.presentation }}</p>
+    {% endif %}
+
+    <h{{ niveau + 1 }}>Les périodes</h{{ niveau + 1 }}>
+    <ul class="tarifs__periodes">
+        {% for periode in periodes %}
+            <li><b>{{ periode.nom }}</b>{{ periode.dates }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if bloc.lignes|default([]) is not empty %}
+        <table class="tarifs__grille">
+            <caption>Prix par nuit selon la période, en euros</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Hébergement</th>
+                    {% for periode in periodes %}
+                        <th scope="col">{{ periode.nom }}{% if periode.dates %}<span class="tarifs__dates">{{ periode.dates }}</span>{% endif %}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in bloc.lignes %}
+                    <tr{% if ligne.ancre|default('') %} id="{{ ligne.ancre }}"{% endif %}>
+                        <th scope="row">{{ ligne.hebergement }}</th>
+                        {% for i in 1..4 %}
+                            <td>
+                                <span class="tarifs__etiquette">{{ periodes[i - 1].nom }}{% if periodes[i - 1].dates %} <span class="tarifs__dates">{{ periodes[i - 1].dates }}</span>{% endif %}</span>
+                                {{ _self.prix(attribute(ligne, 'prix' ~ i)|default(null)) }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="bloc-cartes__vide">
+            {{ bloc.messageVide|default('Les tarifs sont en cours de mise à jour. Appelez-nous ou écrivez-nous.') }}
+            {% if site.telephone %}<br><a href="tel:{{ tel_href(site.telephone) }}">{{ site.telephone }}</a>{% endif %}
+            {% if site.email %} · <a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}
+        </p>
+    {% endif %}
+
+    {% if bloc.precisions|default('') %}
+        <p class="tarifs__precisions">{{ bloc.precisions|nl2br }}</p>
+    {% endif %}
+
+    <div class="tarifs__complements">
+
+        <div class="tarifs__encart tarifs__encart--obligatoire">
+            <h{{ niveau + 1 }}>Taxe de séjour</h{{ niveau + 1 }}>
+            <p>{{ bloc.taxe|default('La taxe de séjour s’ajoute au prix du séjour. Son montant est indiqué dans nos conditions générales de vente.')|nl2br }}</p>
+        </div>
+
+        {% if bloc.supplements|default([]) is not empty %}
+            <div class="tarifs__encart">
+                <h{{ niveau + 1 }}>Suppléments</h{{ niveau + 1 }}>
+                <ul>
+                    {% for s in bloc.supplements %}
+                        {% if s.libelle|default('') %}
+                            <li>{{ s.libelle }}{% if s.prix|default('') %} : <b>{{ s.prix }}</b>{% endif %}.</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if bloc.sejour|default('') or site.heureArrivee|default('') or site.heureDepart|default('') %}
+            <div class="tarifs__encart">
+                <h{{ niveau + 1 }}>Durée du séjour, arrivée et départ</h{{ niveau + 1 }}>
+                {# Texte mis en forme saisi dans l'administration : non échappé, comme dans le socle. #}
+                {{ bloc.sejour|default('')|raw }}
+                {# Heures saisies une seule fois, dans « Identité du site » (décision A2). #}
+                {% if site.heureArrivee|default('') or site.heureDepart|default('') %}
+                    <p>Locations :
+                        {%- if site.heureArrivee|default('') %} arrivée à partir de {{ site.heureArrivee }}{% endif %}
+                        {%- if site.heureArrivee|default('') and site.heureDepart|default('') %},{% endif %}
+                        {%- if site.heureDepart|default('') %} départ avant {{ site.heureDepart }}{% endif %}.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="tarifs__encart tarifs__encart--obligatoire">
+            <h{{ niveau + 1 }}>Acompte, caution et annulation</h{{ niveau + 1 }}>
+            {% if bloc.conditions|default('') %}
+                {{ bloc.conditions|raw }}
+            {% else %}
+                <p>Les conditions d’acompte et d’annulation sont détaillées dans nos conditions générales de vente.</p>
+            {% endif %}
+            <p><a href="/conditions-generales-de-vente">Lire les conditions générales de vente</a></p>
+        </div>
+
+    </div>
+
+    <p><a class="bouton" href="/reserver">Demander une réservation</a></p>
+
+</section>

@@ -1,0 +1,198 @@
+{% set valeurs = formulaire.valeurs|default({}) %}
+{% set champs = formulaire.champs|default({}) %}
+{% set envoye = formulaire.envoye|default(false) %}
+{% set liste = bloc.hebergementsProposes|default('')|split("\n")|map(h => h|trim)|filter(h => h is not empty) %}
+{% set libelles = {
+    arrivee: 'Date d’arrivée', depart: 'Date de départ', hebergement: 'Hébergement souhaité',
+    personnes: 'Nombre de personnes', majeurs: 'Dont personnes majeures', animaux: 'Nombre d’animaux',
+    nom: 'Votre nom', email: 'Votre adresse e-mail', telephone: 'Votre téléphone',
+    message: 'Votre message', consentement: 'Accord pour conserver vos informations'
+} %}
+
+{% macro erreur(champs, nom) %}
+    {%- if champs[nom] is defined -%}
+        <span class="formulaire__erreur" id="erreur-{{ nom }}">{{ champs[nom] }}</span>
+    {%- endif -%}
+{% endmacro %}
+
+{% macro invalide(champs, nom, aide) %}
+    {%- if champs[nom] is defined %} aria-invalid="true" aria-describedby="erreur-{{ nom }}"{% elseif aide %} aria-describedby="aide-{{ nom }}"{% endif -%}
+{% endmacro %}
+
+<section class="bloc bloc-reservation" id="formulaire">
+
+    {% if titre %}
+        <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+    {% endif %}
+
+    {% if bloc.presentation|default('') and not envoye %}
+        <p class="bloc-reservation__intro">{{ bloc.presentation }}</p>
+    {% endif %}
+
+    {% if envoye %}
+
+        {# La confirmation remplace le formulaire : elle se voit sans défiler. #}
+        <div class="message message--succes" role="status">
+            <p><b>Votre demande est envoyée.</b></p>
+            <p>Nous vous répondons par e-mail{{ bloc.delaiReponse|default('') ? ' ' ~ bloc.delaiReponse : '' }}.
+               Ce n’est pas encore une réservation : nous vous confirmons les disponibilités et l’acompte.</p>
+        </div>
+        <p><a href="/{{ slug == accueilSlug|default('accueil') ? '' : slug }}#formulaire">Faire une autre demande</a></p>
+
+    {% elseif not contactActif|default(false) %}
+
+        <p>Pour réserver, appelez-nous ou écrivez-nous :</p>
+        <ul class="bloc-contact__coordonnees">
+            {% if site.telephone %}
+                <li><a href="tel:{{ tel_href(site.telephone) }}">{{ site.telephone }}</a></li>
+            {% endif %}
+            {% if site.email %}
+                <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+            {% endif %}
+        </ul>
+
+    {% else %}
+
+        {% if formulaire.erreur is defined %}
+            <div class="message message--erreur" role="alert">
+                <p><b>{{ champs|length > 1 ? champs|length ~ ' champs sont à corriger :' : (champs|length == 1 ? 'Un champ est à corriger :' : formulaire.erreur) }}</b></p>
+                {% if champs is not empty %}
+                    <ul>
+                        {# Dans l'ordre du formulaire (celui du clavier), pas dans l'ordre des vérifications. #}
+                        {% for nom, libelle in libelles %}
+                            {% if champs[nom] is defined %}
+                                <li><a href="#reservation-{{ nom }}">{{ libelle }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <form class="formulaire formulaire--reservation" method="post" action="/contact" novalidate>
+
+            <input type="hidden" name="formulaire" value="reservation">
+            <input type="hidden" name="jeton" value="{{ jetonContact }}">
+            <input type="hidden" name="retour" value="{{ slug == accueilSlug|default('accueil') ? '/' : '/' ~ slug }}">
+
+            {# Left empty by anyone who can see it. Hidden from assistive technologies too. #}
+            <div class="formulaire__piege" aria-hidden="true">
+                <label for="site_web">Ne pas remplir ce champ</label>
+                <input type="text" id="site_web" name="site_web" tabindex="-1" autocomplete="off">
+            </div>
+
+            <p class="formulaire__obligatoires">Les champs marqués * sont obligatoires.</p>
+
+            <fieldset>
+                <legend>Votre séjour</legend>
+
+                <div class="formulaire__ligne">
+                    <p class="formulaire__champ">
+                        <label for="reservation-arrivee">Date d’arrivée *</label>
+                        <input type="date" id="reservation-arrivee" name="arrivee" required value="{{ valeurs.arrivee|default('') }}"
+                               {% if site.saisonOuverture|default('') %}min="{{ site.saisonOuverture|date('Y-m-d') }}"{% endif %}
+                               {% if site.saisonFermeture|default('') %}max="{{ site.saisonFermeture|date('Y-m-d') }}"{% endif %}
+                               {{- _self.invalide(champs, 'arrivee', false) }}>
+                        {{ _self.erreur(champs, 'arrivee') }}
+                    </p>
+                    <p class="formulaire__champ">
+                        <label for="reservation-depart">Date de départ *</label>
+                        <input type="date" id="reservation-depart" name="depart" required value="{{ valeurs.depart|default('') }}"
+                               {% if site.saisonOuverture|default('') %}min="{{ site.saisonOuverture|date('Y-m-d') }}"{% endif %}
+                               {% if site.saisonFermeture|default('') %}max="{{ site.saisonFermeture|date('Y-m-d') }}"{% endif %}
+                               {{- _self.invalide(champs, 'depart', false) }}>
+                        {{ _self.erreur(champs, 'depart') }}
+                    </p>
+                </div>
+
+                <div class="formulaire__ligne">
+                    <p class="formulaire__champ">
+                        <label for="reservation-hebergement">Hébergement souhaité *</label>
+                        <select id="reservation-hebergement" name="hebergement" required{{ _self.invalide(champs, 'hebergement', false) }}>
+                            <option value="">Choisir un hébergement</option>
+                            {% for h in liste %}
+                                <option{% if valeurs.hebergement|default('') == h %} selected{% endif %}>{{ h }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ _self.erreur(champs, 'hebergement') }}
+                    </p>
+                    <p class="formulaire__champ">
+                        <label for="reservation-personnes">Nombre de personnes *</label>
+                        <input type="number" id="reservation-personnes" name="personnes" min="1" max="20" inputmode="numeric" required
+                               value="{{ valeurs.personnes|default('') }}"{{ _self.invalide(champs, 'personnes', false) }}>
+                        {{ _self.erreur(champs, 'personnes') }}
+                    </p>
+                </div>
+
+                <div class="formulaire__ligne">
+                    <p class="formulaire__champ">
+                        <label for="reservation-majeurs">Dont personnes majeures *</label>
+                        <span class="formulaire__aide" id="aide-majeurs">18 ans et plus. Pour calculer la taxe de séjour.</span>
+                        <input type="number" id="reservation-majeurs" name="majeurs" min="1" max="20" inputmode="numeric" required
+                               value="{{ valeurs.majeurs|default('') }}"{{ _self.invalide(champs, 'majeurs', true) }}>
+                        {{ _self.erreur(champs, 'majeurs') }}
+                    </p>
+                    <p class="formulaire__champ">
+                        <label for="reservation-animaux">Nombre d’animaux</label>
+                        <span class="formulaire__aide" id="aide-animaux">4 € par nuit. Pas d’animaux en tente lodge.</span>
+                        <input type="number" id="reservation-animaux" name="animaux" min="0" max="10" inputmode="numeric"
+                               value="{{ valeurs.animaux|default('0') }}"{{ _self.invalide(champs, 'animaux', true) }}>
+                        {{ _self.erreur(champs, 'animaux') }}
+                    </p>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Vos coordonnées</legend>
+
+                <div class="formulaire__ligne">
+                    <p class="formulaire__champ">
+                        <label for="reservation-nom">Votre nom *</label>
+                        <input type="text" id="reservation-nom" name="nom" required autocomplete="name"
+                               value="{{ valeurs.nom|default('') }}"{{ _self.invalide(champs, 'nom', false) }}>
+                        {{ _self.erreur(champs, 'nom') }}
+                    </p>
+                    <p class="formulaire__champ">
+                        <label for="reservation-email">Votre adresse e-mail *</label>
+                        <span class="formulaire__aide" id="aide-email">Pour vous répondre.</span>
+                        <input type="email" id="reservation-email" name="email" required autocomplete="email"
+                               value="{{ valeurs.email|default('') }}"{{ _self.invalide(champs, 'email', true) }}>
+                        {{ _self.erreur(champs, 'email') }}
+                    </p>
+                </div>
+
+                <p class="formulaire__champ">
+                    <label for="reservation-telephone">Votre téléphone (facultatif)</label>
+                    <span class="formulaire__aide" id="aide-telephone">Seulement pour vous rappeler au sujet de votre demande.</span>
+                    <input type="tel" id="reservation-telephone" name="telephone" autocomplete="tel"
+                           value="{{ valeurs.telephone|default('') }}"{{ _self.invalide(champs, 'telephone', true) }}>
+                    {{ _self.erreur(champs, 'telephone') }}
+                </p>
+
+                <p class="formulaire__champ">
+                    <label for="reservation-message">Votre message (facultatif)</label>
+                    <span class="formulaire__aide" id="aide-message">Une question, une demande particulière.</span>
+                    <textarea id="reservation-message" name="message" rows="4"{{ _self.invalide(champs, 'message', true) }}>{{ valeurs.message|default('') }}</textarea>
+                    {{ _self.erreur(champs, 'message') }}
+                </p>
+            </fieldset>
+
+            <p class="formulaire__consentement">
+                {# Never checked in advance: consent that was not given is not consent. #}
+                <input type="checkbox" id="reservation-consentement" name="consentement" value="1"{{ _self.invalide(champs, 'consentement', false) }}>
+                <label for="reservation-consentement">
+                    J’accepte que mes informations soient conservées 12 mois pour répondre à ma demande.
+                    <a href="/confidentialite">Politique de confidentialité</a>. *
+                </label>
+                {{ _self.erreur(champs, 'consentement') }}
+            </p>
+
+            <p class="formulaire__aide">Votre demande n’engage à rien. Voir nos <a href="/conditions-generales-de-vente">conditions générales de vente</a>.</p>
+
+            <button type="submit" class="bouton">Envoyer ma demande</button>
+
+        </form>
+
+    {% endif %}
+
+</section>

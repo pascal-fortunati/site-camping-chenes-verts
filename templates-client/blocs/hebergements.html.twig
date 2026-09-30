@@ -1,0 +1,89 @@
+<section class="bloc bloc-hebergements">
+
+    {% if titre %}
+        <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+    {% endif %}
+
+    {% if bloc.presentation|default('') %}
+        <p class="bloc-hebergements__introduction">{{ bloc.presentation }}</p>
+    {% endif %}
+
+    {% if bloc.hebergements|default([]) is not empty %}
+        <ul class="hebergements">
+            {% for h in bloc.hebergements %}
+                {% set nombre = h.nombre|default(0)|number_format(0, '', '') %}
+                {% set court = h.nomCourt|default('') ?: h.nom %}
+                {% set libelle = nombre ~ ' ' ~ (nombre > 1 ? (h.pluriel|default('') ?: 'unités') : court|lower) %}
+                <li class="hebergement"{% if h.ancre|default('') %} id="{{ h.ancre }}"{% endif %}>
+                    <h{{ niveau + 1 }} class="hebergement__nom">{{ h.nom }}</h{{ niveau + 1 }}>
+                    <div class="hebergement__corps">
+
+                        <div>
+                            {% if h.image|default(null) %}
+                                {% include 'partials/image.html.twig' with {
+                                    asset: h.image,
+                                    alt: h.alt,
+                                    classe: 'hebergement__image',
+                                    sizes: '(min-width: 64rem) 26rem, 100vw'
+                                } only %}
+                            {% endif %}
+                        </div>
+
+                        {% if nombre > 0 %}
+                            <figure class="plan">
+                                <figcaption class="plan__titre">Vue de dessus · {{ libelle }}</figcaption>
+                                <div class="plan__schema" role="img" aria-label="Schéma : {{ libelle }}">
+                                    <div class="plan__grille{{ nombre > 12 ? ' plan__grille--compacte' : '' }}">
+                                        {%- for k in 1..nombre -%}
+                                            <span class="plan__unite">{{ nombre > 12 ? k : court ~ ' ' ~ k }}</span>
+                                        {%- endfor -%}
+                                    </div>
+                                    <div class="plan__allee"></div>
+                                </div>
+                                <p class="plan__note">Schéma : ce n’est pas le plan du camping.</p>
+                            </figure>
+                        {% else %}
+                            <figure class="plan plan--inconnu">
+                                <figcaption class="plan__titre">Vue de dessus</figcaption>
+                                <p class="plan__note">Le schéma s’affiche dès que le nombre est saisi.</p>
+                            </figure>
+                        {% endif %}
+
+                        <div>
+                            {% if h.reperes|default([]) is not empty %}
+                                <dl class="hebergement__reperes">
+                                    {% for r in h.reperes %}
+                                        {% if r.libelle|default('') and r.valeur|default('') %}
+                                            <dt>{{ r.libelle }}</dt>
+                                            <dd>{{ r.valeur }}</dd>
+                                        {% endif %}
+                                    {% endfor %}
+                                </dl>
+                            {% endif %}
+
+                            {% set equipements = h.equipements|default('')|split("\n")|map(e => e|trim)|filter(e => e is not empty) %}
+                            {% if equipements is not empty %}
+                                <p class="hebergement__sous-titre">Équipements</p>
+                                <ul class="hebergement__equipements">
+                                    {% for e in equipements %}
+                                        <li>{{ e }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% if h.mention|default('') %}
+                                <p class="hebergement__mention">{{ h.mention }}</p>
+                            {% endif %}
+
+                            <a class="hebergement__lien" href="/tarifs{{ h.ancre|default('') ? '#' ~ h.ancre : '' }}">Voir les prix de cet hébergement</a>
+                        </div>
+
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="bloc-cartes__vide">{{ bloc.messageVide|default('Nos hébergements seront présentés prochainement.') }}</p>
+    {% endif %}
+
+</section>
