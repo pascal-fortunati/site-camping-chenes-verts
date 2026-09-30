@@ -1,0 +1,100 @@
+{# Pied de page — copie de templates/partials/pied.html.twig pour le Camping Les Chênes Verts.
+
+   Recopié parce que la STRUCTURE change (maquette, étape 03, décision A6) :
+     · le classement du camping sous l'adresse ;
+     · les horaires de l'accueil par saison, en texte : la grille lundi–dimanche
+       du socle ne sait pas dire « avril à juin » et « juillet-août » ;
+     · un lien vers les conditions générales de vente.
+   Les champs horairesSaisons et classement sont ajoutés à l'identité du site à
+   l'étape 06 ; tant qu'ils sont vides, les horaires du socle restent affichés.
+   Contrepartie : relire ce fichier après une mise à jour du socle
+   (git log socle/main -- templates/partials/pied.html.twig). #}
+{% set jours = {
+    'lundi': 'Lundi',
+    'mardi': 'Mardi',
+    'mercredi': 'Mercredi',
+    'jeudi': 'Jeudi',
+    'vendredi': 'Vendredi',
+    'samedi': 'Samedi',
+    'dimanche': 'Dimanche'
+} %}
+
+<footer class="pied">
+    <div class="pied__colonnes">
+
+        <div class="pied__bloc">
+            <h2 class="pied__titre">{{ site.nom|default('Site') }}</h2>
+            {% if site.adresse %}
+                <address class="pied__adresse">{{ site.adresse|nl2br }}</address>
+            {% endif %}
+            {% if site.classement|default('') %}
+                <p class="pied__classement">{{ site.classement }}</p>
+            {% endif %}
+        </div>
+
+        {% if site.telephone or site.email %}
+            <div class="pied__bloc">
+                <h2 class="pied__titre">Nous contacter</h2>
+                <ul class="pied__liste">
+                    {% if site.telephone %}
+                        <li><a href="tel:{{ tel_href(site.telephone) }}">{{ site.telephone }}</a></li>
+                    {% endif %}
+                    {% if site.email %}
+                        <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if site.horairesSaisons|default([]) is not empty %}
+            <div class="pied__bloc">
+                <h2 class="pied__titre">Horaires de l’accueil</h2>
+                <dl class="pied__saisons">
+                    {% for saison in site.horairesSaisons %}
+                        {% if saison.periode|default('') and saison.horaires|default('') %}
+                            <dt>{{ saison.periode }}</dt>
+                            <dd>{{ saison.horaires|nl2br }}</dd>
+                        {% endif %}
+                    {% endfor %}
+                </dl>
+            </div>
+        {# La grille du socle est enregistrée même vide : on ne l'affiche que si un jour est rempli. #}
+        {% elseif site.horaires|default([])|filter(h => h is not empty)|length > 0 %}
+            <div class="pied__bloc">
+                <h2 class="pied__titre">Horaires</h2>
+                <dl class="pied__horaires">
+                    {% for cle, libelle in jours %}
+                        {% if site.horaires[cle] %}
+                            <div class="pied__horaire">
+                                <dt>{{ libelle }}</dt>
+                                <dd>{{ site.horaires[cle] }}</dd>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </dl>
+            </div>
+        {% endif %}
+
+        {% if site.reseaux is not empty %}
+            <div class="pied__bloc">
+                <h2 class="pied__titre">Nous suivre</h2>
+                <ul class="pied__liste">
+                    {% for reseau in site.reseaux %}
+                        {% if reseau.url %}
+                            <li><a href="{{ reseau.url }}" rel="noopener">{{ reseau.nom|default(reseau.url) }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="pied__legal">
+        <ul class="pied__liens-legaux">
+            <li><a href="/mentions-legales">Mentions légales</a></li>
+            <li><a href="/confidentialite">Politique de confidentialité</a></li>
+            <li><a href="/conditions-generales-de-vente">Conditions générales de vente</a></li>
+        </ul>
+    </div>
+</footer>

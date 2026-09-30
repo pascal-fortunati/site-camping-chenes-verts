@@ -1,0 +1,105 @@
+{# Page shell — copie de templates/base.html.twig pour le Camping Les Chênes Verts.
+
+   Recopié parce que la STRUCTURE de l'en-tête change (maquette, étape 03) :
+     · le logo du client, avec le nom écrit à côté (le texte du badge est
+       illisible en petit) ;
+     · un bouton « Réserver » toujours visible au téléphone ;
+     · un bouton « Menu » qui replie le menu au téléphone (assets/js/menu.js).
+   Tout le reste est identique au socle. Contrepartie : une correction du
+   socle sur templates/base.html.twig ne s'applique plus ici ; la relire après
+   chaque mise à jour (git log socle/main -- templates/base.html.twig). #}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site.nom|default('Site') }}{% endblock %}</title>
+    {# Passed in rather than recomputed: the preview title must be the title. #}
+    {% include 'partials/meta-sociales.html.twig' with { titrePartage: block('title') } %}
+    {% block head %}{% endblock %}
+    {# Les deux polices du titre et du texte, préchargées : elles servent dès le premier écran. #}
+    <link rel="preload" href="/assets/fonts/lexend-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/css/site.css">
+    {# This site's own styles, loaded after so they take precedence. Edit that
+       file rather than site.css: an update never touches it. #}
+    <link rel="stylesheet" href="/assets/css/client.css">
+    {# The customer's colours, written to a file so the content policy can
+       keep refusing inline styles. #}
+    <link rel="stylesheet" href="/assets/css/couleurs.css">
+    {# Menu repliable au téléphone. Sans JavaScript, le menu reste déplié. #}
+    <script src="/assets/js/menu.js" defer></script>
+    {% if jsonld|default('') is not empty %}
+        {# Built and encoded in PHP, so it is inserted as is. #}
+        <script type="application/ld+json">{{ jsonld|raw }}</script>
+    {% endif %}
+</head>
+<body>
+
+<a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+<header class="en-tete">
+    <div class="en-tete__interieur">
+
+        {# Le nom est écrit en toutes lettres : le badge du logo reste une
+           image décorative, pour ne pas lire le nom deux fois. #}
+        <a class="en-tete__logo" href="/">
+            {% if site.logo|default(null) %}
+                {% include 'partials/image.html.twig' with {
+                    asset: site.logo,
+                    alt: '',
+                    sizes: '64px',
+                    eager: true
+                } only %}
+            {% endif %}
+            <span class="en-tete__nom">
+                {%- set nom = site.nom|default('Site') -%}
+                {%- if nom starts with 'Camping ' -%}
+                    <span class="en-tete__type">Camping</span> {{ nom|slice(8) }}
+                {%- else -%}
+                    {{ nom }}
+                {%- endif -%}
+            </span>
+        </a>
+
+        {# Toujours visible au téléphone : c'est l'objectif du site. À l'ordinateur,
+           l'entrée « Réserver » du menu prend l'apparence d'un bouton. #}
+        <a class="bouton en-tete__reserver" href="/reserver">Réserver</a>
+
+        {% if menu|default([]) is not empty or afficherActualites|default(false) %}
+            <button class="menu__bouton" type="button" aria-expanded="false" aria-controls="menu">
+                <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18"><rect x="2" y="4" width="16" height="2" rx="1" fill="currentColor"/><rect x="2" y="9" width="16" height="2" rx="1" fill="currentColor"/><rect x="2" y="14" width="16" height="2" rx="1" fill="currentColor"/></svg>
+                <span class="menu__bouton-texte">Menu</span>
+            </button>
+
+            <nav class="menu" id="menu" aria-label="Menu principal">
+                <ul class="menu__liste">
+                    {% for entree in menu %}
+                        {% set adresse = entree.slug == accueilSlug|default('accueil') ? '/' : '/' ~ entree.slug %}
+                        <li>
+                            <a href="{{ adresse }}"{% if entree.slug == slug|default(null) %} aria-current="page"{% endif %}>{{ entree.libelle }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {# Added on its own as soon as something is published there:
+                       an empty news section would be worse than none. #}
+                    {% if afficherActualites|default(false) %}
+                        <li>
+                            <a href="/actualites"{% if slug|default(null) == 'actualites' %} aria-current="page"{% endif %}>Actualités</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div>
+</header>
+
+<main id="contenu">
+    {% block main %}{% endblock %}
+</main>
+
+{% include 'partials/pied.html.twig' %}
+
+</body>
+</html>

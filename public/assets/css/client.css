@@ -1,21 +1,889 @@
-/* Styles propres à ce site.
-   ─────────────────────────────────────────────────────────────────────────
-   Écrire ici, jamais dans site.css : ce fichier n'est jamais modifié par une
-   mise à jour, site.css l'est. Il est chargé après, donc il l'emporte.
+/* ═══════════════════════════════════════════════════════════════════════
+   Camping Les Chênes Verts — styles propres au site.
+   Maquette de l'étape 03, destinée à devenir public/assets/css/client.css
+   à l'étape 05. Chargé après site.css (socle), qui n'est jamais modifié.
 
-   Variables disponibles, déjà définies par site.css :
+   Règles du socle respectées :
+     · --couleur-lien et --couleur-texte ne sont PAS fixées ici : elles
+       viennent de « Identité du site » (valeurs de départ : #2B5A16, #1E2A1A).
+     · aucune transparence sur du texte, aucune ressource d'un autre site ;
+     · contrastes mesurés : voir charte-graphique.md.
+   ═══════════════════════════════════════════════════════════════════════ */
 
-     --couleur-texte        --couleur-texte-doux    --couleur-lien
-     --couleur-fond         --couleur-fond-doux     --couleur-trait
-     --largeur
+/* ── Polices (fichiers dans le dépôt, licence SIL OFL à côté) ─────────── */
 
-   --couleur-lien et --couleur-texte sont écrasées par les couleurs saisies
-   dans l'administration : ne pas les fixer ici.
+@font-face {
+    font-family: "Lexend";
+    src: url("../fonts/lexend-400.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
-   Interdits, vérifiés par « php bin/verifier-accessibilite.php » :
-     · opacity sur du texte
-     · polices ou images chargées depuis un autre site
-     · contraste inférieur à 4,5:1
+@font-face {
+    font-family: "Lexend";
+    src: url("../fonts/lexend-700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
-   Après toute modification : php bin/purge-cache.php
-   ───────────────────────────────────────────────────────────────────────── */
+@font-face {
+    font-family: "Fraunces";
+    src: url("../fonts/fraunces-600.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ── Variables ─────────────────────────────────────────────────────────── */
+
+:root {
+    /* Variables du socle que le site peut régler (pas lien ni texte). */
+    --couleur-texte-doux: #4D5A51;     /* 6,83:1 sur crème · 6,16:1 sur lin */
+    --couleur-fond: #FBF8F1;           /* crème : fond des pages */
+    --couleur-fond-doux: #F2ECDF;      /* lin : bandes, encadrés */
+    --couleur-trait: #DCD3C3;          /* filets décoratifs, jamais du texte */
+    --couleur-erreur: #A12A1F;         /* 7,33:1 sur blanc */
+    --couleur-succes: #1E5A32;         /* 8,19:1 sur blanc */
+    --largeur: 72rem;
+
+    /* Propres au site. */
+    --blanc: #FFFFFF;
+    --bois: #6E4220;                   /* 7,24:1 sur lin · 8,53:1 sur blanc */
+    --bois-clair: #C9A27A;             /* 2,22:1 : décoratif uniquement */
+        --allee: #E4D9C4;                  /* décoratif (allée du schéma) */
+    --bord-champ: #7D7263;             /* 4,5:1 sur blanc : bord des champs */
+
+    --police-texte: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --police-titres: "Fraunces", Georgia, "Times New Roman", serif;
+
+    --rayon: 14px;
+    --rayon-petit: 8px;
+    --ombre: 0 1px 2px rgb(31 42 34 / 6%), 0 8px 24px rgb(31 42 34 / 8%);
+
+    --gouttiere: 1.25rem;              /* marge latérale : 20 px au téléphone */
+    --espace-section: 3rem;            /* entre deux sections : 48 px */
+}
+
+@media (min-width: 48rem) {
+    :root {
+        --gouttiere: 2rem;             /* 32 px */
+        --espace-section: 5rem;        /* 80 px */
+    }
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────── */
+
+body {
+    font-family: var(--police-texte);
+    font-size: 1.0625rem;              /* 17 px : Lexend a de grandes minuscules */
+    line-height: 1.6;
+    background: var(--couleur-fond);
+}
+
+h1, h2, h3,
+.bloc-hero__titre {
+    font-family: var(--police-titres);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--couleur-texte);
+}
+
+h1, .bloc-hero__titre { font-size: 2rem; line-height: 1.15; }        /* 32 px */
+h2 { font-size: 1.5rem; line-height: 1.25; margin: 0 0 0.75rem; }    /* 24 px */
+h3 { font-size: 1.25rem; line-height: 1.3; margin: 1.5rem 0 0.5rem; } /* 20 px */
+
+@media (min-width: 48rem) {
+    h1, .bloc-hero__titre { font-size: 2.5rem; }                     /* 40 px */
+    h2 { font-size: 1.75rem; }                                        /* 28 px */
+}
+
+p, li { max-width: 42rem; }
+
+.visuellement-cache {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ── Mise en page : des bandes pleine largeur, un contenu centré ───────── */
+
+main {
+    max-width: none;
+    padding: 0 0 var(--espace-section);
+}
+
+main > * {
+    max-width: var(--largeur);
+    margin-inline: auto;
+    padding-inline: var(--gouttiere);
+}
+
+.bloc {
+    margin: var(--espace-section) auto;
+}
+
+.page__titre {
+    margin: 2.5rem auto 0;
+}
+
+.page__titre::after {
+    content: "";
+    display: block;
+    width: 4rem;
+    height: 4px;
+    margin-top: 0.75rem;
+    border-radius: 2px;
+    background: var(--bois-clair);
+}
+
+.page__titre + .bloc { margin-top: 2rem; }
+
+/* ── Boutons ───────────────────────────────────────────────────────────── */
+
+.bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;                  /* zone tactile confortable */
+    margin: 0;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    background: var(--couleur-lien);
+    color: var(--blanc);               /* 8,15:1 sur #2B5A16 */
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+.bouton:hover {
+    background: var(--couleur-lien);
+    box-shadow: inset 0 0 0 100vmax rgb(0 0 0 / 18%);   /* assombrit le fond, pas le texte */
+}
+
+.bouton--secondaire {
+    background: transparent;
+    color: var(--couleur-lien);
+    box-shadow: inset 0 0 0 2px var(--couleur-lien);
+}
+
+.bouton--secondaire:hover {
+    background: var(--couleur-fond-doux);
+    box-shadow: inset 0 0 0 2px var(--couleur-lien);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--couleur-lien);
+    outline-offset: 3px;
+}
+
+/* ── En-tête et menu (gabarit base.html.twig recopié dans templates-client) ── */
+
+.en-tete {
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: var(--blanc);
+    border-bottom: 1px solid var(--couleur-trait);
+}
+
+.en-tete__interieur {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 80rem;                  /* un peu plus large que le contenu : le menu tient sur une ligne */
+    margin: 0 auto;
+    padding: 0.75rem var(--gouttiere);
+}
+
+.en-tete__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-right: auto;
+    color: var(--couleur-texte);
+    text-decoration: none;
+}
+
+.en-tete__logo img { display: block; width: 52px; height: 52px; }
+
+.en-tete__nom {
+    font-family: var(--police-titres);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.en-tete__type {
+    display: block;
+    font-family: var(--police-texte);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--couleur-texte-doux);
+}
+
+/* Écran étroit : le nom reste lu par les lecteurs d'écran, le badge suffit à l'œil.
+   Sans logo, le nom reste visible. */
+@media (max-width: 29.99rem) {
+    .en-tete__logo:has(img) .en-tete__nom {
+        position: absolute;
+        width: 1px; height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}
+
+.menu__bouton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0.5rem 0.9rem;
+    border: 2px solid var(--couleur-texte);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--couleur-texte);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.menu__bouton svg { width: 1.1rem; height: 1.1rem; }
+
+/* Sans JavaScript, le menu reste déplié : jamais de menu inaccessible. */
+.en-tete:not(.js) .menu__bouton { display: none; }
+.en-tete.menu-replie .menu { display: none; }
+
+.menu { flex-basis: 100%; }
+
+.menu__liste {
+    display: block;
+    border-top: 1px solid var(--couleur-trait);
+}
+
+.menu__liste li { max-width: none; border-bottom: 1px solid var(--couleur-trait); }
+
+.menu__liste a {
+    display: block;
+    padding: 0.85rem 0.25rem;
+    color: var(--couleur-texte);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 0;
+}
+
+.menu__liste a[aria-current="page"] {
+    color: var(--couleur-lien);
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+}
+
+@media (min-width: 80rem) {
+    .en-tete__logo img { width: 64px; height: 64px; }
+    .en-tete__nom { font-size: 1.25rem; }
+    .menu__bouton, .en-tete__reserver { display: none; }
+    .en-tete.menu-replie .menu,
+    .menu { display: block; flex-basis: auto; }
+
+    .menu__liste {
+        display: flex;
+        align-items: center;
+        gap: 0 1.1rem;
+        border: 0;
+    }
+
+    .menu__liste li { border: 0; }
+    .menu__liste a { padding: 0.5rem 0; font-size: 1rem; }
+
+    .menu__liste a:hover { color: var(--couleur-lien); }
+
+    /* La dernière entrée, « Réserver », devient le bouton de l'en-tête. */
+    .menu__liste a[href="/reserver"] {
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0.6rem 1.4rem;
+        border-radius: 999px;
+        background: var(--couleur-lien);
+        color: var(--blanc);
+        text-decoration: none;
+    }
+}
+
+/* ── Bandeau d'ouverture (hero, section livrée) ─────────────────────────── */
+
+.bloc-hero {
+    position: relative;
+    max-width: none;
+    margin-top: 0;
+    padding: 0;
+}
+
+.bloc-hero__image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.bloc-hero__texte {
+    position: relative;
+    margin: -3rem var(--gouttiere) 0;
+    padding: 1.5rem;
+    background: var(--couleur-fond);   /* fond plein : contraste garanti */
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.bloc-hero__titre { margin: 0 0 0.75rem; }
+
+.bloc-hero__accroche {
+    margin: 0 0 1.25rem;
+    font-size: 1.125rem;
+    color: var(--couleur-texte-doux);
+}
+
+.bloc-hero__texte p:last-child { margin-bottom: 0; }
+
+@media (min-width: 48rem) {
+    .bloc-hero__image { aspect-ratio: auto; height: min(72vh, 36rem); }
+
+    .bloc-hero__texte {
+        position: absolute;
+        left: max(var(--gouttiere), calc((100% - var(--largeur)) / 2 + var(--gouttiere)));
+        bottom: 2.5rem;
+        max-width: 34rem;
+        margin: 0;
+        padding: 2rem 2.25rem;
+    }
+}
+
+/* ── Section Annonce (à créer, étape 06) ────────────────────────────────── */
+
+.bloc-annonce {
+    max-width: none;
+    padding: 0;
+    background: var(--couleur-fond-doux);
+    border-block: 1px solid var(--couleur-trait);
+}
+
+.bloc-hero + .bloc-annonce { margin-top: 0; }
+
+.bloc-annonce__interieur {
+    display: grid;
+    gap: 1rem 3rem;
+    align-items: center;
+    max-width: var(--largeur);
+    margin: 0 auto;
+    padding: 1.5rem var(--gouttiere);
+}
+
+.bloc-annonce h2 { margin: 0 0 0.25rem; font-size: 1.25rem; }
+.bloc-annonce__dates { margin: 0; font-weight: 700; }
+.bloc-annonce__heures { margin: 0.25rem 0 0; }
+
+.bloc-annonce__message {
+    margin: 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--blanc);
+    border-left: 5px solid var(--bois);
+    border-radius: var(--rayon-petit);
+}
+
+.bloc-annonce__lien { display: inline-block; margin-top: 0.5rem; font-weight: 700; }
+
+@media (min-width: 48rem) {
+    .bloc-hero + .bloc-annonce { margin-top: 0; }
+
+.bloc-annonce__interieur { grid-template-columns: 1fr 1.2fr; }
+}
+
+/* ── Texte et image (section livrée) ────────────────────────────────────── */
+
+.bloc-texte-image { gap: 1.5rem 4rem; align-items: center; }
+
+.bloc-texte-image__image {
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--rayon);
+}
+
+.bloc-texte-image__texte ul { padding-left: 1.25rem; }
+.bloc-texte-image__texte li + li { margin-top: 0.35rem; }
+
+/* Sans image, le texte occupe la largeur de lecture, rien de plus. Le gabarit du
+   socle n'ajoute pas de classe dans ce cas : on regarde s'il contient une image. */
+.bloc-texte-image:not(:has(.bloc-texte-image__image)) { display: block; }
+
+/* ── Cartes (à créer, étape 06) ─────────────────────────────────────────── */
+
+.bloc-cartes__introduction { color: var(--couleur-texte-doux); }
+
+.cartes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Exactement 4 cartes : une seule ligne de 4 à l'ordinateur, plutôt que 3 + 1. */
+@media (min-width: 64rem) {
+    .cartes:has(> :nth-child(4):last-child) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.carte {
+    display: flex;
+    flex-direction: column;
+    max-width: none;
+    overflow: hidden;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.carte__image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;               /* même proportion pour toute la grille */
+    object-fit: cover;
+}
+
+.carte--sans-image { border-top: 6px solid var(--bois-clair); }
+
+.carte__corps {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1.1rem 1.25rem 1.35rem;
+}
+
+.carte__titre { margin: 0; font-size: 1.25rem; }
+
+.carte__repere {
+    margin: 0;
+    padding: 0.1rem 0.7rem;
+    border-radius: 999px;
+    background: var(--couleur-fond-doux);
+    color: var(--bois);                /* 7,24:1 sur lin */
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+.carte__texte { margin: 0; color: var(--couleur-texte-doux); }
+.carte__lien { margin-top: auto; padding-top: 0.25rem; font-weight: 700; }
+
+.bloc-cartes__fin { margin: 1.75rem 0 0; }
+
+/* ── Hébergements (à créer, étape 06) ───────────────────────────────────── */
+
+.bloc-hebergements__introduction { color: var(--couleur-texte-doux); }
+
+.hebergements {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hebergement {
+    max-width: none;
+    padding: 1.25rem;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.hebergement__nom { margin: 0 0 1rem; font-size: 1.5rem; }
+
+.hebergement__corps { display: grid; gap: 1.25rem; align-items: start; }
+
+.hebergement__image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--rayon-petit);
+}
+
+.hebergement__reperes {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    margin: 0;
+}
+
+.hebergement__reperes dt,
+.hebergement__reperes dd {
+    margin: 0;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--couleur-trait);
+}
+
+.hebergement__reperes dt { padding-right: 1.25rem; color: var(--couleur-texte-doux); }
+.hebergement__reperes dd { font-weight: 700; }
+
+.hebergement__sous-titre { margin: 1rem 0 0.35rem; font-weight: 700; }
+
+.hebergement__equipements { margin: 0; padding: 0; list-style: none; }
+
+.hebergement__equipements li { padding-left: 1.5rem; position: relative; }
+
+.hebergement__equipements li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--couleur-lien);
+    font-weight: 700;
+}
+
+.hebergement__mention {
+    margin: 0.75rem 0 0;
+    color: var(--bois);
+    font-weight: 700;
+}
+
+.hebergement__lien { display: inline-block; margin-top: 1rem; font-weight: 700; }
+
+@media (min-width: 64rem) {
+    .hebergement { padding: 1.75rem; }
+    .hebergement__corps { grid-template-columns: 1.25fr 1fr 1fr; gap: 2rem; }
+}
+
+/* Vue de dessus : schéma dessiné à partir du nombre d'unités (décision A8). */
+
+.plan {
+    margin: 0;
+    padding: 1rem;
+    background: var(--couleur-fond-doux);
+    border-radius: var(--rayon-petit);
+}
+
+.plan__titre { margin: 0 0 0.75rem; font-size: 0.9375rem; font-weight: 700; }
+.plan__note { margin: 0.6rem 0 0; font-size: 0.875rem; color: var(--couleur-texte-doux); }
+
+/* Une case par unité : grille HTML, le texte garde 14 px à toutes les largeurs. */
+.plan__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr));
+    gap: 0.5rem;
+}
+
+.plan__unite {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    aspect-ratio: 4 / 3;
+    padding-top: 0.3rem;
+    background: var(--blanc);
+    border: 2px solid var(--couleur-lien);
+    border-radius: 6px;
+    color: var(--couleur-texte);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.plan__unite::after {                  /* la terrasse, côté allée : décor */
+    content: "";
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: 5px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--bois-clair);
+}
+
+/* Au-delà de 12 unités : petites cases numérotées. */
+.plan__grille--compacte { grid-template-columns: repeat(auto-fill, minmax(2.4rem, 1fr)); gap: 0.3rem; }
+.plan__grille--compacte .plan__unite { aspect-ratio: 1; align-items: center; padding: 0; }
+.plan__grille--compacte .plan__unite::after { display: none; }
+
+.plan__allee { height: 14px; margin-top: 0.6rem; border-radius: 3px; background: var(--allee); }
+
+.plan--inconnu {
+    background: transparent;
+    border: 2px dashed var(--couleur-trait);
+    color: var(--couleur-texte-doux);
+}
+
+/* ── Tarifs (à créer, étape 06) ─────────────────────────────────────────── */
+
+.bloc-tarifs__intro { margin: 0 0 1.5rem; }
+
+.tarifs__periodes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.75rem;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+}
+
+.tarifs__periodes li {
+    max-width: none;
+    padding: 0.75rem 1rem;
+    background: var(--blanc);
+    border-left: 4px solid var(--bois-clair);
+    border-radius: var(--rayon-petit);
+}
+
+.tarifs__periodes b { display: block; }
+
+.tarifs__grille {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+    table-layout: fixed;               /* quatre colonnes de prix de même largeur */
+}
+
+.tarifs__grille thead th:first-child { width: 28%; }
+
+.tarifs__grille caption {
+    caption-side: top;
+    padding: 0 0 0.75rem;
+    text-align: left;
+    font-weight: 700;
+}
+
+.tarifs__grille th,
+.tarifs__grille td { padding: 0.9rem 1.1rem; border-top: 1px solid var(--couleur-trait); }
+
+.tarifs__grille thead th {
+    border-top: 0;
+    background: var(--couleur-fond-doux);
+    text-align: right;
+    vertical-align: bottom;
+    font-size: 1.0625rem;
+}
+
+.tarifs__grille thead th:first-child,
+.tarifs__grille tbody th { text-align: left; }
+
+.tarifs__grille td { text-align: right; font-weight: 700; }
+
+.tarifs__dates {
+    display: block;
+    font-size: 0.875rem;               /* 14 px, minimum autorisé */
+    font-weight: 400;
+    color: var(--couleur-texte-doux);  /* 6,16:1 sur lin */
+}
+
+.tarifs__etiquette { display: none; }  /* libellé de période, téléphone seulement */
+
+.tarifs__precisions { margin: 1rem 0 0; font-size: 0.9375rem; color: var(--couleur-texte-doux); }
+
+/* Téléphone : chaque ligne devient une carte. Jamais de défilement horizontal. */
+@media (max-width: 47.99rem) {
+    .tarifs__grille,
+    .tarifs__grille tbody,
+    .tarifs__grille tr,
+    .tarifs__grille th,
+    .tarifs__grille td { display: block; }
+
+    .tarifs__grille { background: transparent; box-shadow: none; border-radius: 0; overflow: visible; }
+    .tarifs__grille caption { display: block; }
+    .tarifs__grille thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+    .tarifs__grille tr {
+        margin-bottom: 1rem;
+        overflow: hidden;
+        background: var(--blanc);
+        border-radius: var(--rayon);
+        box-shadow: var(--ombre);
+    }
+
+    .tarifs__grille tbody th {
+        border-top: 0;
+        background: var(--couleur-fond-doux);
+        font-family: var(--police-titres);
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .tarifs__grille td {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+        padding: 0.7rem 1.1rem;
+    }
+
+    .tarifs__etiquette { display: block; text-align: left; font-weight: 400; }
+}
+
+.tarifs__complements {
+    display: grid;
+    gap: 1.25rem;
+    align-items: start;
+    margin: 2.5rem 0 2rem;
+}
+
+@media (min-width: 48rem) {
+    .tarifs__complements { grid-template-columns: 1fr 1fr; }
+}
+
+.tarifs__encart {
+    padding: 1.25rem 1.5rem;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.tarifs__encart--obligatoire { border-left: 5px solid var(--bois); }
+.tarifs__encart h3 { margin-top: 0; }
+.tarifs__encart ul { margin: 0; padding-left: 1.25rem; }
+.tarifs__encart li + li { margin-top: 0.35rem; }
+.tarifs__encart p { margin: 0; }
+
+/* ── Coordonnées (section livrée) ───────────────────────────────────────── */
+
+.bloc-contact {
+    width: min(calc(100% - 2 * var(--gouttiere)), calc(var(--largeur) - 2 * var(--gouttiere)));
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--rayon);
+}
+
+.bloc-contact__coordonnees a { font-weight: 700; }
+
+@media (min-width: 48rem) {
+    .bloc-contact { padding: 2.25rem 2.5rem; }
+}
+
+/* ── Réservation (à créer, étape 06 — option A) ─────────────────────────── */
+
+.bloc-reservation__intro { margin: 0 0 1.5rem; }
+
+.formulaire--reservation {
+    max-width: 46rem;
+    margin: 0;
+    padding: 1.5rem;
+    gap: 1.5rem;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.formulaire fieldset { display: grid; gap: 1.1rem; margin: 0; padding: 0; border: 0; }
+
+.formulaire legend {
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-family: var(--police-titres);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.formulaire__ligne { display: grid; gap: 1.1rem; align-items: end; }
+
+@media (min-width: 40rem) {
+    .formulaire__ligne { grid-template-columns: 1fr 1fr; }
+    .formulaire--reservation { padding: 2rem 2.25rem; }
+}
+
+.formulaire label { font-weight: 700; }
+.formulaire__consentement label { font-weight: 400; }
+
+.formulaire input[type="text"],
+.formulaire input[type="email"],
+.formulaire input[type="tel"],
+.formulaire input[type="date"],
+.formulaire input[type="number"],
+.formulaire select,
+.formulaire textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.6rem 0.8rem;
+    border: 2px solid var(--bord-champ);   /* 4,5:1 : le champ se voit */
+    border-radius: var(--rayon-petit);
+    background: var(--blanc);
+    color: var(--couleur-texte);
+    font: inherit;
+}
+
+.formulaire__aide { margin: 0; font-size: 0.9375rem; color: var(--couleur-texte-doux); }
+
+.formulaire__obligatoires { margin: 0; font-size: 0.9375rem; color: var(--couleur-texte-doux); }
+
+.formulaire [aria-invalid="true"] { border-color: var(--couleur-erreur); border-width: 3px; }
+.formulaire__erreur { font-weight: 700; }
+
+.formulaire__consentement input { width: 22px; height: 22px; margin-top: 0.2rem; accent-color: var(--couleur-lien); }
+
+.formulaire button.bouton { justify-self: start; }
+
+@media (max-width: 39.99rem) {
+    .formulaire button.bouton { width: 100%; }
+}
+
+.message { border-radius: var(--rayon-petit); }
+.message--succes, .message--erreur { color: var(--couleur-texte); }
+
+/* ── Pied de page (gabarit du socle) ────────────────────────────────────── */
+
+.pied {
+    background: var(--couleur-fond-doux);
+    border-top: 4px solid var(--bois-clair);
+}
+
+.pied__titre { font-family: var(--police-titres); font-size: 1.125rem; font-weight: 600; }
+.pied__classement { margin: 0.5rem 0 0; color: var(--couleur-texte-doux); font-size: 0.9375rem; }
+.pied__saisons { margin: 0; }
+.pied__saisons dt { font-weight: 700; }
+.pied__saisons dd { margin: 0 0 0.6rem; color: var(--couleur-texte-doux); }
+
+@media (min-width: 48rem) {
+    .pied__colonnes { grid-template-columns: repeat(3, 1fr); padding-top: 3rem; }
+}
+
+/* ── États ─────────────────────────────────────────────────────────────── */
+
+/* Liste vide : un message, jamais une zone blanche. */
+.bloc-cartes__vide {
+    margin: 1.5rem 0 0;
+    padding: 1.25rem 1.5rem;
+    background: var(--couleur-fond-doux);
+    border-radius: var(--rayon);
+}
+
+/* Bandeau sans image : le titre sur un fond uni, la page reste équilibrée. */
+.bloc-hero:not(:has(.bloc-hero__image)) { padding: 2rem var(--gouttiere) 0; }
+
+.bloc-hero:not(:has(.bloc-hero__image)) .bloc-hero__texte {
+    position: static;
+    max-width: calc(var(--largeur) - 2 * var(--gouttiere));
+    margin: 0 auto;
+    background: var(--couleur-fond-doux);
+    box-shadow: none;
+}
+
+.message ul { margin: 0.35rem 0 0; padding-left: 1.25rem; }
+.message p { margin: 0; }
+.message p + p { margin-top: 0.35rem; }
+
+/* Sections de texte qui se suivent (articles des CGV) : un rythme plus serré. */
+.bloc-texte-image:not(:has(.bloc-texte-image__image)) + .bloc-texte-image:not(:has(.bloc-texte-image__image)) { margin-top: 2.5rem; }
+/* Les marges voisines fusionnent (la plus grande l'emporte) : la marge du bas d'une section de texte
+   baisse aussi. Devant une autre section, la marge du haut de celle-ci garde l'espace habituel.
+   (Un :has() ne peut pas en contenir un autre : d'où cette règle plutôt qu'un « :has(+ …) ».) */
+.bloc-texte-image:not(:has(.bloc-texte-image__image)) { margin-bottom: 2.5rem; }
