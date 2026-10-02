@@ -63,8 +63,11 @@ export const FieldRenderer = remplacable ? {
     computed: {
         ...Base.computed,
         libelleAjouter() {
+            if (this.field.opts && this.field.opts.ajouter) return this.field.opts.ajouter;   // réglé dans le modèle
             const l = (this.field.label || '').toLowerCase();
             if (/contenu|section/.test(l)) return 'Ajouter une section';
+            if (/réseau|reseau/.test(l)) return 'Ajouter un réseau';
+            if (/entrée|entree|menu/.test(l)) return 'Ajouter une entrée';
             if (/ligne|tarif|prix/.test(l)) return 'Ajouter une ligne';
             return 'Ajouter';
         }

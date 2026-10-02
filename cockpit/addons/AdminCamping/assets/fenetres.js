@@ -26,3 +26,7 @@ const MORCEAUX = {
 };
 const importer = App.utils.import.bind(App.utils);
 App.utils.import = (uri, ...reste) => importer(MORCEAUX[uri] || uri, ...reste);
+// La liste de choix (réseau social, type de section…) : la même liste déroulante que le choix d'une page (champ-choix.js).
+VueView.component('field-select', 'admincamping:assets/champ-choix.js');
+// La date : un calendrier aux couleurs du site, ouvert par tout le champ (champ-date.js).
+VueView.component('field-date', 'admincamping:assets/champ-date.js');

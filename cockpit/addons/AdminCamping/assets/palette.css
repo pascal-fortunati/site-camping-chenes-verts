@@ -625,15 +625,16 @@ html[data-theme] kiss-dialog[type="prompt"] .kiss-button-group { justify-content
 html[data-theme] kiss-dialog[type] .kiss-button-group > .kiss-button { flex: 0 1 auto !important; min-height: 42px; margin: 0 !important; border-radius: var(--admin-rayon-petit) !important; }
 
 /* La nôtre (confirmer.js) : une icône, un titre, l'explication, un bouton qui dit ce qu'il fait */
-.dlg { display: grid; justify-items: start; gap: 8px; }
-.dlg-icone { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 6px; border-radius: 14px; background: var(--admin-surface-douce); color: var(--admin-accent); }
+.dlg { display: grid; justify-items: center; gap: 8px; text-align: center; }
+.dlg-icone { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 6px; border-radius: 14px; background: var(--admin-surface-douce); color: var(--admin-accent); }
 .dlg-icone icon { font-size: 26px; }
 .dlg-icone--danger { background: color-mix(in srgb, var(--admin-danger) 14%, var(--admin-surface)); color: var(--admin-danger); }
 .dlg-titre { margin: 0; color: var(--admin-texte); font-size: 1.3rem; line-height: 1.25; }
-.dlg-texte { margin: 0; color: var(--admin-texte-doux); font-size: 0.9375rem; }
-.dlg-details { display: grid; gap: 4px; width: 100%; margin: 4px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); font-size: 0.875rem; font-weight: 600; list-style: none; }
+.dlg-texte { max-width: 22rem; margin: 0; color: var(--admin-texte-doux); font-size: 0.9375rem; }
+.dlg-details { display: grid; gap: 4px; width: 100%; margin: 4px 0 0; padding: 10px 14px; text-align: left; border-radius: 10px; background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); font-size: 0.875rem; font-weight: 600; list-style: none; }
 .dlg-details li::before { content: "• "; }
-.dlg-boutons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; width: 100%; margin-top: 14px; }
+.dlg-boutons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 16px; }
+.dlg-boutons > .kiss-button { width: 100%; }
 
 /* ═══ Le menu du compte, sous l'avatar (entete.php) ═══ */
 .entete__compte-zone { position: relative; }

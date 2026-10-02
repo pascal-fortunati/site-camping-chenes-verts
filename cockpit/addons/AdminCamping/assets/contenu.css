@@ -292,3 +292,33 @@ html[data-theme] kiss-dialog:has(.lt) > kiss-content { width: min(560px, calc(10
 .ft-apercu--h3 { font-family: "Fraunces", Georgia, serif; font-size: 1rem; }
 .ft-option--actif { background: var(--admin-accent-doux); }
 .ft-coche { color: var(--admin-accent); font-size: 18px; }
+
+/* La liste de choix (champ-choix.js) reprend la liste déroulante du choix d'une page (.lien) */
+.choix .lien__options:focus { outline: none; }
+.choix__groupe { margin: 8px 10px 2px; color: var(--admin-texte-doux); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; list-style: none; }
+.choix__aucun b { color: var(--admin-texte-doux); font-weight: 400 !important; }
+.choix__pied { display: flex; justify-content: flex-end; padding: 6px; border-top: 1px solid var(--admin-surface-douce); }
+.choix .lien__option icon { color: var(--admin-accent); }
+
+/* ═══ Le champ date (champ-date.js) : un calendrier aux couleurs du site ═══ */
+.cal { position: relative; }
+.cal__champ b { text-transform: none; }
+.cal__champ b::first-letter { text-transform: uppercase; }
+.cal__panneau { position: absolute; top: calc(100% + 6px); left: 0; z-index: 40; width: 320px; padding: 12px; border: 1px solid var(--admin-trait); border-radius: 16px; background: var(--admin-surface); box-shadow: var(--admin-ombre-haute); animation: camping-pop 150ms ease backwards; }
+.cal__tete { display: flex; align-items: center; gap: 2px; margin-bottom: 8px; }
+.cal__titre { flex: 1; color: var(--admin-texte); font-size: 0.9375rem; text-align: center; }
+.cal__titre::first-letter { text-transform: uppercase; }
+.cal__grille { display: grid; gap: 2px; border-radius: 10px; }
+.cal__grille:focus { outline: none; }
+.cal__grille:focus-visible { box-shadow: var(--admin-halo); }
+.cal__ligne { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal__ligne--jours span { padding: 4px 0; color: var(--admin-texte-doux); font-size: 0.75rem; font-weight: 700; text-align: center; }
+.cal__jour { height: 38px; border: 0; border-radius: 10px; background: transparent; color: var(--admin-texte); font: 600 0.875rem var(--kiss-base-font-family); cursor: pointer; transition: background-color 120ms ease; }
+.cal__jour:hover:not(:disabled) { background: var(--admin-surface-douce); }
+.cal__jour--dehors { color: var(--admin-texte-doux); font-weight: 400; opacity: 0.6; }
+.cal__jour--auj { box-shadow: inset 0 0 0 2px var(--admin-accent); }
+.cal__grille:focus .cal__jour--focus:not(.cal__jour--choisi) { background: var(--admin-accent-doux); }
+.cal__jour--choisi, .cal__jour--choisi:hover:not(:disabled) { background: var(--admin-primaire); color: var(--admin-sur-primaire); }
+.cal__jour:disabled { opacity: 0.25; cursor: not-allowed; }
+.cal__pied { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--admin-surface-douce); }
+@media (max-width: 400px) { .cal__panneau { width: calc(100vw - 48px); } }
