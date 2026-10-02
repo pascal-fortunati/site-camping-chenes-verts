@@ -89,4 +89,8 @@ $this->on('app.layout.assets', function (&$assets, $context) {
             $assets[] = $theme;
         }
     }
+
+    if ($context === 'app:footer') {
+        $assets[] = ['src' => 'admincamping:assets/icones.js', 'type' => 'module', 'position' => 'footer'];
+    }
 });

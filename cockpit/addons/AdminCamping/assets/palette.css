@@ -1,4 +1,5 @@
-/* La palette du site (public/assets/css/client.css) appliquée à l'administration, en thème clair. */
+/* L'administration aux couleurs du site (public/assets/css/client.css), en thème clair : palette, polices,
+   boutons, cartes, champs, tableaux. Les icônes des boutons sont ajoutées par icones.js. */
 
 @font-face { font-family: "Lexend"; src: url("fonts/lexend-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Lexend"; src: url("fonts/lexend-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
@@ -7,12 +8,18 @@
 html[data-theme]:root {
     --camping-creme: #FBF8F1;
     --camping-lin: #F2ECDF;
+    --camping-lin-fonce: #E7DFCD;
     --camping-trait: #DCD3C3;
     --camping-texte: #1F2A22;
     --camping-texte-doux: #4D5A51;      /* 6,83:1 sur crème */
     --camping-vert: #2B5A16;
     --camping-vert-profond: #183A23;
     --camping-sur-vert: #C9DDBE;        /* 8,73:1 sur vert profond */
+    --camping-rayon: 12px;
+    --camping-rayon-petit: 10px;
+    --camping-ombre: 0 1px 2px rgb(31 42 34 / 6%), 0 6px 18px rgb(31 42 34 / 7%);
+    --camping-ombre-haute: 0 2px 4px rgb(31 42 34 / 8%), 0 14px 32px rgb(31 42 34 / 12%);
+    --camping-halo: 0 0 0 4px rgb(43 90 22 / 18%);
 
     --kiss-base-font-family: "Lexend", system-ui, "Segoe UI", Arial, sans-serif;
     --kiss-base-background-color: var(--camping-creme);
@@ -21,7 +28,7 @@ html[data-theme]:root {
     --kiss-link-hover-color: var(--camping-vert-profond);
     --kiss-color-muted: var(--camping-texte-doux);
     --kiss-hr-color: var(--camping-trait);
-    --kiss-button-default-background: var(--camping-lin);
+    --kiss-button-default-background: #FFFFFF;
     --kiss-button-default-color: var(--camping-texte);
     --kiss-input-border-color: var(--camping-trait);
     --kiss-input-background: #FFFFFF;
@@ -30,43 +37,134 @@ html[data-theme]:root {
     --kiss-dropdown-background: #FFFFFF;
     --kiss-card-bordered-color: var(--camping-trait);
     --kiss-table-heading-background-color: var(--camping-lin);
-    --kiss-table-row-hover-color: var(--camping-lin);
+    --kiss-table-row-hover-color: var(--camping-creme);
+    --app-border-radius: var(--camping-rayon-petit);
     --app-fieldcontainer-border-color-inactive: var(--camping-trait);
+    --app-fieldcontainer-border-color-active: var(--camping-vert);
     --app-scrollbar-color: var(--camping-trait);
+    --app-header-background: rgb(251 248 241 / 85%);
 }
 
 html[data-theme] body { background-color: var(--camping-creme); }
 html[data-theme]:has(.auth-wrapper) body { background: transparent; }   /* la photo du site reste visible */
 html[data-theme] body::before { background: none !important; }
 
-/* Les titres en Fraunces, comme sur le site */
+/* Les icônes sont des mots dessinés par leur police : elle ne doit jamais devenir Fraunces */
+html[data-theme] icon { font-family: "Material Icons Outlined" !important; font-weight: normal; }
+
+/* Titres en Fraunces, comme sur le site */
 html[data-theme] h1, html[data-theme] h2, html[data-theme] h3,
 html[data-theme] .kiss-size-1, html[data-theme] .kiss-size-2, html[data-theme] .kiss-size-3,
 html[data-theme] .kiss-size-4.kiss-text-bold, html[data-theme] .kiss-size-5.kiss-text-bold,
 html[data-theme] .auth-dialog strong.kiss-size-5 {
     font-family: "Fraunces", Georgia, serif;
     font-weight: 600;
+    letter-spacing: 0;
 }
 
-/* Les icônes sont des mots dessinés par leur police : elle ne doit jamais devenir Fraunces */
-html[data-theme] icon { font-family: "Material Icons Outlined" !important; font-weight: normal; }
+/* ── Boutons : casse normale, une hauteur, des coins arrondis, une icône à gauche ── */
 
-/* La colonne d'icônes : vert profond, comme l'en-tête des pages et le pied du site */
+html[data-theme] .kiss-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 40px;
+    padding: 0 1.1rem;
+    border: 1px solid var(--camping-trait);
+    border-radius: var(--camping-rayon-petit);
+    background: #FFFFFF;
+    color: var(--camping-texte);
+    font-family: var(--kiss-base-font-family);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgb(31 42 34 / 6%);
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+html[data-theme] .kiss-button:hover { background: var(--camping-lin); border-color: var(--camping-lin-fonce); }
+html[data-theme] .kiss-button:active { transform: translateY(1px); filter: none; }
+html[data-theme] .kiss-button:focus-visible { outline: none; box-shadow: var(--camping-halo); }
+html[data-theme] .kiss-button[disabled], html[data-theme] .kiss-button.kiss-disabled { opacity: 0.5; }
+html[data-theme] .kiss-button icon { font-size: 1.2em; margin: 0 !important; }
+
+html[data-theme] .kiss-button-small { min-height: 32px; padding: 0 0.8rem; font-size: 0.8125rem; border-radius: 8px; }
+html[data-theme] .kiss-button-large { min-height: 48px; padding: 0 1.6rem; font-size: 1rem; }
+
+html[data-theme] .kiss-button-primary {
+    border-color: var(--camping-vert);
+    background: var(--camping-vert);
+    color: #FFFFFF;
+    box-shadow: 0 1px 2px rgb(24 58 35 / 20%), 0 4px 12px rgb(43 90 22 / 22%);
+}
+html[data-theme] .kiss-button-primary:hover { background: var(--camping-vert-profond); border-color: var(--camping-vert-profond); }
+
+html[data-theme] .kiss-button-danger { border-color: #A12A1F; background: #A12A1F; color: #FFFFFF; }
+html[data-theme] .kiss-button-danger:hover { background: #7E1F17; border-color: #7E1F17; }
+html[data-theme] .kiss-button-outline.kiss-button-primary { background: #FFFFFF; color: var(--camping-vert); }
+html[data-theme] .kiss-button-outline.kiss-button-primary:hover { background: var(--camping-lin); }
+
+/* Groupes de boutons : un seul bloc, arrondi seulement aux extrémités */
+html[data-theme] .kiss-button-group { gap: 0; }
+html[data-theme] .kiss-button-group > .kiss-button { border-radius: 0; box-shadow: none; }
+html[data-theme] .kiss-button-group > .kiss-button + .kiss-button { margin-left: -1px; }
+html[data-theme] .kiss-button-group > .kiss-button:first-child { border-radius: var(--camping-rayon-petit) 0 0 var(--camping-rayon-petit); }
+html[data-theme] .kiss-button-group > .kiss-button:last-child { border-radius: 0 var(--camping-rayon-petit) var(--camping-rayon-petit) 0; }
+html[data-theme] .kiss-button-group > .kiss-button:only-child { border-radius: var(--camping-rayon-petit); }
+html[data-theme] .kiss-button-group > .kiss-button-primary { position: relative; z-index: 1; }
+
+/* ── Cartes, champs, tableaux ── */
+
+html[data-theme] kiss-card,
+html[data-theme] .kiss-card { border-radius: var(--camping-rayon); }
+html[data-theme] kiss-card[theme~="shadowed"],
+html[data-theme] kiss-card[theme~="contrast"] { background: #FFFFFF; box-shadow: var(--camping-ombre); }
+html[data-theme] kiss-card[hover~="shadow"] { transition: box-shadow 200ms ease, transform 200ms ease; }
+html[data-theme] kiss-card[hover~="shadow"]:hover { box-shadow: var(--camping-ombre-haute); transform: translateY(-2px); }
+
+html[data-theme] .kiss-input, html[data-theme] .kiss-select, html[data-theme] .kiss-textarea {
+    border-radius: var(--camping-rayon-petit);
+    border-color: var(--camping-trait);
+    background: #FFFFFF;
+    font-size: 0.9375rem;
+}
+html[data-theme] .kiss-input:focus, html[data-theme] .kiss-select:focus, html[data-theme] .kiss-textarea:focus {
+    border-color: var(--camping-vert);
+    box-shadow: var(--camping-halo);
+}
+
+html[data-theme] .kiss-table { border-radius: var(--camping-rayon); overflow: hidden; box-shadow: var(--camping-ombre); background: #FFFFFF; }
+html[data-theme] .kiss-table th { font-size: 0.75rem; letter-spacing: 0.04em; color: var(--camping-texte-doux); }
+
+html[data-theme] .kiss-badge { border-radius: 999px; padding: 0.2em 0.6em; font-weight: 700; }
+
+/* ── En-tête : translucide, un filet en bas ── */
+html[data-theme] app-header { border-bottom: 1px solid rgb(220 211 195 / 60%); }
+
+/* ── La colonne d'icônes : vert profond, l'entrée active dans une pastille ── */
 html[data-theme] .app-container-aside-menu { background: var(--camping-vert-profond); }
 html[data-theme] .app-container-aside-menu a,
 html[data-theme] .app-container-aside-menu icon,
 html[data-theme] .app-container-aside-menu svg { color: var(--camping-sur-vert) !important; }
+html[data-theme] .app-container-aside-menu a { border-radius: 10px; transition: background-color 150ms ease; }
 html[data-theme] .app-container-aside-menu li.active a,
-html[data-theme] .app-container-aside-menu a:hover { color: #FFFFFF !important; background: rgb(255 255 255 / 10%); border-radius: 8px; }
+html[data-theme] .app-container-aside-menu a:hover { color: #FFFFFF !important; background: rgb(255 255 255 / 12%); }
+html[data-theme] .app-container-aside-menu li.active a icon,
+html[data-theme] .app-container-aside-menu a:hover icon { color: #FFFFFF !important; }
 html[data-theme] .app-container-aside-menu .kiss-nav-divider { border-color: rgb(201 221 190 / 25%); }
 
-/* Cartes et champs : blancs sur crème, coins arrondis du site */
-html[data-theme] kiss-card,
-html[data-theme] .kiss-card { background: #FFFFFF; border-radius: 14px; }
-html[data-theme] .kiss-input, html[data-theme] .kiss-select, html[data-theme] .kiss-textarea { border-radius: 8px; }
-html[data-theme] .kiss-button { border-radius: 999px; }
+/* Le panneau de gauche des collections (vues, filtres) */
+html[data-theme] .app-container-aside-panel { background: #FFFFFF; box-shadow: var(--camping-ombre); }
 
-/* La page de connexion : une carte crème sur la photo du site */
+/* ── Menus déroulants et fenêtres ── */
+html[data-theme] kiss-popout kiss-content,
+html[data-theme] kiss-dialog kiss-content { border-radius: var(--camping-rayon); box-shadow: var(--camping-ombre-haute); }
+html[data-theme] kiss-navlist a { border-radius: 8px; }
+
+/* ── La page de connexion : une carte crème sur la photo du site ── */
 html[data-theme] .auth-dialog {
     background: var(--camping-creme);
     border: 0;
@@ -75,4 +173,81 @@ html[data-theme] .auth-dialog {
 }
 html[data-theme] bg-fluxanimation { display: none; }
 html[data-theme] .auth-dialog .app-logo { height: 76px !important; }
-html[data-theme] .auth-dialog .kiss-button-primary { border-radius: 999px; }
+
+/* ═══ Finitions modernes : icônes, champs en cartes, colonne, animations ═══ */
+
+/* Les icônes des boutons gardent une taille fixe (Cockpit les agrandit par transform) */
+html[data-theme] .kiss-button icon { font-size: 18px !important; width: 18px; line-height: 1; transform: none !important; }
+html[data-theme] .kiss-button:not(.kiss-button-primary):not(.kiss-button-danger) icon { color: var(--camping-vert); }
+html[data-theme] .kiss-button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgb(31 42 34 / 10%); }
+html[data-theme] .kiss-button-primary:hover { box-shadow: 0 6px 18px rgb(43 90 22 / 32%); }
+html[data-theme] .kiss-button-group > .kiss-button:hover { transform: none; }
+
+/* Les titres de page : grands, en Fraunces ; les légendes en petites capitales espacées */
+html[data-theme] .kiss-text-caption { letter-spacing: 0.08em; color: var(--camping-texte-doux); }
+
+/* Chaque champ d'une fiche devient une carte blanche ; un halo vert quand on la remplit */
+html[data-theme] .fields-renderer > app-fieldcontainer {
+    padding: 1.1rem 1.35rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: var(--camping-ombre);
+    opacity: 1;
+    transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+html[data-theme] .fields-renderer > app-fieldcontainer:hover { box-shadow: var(--camping-ombre-haute); }
+html[data-theme] .fields-renderer > app-fieldcontainer:focus-within { border-color: var(--camping-vert); box-shadow: var(--camping-halo), var(--camping-ombre); }
+html[data-theme] .fields-renderer-field { font-size: 0.9375rem; font-weight: 700; color: var(--camping-texte); }
+html[data-theme] app-fieldcontainer app-fieldcontainer { border-left-color: var(--camping-lin-fonce); }
+
+/* La colonne de gauche : icônes lisibles, l'entrée active dans une pastille blanche */
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li > a { opacity: 1; margin: 4px 6px; padding: 8px 0; }
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li.active > a { background: #FFFFFF; box-shadow: 0 4px 12px rgb(0 0 0 / 20%); }
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li.active > a icon,
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li.active > a kiss-svg { color: var(--camping-vert) !important; }
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li > a:hover icon { transform: translateY(-2px) scale(1.08); transition: transform 200ms cubic-bezier(.3, 1.4, .5, 1); }
+
+/* Les cartes des modèles et des images : l'icône dans un rond beige, elles se soulèvent au survol */
+html[data-theme] kiss-card[hover~="shadow"] kiss-svg {
+    display: grid;
+    place-items: center;
+    box-sizing: content-box;
+    padding: 9px;
+    border-radius: 12px;
+    background: var(--camping-lin);
+    color: var(--camping-vert);
+    transition: transform 250ms cubic-bezier(.3, 1.4, .5, 1);
+}
+html[data-theme] kiss-card[hover~="shadow"]:hover kiss-svg { transform: rotate(-6deg) scale(1.06); }
+html[data-theme] kiss-card[hover~="bordered-primary"]:hover { border-color: transparent !important; }
+
+/* Tableaux : en-tête beige, lignes qui s'éclairent au survol */
+html[data-theme] .kiss-table thead th { background: var(--camping-lin); border: 0; }
+html[data-theme] .kiss-table tbody tr { transition: background-color 150ms ease; }
+html[data-theme] .kiss-table tbody tr:hover { background: var(--camping-creme); }
+html[data-theme] .kiss-table td { border-color: var(--camping-lin) !important; }
+
+/* Les onglets et filtres en pastilles douces */
+html[data-theme] kiss-tabs .kiss-tabs-nav-link { border-radius: 8px; transition: background-color 150ms ease; }
+
+/* ── Animations : la page monte doucement, les cartes l'une après l'autre ── */
+@keyframes camping-monte { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes camping-pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+
+html[data-theme] main > kiss-container,
+html[data-theme] main > vue-view,
+html[data-theme] main > div { animation: camping-monte 450ms cubic-bezier(.2, .7, .2, 1) both; }
+html[data-theme] kiss-card[hover~="shadow"] { animation: camping-pop 400ms cubic-bezier(.2, .7, .2, 1) both; }
+html[data-theme] kiss-card[hover~="shadow"]:nth-child(2) { animation-delay: 50ms; }
+html[data-theme] kiss-card[hover~="shadow"]:nth-child(3) { animation-delay: 100ms; }
+html[data-theme] kiss-card[hover~="shadow"]:nth-child(4) { animation-delay: 150ms; }
+html[data-theme] kiss-card[hover~="shadow"]:nth-child(5) { animation-delay: 200ms; }
+html[data-theme] kiss-card[hover~="shadow"]:nth-child(n+6) { animation-delay: 250ms; }
+html[data-theme] .fields-renderer > app-fieldcontainer { animation: camping-monte 400ms cubic-bezier(.2, .7, .2, 1) both; }
+html[data-theme] kiss-dialog kiss-content, html[data-theme] kiss-popout kiss-content { animation: camping-pop 200ms ease both; }
+html[data-theme] .auth-dialog { animation: camping-monte 600ms cubic-bezier(.2, .7, .2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after { animation: none !important; transition: none !important; }
+}
