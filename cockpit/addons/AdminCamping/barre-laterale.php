@@ -34,12 +34,22 @@ return function (Lime\App $app, string $html): string {
     ];
 
     $menu = substr($html, $debut, $fin - $debut);
+    $compteSeul = (bool) $app->retrieve('admincamping.compteSeul');
+    $reglages = rtrim($app->routeUrl('/system'), '/');
+    $compte = $app->routeUrl('/system/users/user');
 
     // Chaque lien : une icône Material à la place du SVG de Cockpit, et son libellé.
-    $menu = preg_replace_callback('#<a\b([^>]*\baria-label="([^"]*)"[^>]*)>(.*?)</a>#s', static function (array $m) use ($accueil, $icones, $e): string {
+    $menu = preg_replace_callback('#<a\b([^>]*\baria-label="([^"]*)"[^>]*)>(.*?)</a>#s', static function (array $m) use ($app, $accueil, $icones, $e, $compteSeul, $reglages, $compte): string {
         [$tout, $attributs, $libelle, $contenu] = $m;
         preg_match('#\bhref="([^"]*)"#', $attributs, $h);
         $href = $h[1] ?? '';
+
+        // « Réglages » ne contiendrait que le compte : le lien y mène directement.
+        if ($compteSeul && rtrim($href, '/') === $reglages) {
+            $attributs = str_replace(['href="'.$href.'"', 'aria-label="'.$libelle.'"'], ['href="'.$e($compte).'"', 'aria-label="Mon compte"'], $attributs);
+            $ici = str_starts_with((string) $app->request->route, '/system/users/user') ? ' aria-current="page"' : '';
+            return '<a'.str_replace('kiss-flex-center', '', $attributs).$ici.'><icon aria-hidden="true">account_circle</icon><span class="sidebar__libelle">Mon compte</span></a>';
+        }
 
         $nom = null;
         if (str_contains($attributs, 'app-search')) {

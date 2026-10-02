@@ -17,10 +17,7 @@ return function (Lime\App $app): string {
     $jour = static fn (int $t): string => date('j', $t).(date('j', $t) === '1' ? 'er' : '').' '.$mois[(int) date('n', $t) - 1];
 
     $user = $app->helper('auth')->getUser() ?? [];
-    $identite = $content->item('settings') ?? [];
     $saison = $content->item('saison') ?? [];
-    $medias = rtrim((string) $app->fileStorage->getURL('uploads://'), '/');
-    $photo = !empty($identite['imagePartage']['path']) ? $medias.$identite['imagePartage']['path'] : '';
 
     // ── La saison, en une phrase ──
     $maintenant = time();
@@ -106,10 +103,9 @@ return function (Lime\App $app): string {
             .'<span class="tdb-ligne__date">'.$e($quand).'</span></a>';
     }
 
-    $fond = $photo !== '' ? ' style="background-image: linear-gradient(110deg, rgb(24 58 35 / 92%) 0%, rgb(24 58 35 / 70%) 45%, rgb(24 58 35 / 15%) 100%), url(\''.$e($photo).'\')"' : '';
 
     return '<div class="camping-tableau">'
-        .'<section class="tdb-accueil"'.$fond.'>'
+        .'<section class="tdb-accueil">'
         .'<p class="tdb-accueil__date">'.$e(ucfirst(['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'][(int) date('w')]).' '.$jour($maintenant).' '.date('Y')).'</p>'
         .'<h1 class="tdb-accueil__titre">'.$e($salut).' '.$e($prenom).'</h1>'
         .'<p class="tdb-accueil__phrase">'.$e($phrase).'</p>'

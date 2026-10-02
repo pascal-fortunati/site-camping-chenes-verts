@@ -1,8 +1,8 @@
 <?php
 
 /**
- * CAMPING LES CHÊNES VERTS — l'administration aux couleurs du site, toujours en clair : nom, logo, couleur
- * principale et image de partage lus dans « Identité du site » ; palette, polices et en-tête dans assets/.
+ * CAMPING LES CHÊNES VERTS — l'administration aux couleurs du site, en clair ou en sombre : nom, logo, couleurs
+ * et image de partage lus dans « Identité du site » ; les deux palettes dans theme.php, les styles dans assets/.
  * Propre à ce site (le module AdminClient, lui, est proposé au socle).
  */
 
@@ -12,15 +12,17 @@ $this->on('before', function () {
         return;
     }
 
-    // Toujours le thème clair, celui du site. Le choix enregistré dans le profil n'est pas modifié.
-    $this->set('theme/default', 'light');
+    // Clair par défaut, sombre si on l'a choisi dans l'en-tête (cookie). Le choix du profil n'est pas modifié.
+    $theme = ($_COOKIE['admincamping-theme'] ?? '') === 'sombre' ? 'dark' : 'light';
+    $this->set('theme/default', $theme);
     $user = $this->helper('auth')->getUser();
-    if ($user && ($user['theme'] ?? 'light') !== 'light') {
-        $this->helper('auth')->setUser(array_merge($user, ['theme' => 'light']), false);
+    if ($user && ($user['theme'] ?? '') !== $theme) {
+        $this->helper('auth')->setUser(array_merge($user, ['theme' => $theme]), false);
     }
 
     $identite = $this->module('content')->item('settings') ?? [];
     $couleur = strtoupper(trim((string) ($identite['couleurPrincipale'] ?? '')));
+    $texte = strtoupper(trim((string) ($identite['couleurTexte'] ?? '')));
     $logo = (string) ($identite['logo']['path'] ?? '');
     $image = (string) ($identite['imagePartage']['path'] ?? '');
 
@@ -47,7 +49,7 @@ $this->on('before', function () {
     $dossier = __DIR__.'/generated';
     $uploads = rtrim((string) $this->path('#uploads:'), '/\\');
     $medias = rtrim((string) $this->fileStorage->getURL('uploads://'), '/');
-    $signature = substr(md5(implode('|', [$couleur, $logo, $image, $medias])), 0, 10);
+    $signature = substr(md5(implode('|', [$couleur, $texte, $logo, $image, $medias, filemtime(__DIR__.'/theme.php')])), 0, 10);
     $css = "{$dossier}/theme-{$signature}.css";
 
     if (!is_file($css)) {
@@ -58,12 +60,11 @@ $this->on('before', function () {
             unlink($ancien);
         }
 
-        $regles = [];
-        if ($lisible($couleur)) {
-            $regles[] = "html[data-theme]:root { --kiss-color-primary: {$couleur}; --camping-vert: {$couleur}; }";
-        }
+        $palette = include __DIR__.'/theme.php';
+        $regles = [$palette($lisible($couleur) ? $couleur : '#2B5A16', preg_match('/^#[0-9A-F]{6}$/', $texte) ? $texte : '#1F2A22')];
         if ($image !== '' && $medias !== '') {
-            $regles[] = "html[data-theme]:has(.auth-wrapper) { background: linear-gradient(rgb(24 58 35 / 45%), rgb(24 58 35 / 45%)), #183A23 url(\"{$medias}{$image}\") center / cover no-repeat fixed !important; }";
+            $regles[] = "html[data-theme]:root { --admin-photo: url(\"{$medias}{$image}\"); }";
+            $regles[] = "html[data-theme]:has(.auth-wrapper) { background: linear-gradient(var(--admin-voile-photo), var(--admin-voile-photo)), var(--admin-barre) var(--admin-photo) center / cover no-repeat fixed !important; }";
         }
         file_put_contents($css, implode("\n", $regles)."\n");
 
@@ -80,11 +81,37 @@ $this->on('before', function () {
     $this->set('admincamping.theme', 'admincamping:generated/'.basename($css));
 });
 
+// Quand « Réglages » ne contiendrait que le compte (le client), la barre mène droit au compte et /system y renvoie.
+$this->on('before', function () {
+    if (!$this->helper('auth')->getUser()) {
+        return;
+    }
+    $permis = 0;
+    foreach ($this->helper('settings')->groups(true) as $elements) {
+        foreach ($elements as $e) {
+            if (($e['route'] ?? '') !== '/system/users/user' && (!isset($e['permission']) || $this->helper('acl')->isAllowed($e['permission']))) {
+                $permis++;
+            }
+        }
+    }
+    if ($permis === 0) {
+        $this->set('admincamping.compteSeul', true);
+        if (rtrim((string) $this->request->route, '/') === '/system') {
+            try {
+                $this->reroute('/system/users/user');
+            } catch (\Lime\StopException) {
+                // La page n'est pas construite ; Lime envoie la redirection en fin de requête.
+            }
+        }
+    }
+});
+
 // La barre latérale arrive construite dans la page (barre-laterale.php) : rien ne bouge au chargement.
 $this->on('after', function () {
     if (is_string($this->response->body ?? null) && str_contains($this->response->body, 'app-container-aside-menu')) {
         $retoucher = include __DIR__.'/barre-laterale.php';
-        $this->response->body = $retoucher($this, $this->response->body);
+        $entete = include __DIR__.'/entete.php';
+        $this->response->body = $entete($this, $retoucher($this, $this->response->body), ($_COOKIE['admincamping-theme'] ?? '') === 'sombre');
     }
 });
 
@@ -106,10 +133,29 @@ $this->on('app.render.view/content:views/index.php', function (&$view) {
     }
 });
 
+// La médiathèque remplace la page Images de Cockpit ; elle s'appuie sur les mêmes routes /assets/*.
+$this->on('app.render.view/assets:views/index.php', function (&$view) {
+    if (!$this->param('cockpit')) {
+        $view = 'admincamping:views/images.php';
+    }
+});
+
+$this->bind('/admincamping/usages', function () {
+    $this->response->mime = 'json';
+    if (!$this->helper('auth')->getUser()) {
+        $this->response->status = 403;
+        return ['erreur' => 'Non connecté'];
+    }
+    $usages = include __DIR__.'/usages.php';
+
+    return $usages($this);
+});
+
 $this->on('app.layout.assets', function (&$assets, $context) {
 
     if ($context === 'app:header') {
         $assets[] = 'admincamping:assets/palette.css';
+        $assets[] = 'admincamping:assets/mediatheque.css';
 
         if (($_COOKIE['admincamping-sidebar'] ?? '') === 'reduite') {
             $assets[] = 'admincamping:assets/sidebar-reduite.css';
@@ -123,5 +169,6 @@ $this->on('app.layout.assets', function (&$assets, $context) {
     if ($context === 'app:footer') {
         $assets[] = ['src' => 'admincamping:assets/icones.js', 'type' => 'module', 'position' => 'footer'];
         $assets[] = ['src' => 'admincamping:assets/sidebar.js', 'type' => 'module', 'position' => 'footer'];
+        $assets[] = ['src' => 'admincamping:assets/entete.js', 'type' => 'module', 'position' => 'footer'];
     }
 });

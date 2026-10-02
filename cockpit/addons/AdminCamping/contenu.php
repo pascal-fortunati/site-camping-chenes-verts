@@ -81,17 +81,13 @@ return function (Lime\App $app): string {
         $lignes = '<p class="tdb-vide"><icon>history</icon>Rien n’a encore été modifié.</p>';
     }
 
-    $identite = $content->item('settings') ?? [];
-    $medias = rtrim((string) $app->fileStorage->getURL('uploads://'), '/');
-    $photo = !empty($identite['imagePartage']['path']) ? $medias.$identite['imagePartage']['path'] : '';
-    $fond = $photo !== '' ? ' style="background-image: linear-gradient(110deg, rgb(24 58 35 / 92%) 0%, rgb(24 58 35 / 70%) 45%, rgb(24 58 35 / 15%) 100%), url(\''.$e($photo).'\')"' : '';
 
     $admin = $acl->isAllowed('content/:models/manage')
         ? '<a class="ctn-admin" href="'.$route('/content').'?cockpit=1"><icon>schema</icon>Gérer les modèles</a>'
         : '';
 
     return '<div class="camping-tableau camping-contenu">'
-        .'<section class="tdb-accueil tdb-accueil--page"'.$fond.'>'
+        .'<section class="tdb-accueil tdb-accueil--page">'
         .'<h1 class="tdb-accueil__titre">Le contenu du site</h1>'
         .'<p class="tdb-accueil__phrase">Choisissez ce que vous voulez modifier : tout ce qui s’affiche sur le site se règle ici.</p>'
         .$admin
