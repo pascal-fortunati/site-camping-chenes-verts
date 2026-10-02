@@ -354,3 +354,16 @@ html[data-theme] .couleur__code { width: 130px; font-family: ui-monospace, "Casc
 .couleur__clarte input[type=range]::-webkit-slider-thumb { width: 20px; height: 20px; border: 3px solid #FFFFFF; border-radius: 50%; background: var(--admin-texte); box-shadow: 0 1px 4px rgb(0 0 0 / 35%); -webkit-appearance: none; }
 .couleur__clarte input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border: 3px solid #FFFFFF; border-radius: 50%; background: var(--admin-texte); }
 .couleur__systeme { display: inline-flex; align-items: center; gap: 6px; justify-self: start; padding: 4px 0; border: 0; background: transparent; color: var(--admin-accent); font: 700 0.8125rem var(--kiss-base-font-family); cursor: pointer; }
+
+/* ═══ Le champ oui / non (champ-oui-non.js) ═══ */
+.oui-non { display: flex; align-items: center; gap: 12px; }
+.oui-non__bouton { display: inline-flex; align-items: center; gap: 10px; padding: 0; border: 0; background: transparent; color: var(--admin-texte-doux); font: 700 0.875rem var(--kiss-base-font-family); cursor: pointer; }
+.oui-non__piste { position: relative; display: block; width: 52px; height: 30px; border-radius: 15px; background: var(--admin-surface-forte); transition: background-color 200ms ease; }
+.oui-non__bouton-rond { position: absolute; top: 3px; left: 3px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; color: var(--admin-texte-doux); box-shadow: 0 1px 4px rgb(0 0 0 / 25%); transition: transform 220ms cubic-bezier(.3, 1.4, .5, 1), color 200ms ease; }
+.oui-non__bouton-rond icon { font-size: 15px; }
+.oui-non__bouton--oui { color: var(--admin-accent); }
+.oui-non__bouton--oui .oui-non__piste { background: var(--admin-primaire); }
+.oui-non__bouton--oui .oui-non__bouton-rond { color: var(--admin-primaire); transform: translateX(22px); }
+.oui-non__bouton:focus-visible { outline: none; }
+.oui-non__bouton:focus-visible .oui-non__piste { box-shadow: var(--admin-halo); }
+.oui-non__libelle { color: var(--admin-texte); font-size: 0.875rem; cursor: pointer; }

@@ -34,3 +34,5 @@ VueView.component('field-date', 'admincamping:assets/champ-date.js');
 VueView.component('field-number', 'admincamping:assets/champ-nombre.js');
 // La couleur : une palette lisible et un curseur de clarté, aux couleurs du site (champ-couleur.js).
 VueView.component('field-color', 'admincamping:assets/champ-couleur.js');
+// Le oui / non : un interrupteur clair, « Oui » ou « Non » écrit à côté (champ-oui-non.js).
+VueView.component('field-boolean', 'admincamping:assets/champ-oui-non.js');
