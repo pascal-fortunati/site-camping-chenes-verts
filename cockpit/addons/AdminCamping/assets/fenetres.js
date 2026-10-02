@@ -30,3 +30,7 @@ App.utils.import = (uri, ...reste) => importer(MORCEAUX[uri] || uri, ...reste);
 VueView.component('field-select', 'admincamping:assets/champ-choix.js');
 // La date : un calendrier aux couleurs du site, ouvert par tout le champ (champ-date.js).
 VueView.component('field-date', 'admincamping:assets/champ-date.js');
+// Le nombre : des boutons − et + plutôt que les flèches du navigateur (champ-nombre.js).
+VueView.component('field-number', 'admincamping:assets/champ-nombre.js');
+// La couleur : une palette lisible et un curseur de clarté, aux couleurs du site (champ-couleur.js).
+VueView.component('field-color', 'admincamping:assets/champ-couleur.js');

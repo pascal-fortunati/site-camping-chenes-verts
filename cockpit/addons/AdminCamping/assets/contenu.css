@@ -322,3 +322,35 @@ html[data-theme] kiss-dialog:has(.lt) > kiss-content { width: min(560px, calc(10
 .cal__jour:disabled { opacity: 0.25; cursor: not-allowed; }
 .cal__pied { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--admin-surface-douce); }
 @media (max-width: 400px) { .cal__panneau { width: calc(100vw - 48px); } }
+
+/* ═══ Le champ nombre (champ-nombre.js) ═══ */
+.nombre { display: inline-flex; align-items: stretch; max-width: 100%; border: 1px solid var(--admin-trait); border-radius: 10px; background: var(--admin-surface); overflow: hidden; transition: border-color 150ms ease, box-shadow 150ms ease; }
+.nombre:focus-within { border-color: var(--admin-accent); box-shadow: var(--admin-halo); }
+.nombre__bouton { display: grid; flex: none; place-items: center; width: 46px; border: 0; background: var(--admin-surface-douce); color: var(--admin-accent); cursor: pointer; transition: background-color 150ms ease; }
+.nombre__bouton:hover:not(:disabled) { background: var(--admin-surface-forte); }
+.nombre__bouton:disabled { opacity: 0.35; cursor: default; }
+.nombre__bouton:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--admin-accent); }
+html[data-theme] .nombre .nombre__champ { width: 120px; min-height: 44px; border: 0 !important; border-radius: 0; box-shadow: none !important; text-align: center; font-weight: 700; -moz-appearance: textfield; }
+.nombre__champ::-webkit-inner-spin-button, .nombre__champ::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* ═══ Le champ couleur (champ-couleur.js) ═══ */
+.couleur { position: relative; }
+.couleur__ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.couleur__pastille { width: 44px; height: 44px; border: 3px solid var(--admin-surface); border-radius: 12px; box-shadow: 0 0 0 1px var(--admin-trait), var(--admin-ombre); cursor: pointer; transition: transform 150ms ease; }
+.couleur__pastille:hover { transform: scale(1.05); }
+.couleur__pastille:focus-visible { outline: none; box-shadow: var(--admin-halo); }
+.couleur__pastille--vide { background: repeating-conic-gradient(var(--admin-surface-douce) 0% 25%, var(--admin-surface) 0% 50%) 0 0 / 12px 12px; }
+html[data-theme] .couleur__code { width: 130px; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; text-transform: uppercase; }
+.couleur__panneau { position: absolute; top: calc(100% + 8px); left: 0; z-index: 40; display: grid; gap: 12px; width: 330px; padding: 14px; border: 1px solid var(--admin-trait); border-radius: 16px; background: var(--admin-surface); box-shadow: var(--admin-ombre-haute); animation: camping-pop 150ms ease backwards; }
+.couleur__aide { margin: 0; color: var(--admin-texte-doux); font-size: 0.8125rem; }
+.couleur__palette { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+.couleur__teinte { display: grid; place-items: center; aspect-ratio: 1; border: 0; border-radius: 9px; color: #FFFFFF; cursor: pointer; transition: transform 150ms ease, box-shadow 150ms ease; }
+.couleur__teinte:hover { transform: scale(1.1); }
+.couleur__teinte:focus-visible { outline: none; box-shadow: var(--admin-halo); }
+.couleur__teinte--choisie { box-shadow: 0 0 0 2px var(--admin-surface), 0 0 0 4px var(--admin-accent); }
+.couleur__teinte icon { font-size: 18px; }
+.couleur__clarte { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; color: var(--admin-texte-doux); font-size: 0.75rem; }
+.couleur__clarte input[type=range] { width: 100%; height: 10px; border-radius: 5px; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.couleur__clarte input[type=range]::-webkit-slider-thumb { width: 20px; height: 20px; border: 3px solid #FFFFFF; border-radius: 50%; background: var(--admin-texte); box-shadow: 0 1px 4px rgb(0 0 0 / 35%); -webkit-appearance: none; }
+.couleur__clarte input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border: 3px solid #FFFFFF; border-radius: 50%; background: var(--admin-texte); }
+.couleur__systeme { display: inline-flex; align-items: center; gap: 6px; justify-self: start; padding: 4px 0; border: 0; background: transparent; color: var(--admin-accent); font: 700 0.8125rem var(--kiss-base-font-family); cursor: pointer; }

@@ -9,6 +9,7 @@
 const version = new URL(import.meta.url).search;
 const { default: vignette } = await import(`./vignette.js${version}`);
 const { default: confirmer } = await import(`./confirmer.js${version}`);
+const { default: menuTri } = await import(`./menu-tri.js${version}`);
 
 const LOURDE = 1024 * 1024;
 const PAR_PAGE = 48;
@@ -26,7 +27,7 @@ const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/[̀
 
 export default {
 
-    components: { mtVignette: vignette },
+    components: { mtVignette: vignette, menuTri },
 
     props: {
         droits: { type: Object, default: () => ({}) }
@@ -382,15 +383,7 @@ export default {
                 </button>
             </div>
             <div class="mt-outils__droite">
-                <label class="mt-tri">
-                    <span class="mt-tri__texte">Trier</span>
-                    <select v-model="tri" aria-label="Trier">
-                        <option value="recent">Les plus récentes</option>
-                        <option value="ancien">Les plus anciennes</option>
-                        <option value="nom">Par nom</option>
-                        <option value="poids">Les plus lourdes</option>
-                    </select>
-                </label>
+                <menu-tri v-model="tri" :options="[{ value: 'recent', label: 'Les plus récentes' }, { value: 'ancien', label: 'Les plus anciennes' }, { value: 'nom', label: 'Par nom' }, { value: 'poids', label: 'Les plus lourdes' }]"></menu-tri>
                 <div class="mt-vues" role="group" aria-label="Affichage">
                     <button type="button" :class="{'mt-vue--active': vue === 'grille'}" :aria-pressed="vue === 'grille' ? 'true' : 'false'" aria-label="En grille" @click="vue = 'grille'"><icon>grid_view</icon></button>
                     <button type="button" :class="{'mt-vue--active': vue === 'liste'}" :aria-pressed="vue === 'liste' ? 'true' : 'false'" aria-label="En liste" @click="vue = 'liste'"><icon>view_list</icon></button>

@@ -7,6 +7,7 @@
 // Les fichiers voisins sont chargés à la même version que celui-ci (?v=…) : le serveur les garde un an en cache.
 const version = new URL(import.meta.url).search;
 const { default: confirmer } = await import(`./confirmer.js${version}`);
+const { default: menuTri } = await import(`./menu-tri.js${version}`);
 
 const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
@@ -23,6 +24,8 @@ const quand = (secondes) => {
 
 
 export default {
+
+    components: { menuTri },
 
     props: {
         model: { type: Object, required: true },
@@ -63,6 +66,12 @@ export default {
         champTitre() {
             return ['titre', 'title', 'nom', 'name'].find((n) => this.champs.includes(n))
                 || ((this.model.fields || []).find((f) => f.type === 'text') || {}).name || '_id';
+        },
+
+        tris() {
+            return this.avecLu
+                ? [{ value: 'cree', label: 'Les plus récents' }, { value: 'nom', label: 'Par nom' }]
+                : [{ value: 'modifie', label: 'Modifiés récemment' }, { value: 'cree', label: 'Ajoutés récemment' }, { value: 'nom', label: 'Par nom' }];
         },
 
         avecEtat() {
@@ -235,14 +244,7 @@ export default {
                 </button>
             </div>
             <div class="mt-outils__droite">
-                <label class="mt-tri">
-                    <span class="mt-tri__texte">Trier</span>
-                    <select v-model="tri" aria-label="Trier">
-                        <option value="modifie" v-if="!avecLu">Modifiés récemment</option>
-                        <option value="cree">{{ avecLu ? 'Les plus récents' : 'Ajoutés récemment' }}</option>
-                        <option value="nom">Par nom</option>
-                    </select>
-                </label>
+                <menu-tri v-model="tri" :options="tris"></menu-tri>
             </div>
         </div>
 

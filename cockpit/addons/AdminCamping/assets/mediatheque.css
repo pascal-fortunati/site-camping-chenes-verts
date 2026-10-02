@@ -235,3 +235,18 @@ html[data-theme] kiss-dialog:has(.ci) kiss-content { width: min(1100px, calc(100
 .ci-depot icon { font-size: 56px; }
 .ci-depot b { font-family: "Fraunces", Georgia, serif; font-size: 1.4rem; }
 @media (max-width: 640px) { .ci-tete p { display: none; } .ci-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ═══ Le choix du tri (menu-tri.js) ═══ */
+.tri { position: relative; }
+.tri__bouton { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 10px 0 12px; border: 1px solid var(--admin-trait); border-radius: 9px; background: var(--admin-surface); color: var(--admin-texte); font: 600 0.8125rem var(--kiss-base-font-family); cursor: pointer; transition: background-color 150ms ease; }
+.tri__bouton:hover { background: var(--admin-surface-douce); }
+.tri__bouton:focus-visible { outline: none; box-shadow: var(--admin-halo); }
+.tri__bouton > icon:first-child { color: var(--admin-accent); font-size: 18px; }
+.tri__libelle { color: var(--admin-texte-doux); font-weight: 400; }
+.tri__fleche { color: var(--admin-texte-doux); font-size: 18px; }
+.tri__menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; min-width: 210px; margin: 0; padding: 6px; border: 1px solid var(--admin-trait); border-radius: 12px; background: var(--admin-surface); box-shadow: var(--admin-ombre-haute); list-style: none; animation: camping-pop 150ms ease backwards; }
+.tri__menu:focus { outline: none; }
+.tri__option { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 8px; color: var(--admin-texte); font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+.tri__option--choisie { background: var(--admin-surface-douce); }
+.tri__option--actuelle, .tri__option icon { color: var(--admin-accent); }
+.tri__option icon { font-size: 18px; }
