@@ -215,6 +215,7 @@ $readPermissions = [
     'content/menu/read' => true,
     'content/articles/read' => true,
     'content/legal/read' => true,
+    'content/saison/read' => true,          // CAMPING LES CHÊNES VERTS
 ];
 
 if (!$role) {
@@ -256,7 +257,7 @@ $customerRoleId = 'client';
 
 $customerPermissions = [];
 
-foreach (['settings', 'pages', 'menu', 'articles', 'legal'] as $model) {
+foreach (['settings', 'saison', 'pages', 'menu', 'articles', 'legal'] as $model) {   // CAMPING : + saison
     $customerPermissions["content/{$model}/read"] = true;
     $customerPermissions["content/{$model}/update"] = true;
 }

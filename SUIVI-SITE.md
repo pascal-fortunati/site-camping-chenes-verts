@@ -19,12 +19,16 @@ encore `2.0.6` pour cette étiquette.
 | Fichier | Modification | Pourquoi |
 |---|---|---|
 | `cockpit/models/pages.model.php` | 7 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`, `ardoise`) et leurs champs ; `$hasImage` (ligne du socle) inclut `carte`, pour que sa description d'image soit exigée ; libellé des sections dans la liste : titre puis type en clair (« hero » devenait « Bandeau d’ouverture (grande photo) », support 07) | Support 06 : seul fichier partagé prévu par le socle |
-| `cockpit/models/settings.model.php` | 7 champs de l'identité : `classement`, `saisonOuverture`, `saisonFermeture`, `placesDisponibles`, `heureArrivee`, `heureDepart`, `horairesSaisons`, `latitude`, `longitude` | Décisions A1, A2, A6 : saisis une seule fois, affichés sur plusieurs pages |
+| `cockpit/models/settings.model.php` | 7 champs de l'identité : `classement`, `saisonOuverture`, `saisonFermeture`, `placesDisponibles`, `latitude`, `longitude` ; les champs de la saison sont passés dans `saison.model.php` (02/10/2026) | Décisions A1, A2, A6 : saisis une seule fois, affichés sur plusieurs pages |
+| `src/Content/Repository.php` | `settings()` lit aussi la fiche « La saison » : les gabarits gardent `site.placesDisponibles`… | Demande du client : l'identité du site ne doit pas contenir la saison |
+| `bin/cockpit-init.php` | Rôles « Site public » et « Client » : droits sur `saison` | Même raison ; pour un site déjà installé : `_outils/migrer-saison.php` |
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |
 | `src/Contact/Submission.php` | Champ caché `formulaire=reservation` : vérifie et enregistre le séjour ; message facultatif. Un message de contact est traité exactement comme avant | Option A |
 
 Après chaque fusion : `php bin/install-cockpit.php --force`, `php bin/purge-cache.php`, `composer test`.
+
+Nouveau modèle propre au site : `cockpit/models/saison.model.php` (« La saison » : dates, places, heures, horaires de l'accueil).
 
 ## Gabarits du socle recopiés (`templates-client/`)
 

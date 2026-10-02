@@ -295,12 +295,12 @@ return [
                         'opts' => ['maxlength' => 200],
                     ],
 
-                    // Annonce : les valeurs viennent de « Identité du site » (saison, places, heures)
+                    // Annonce : les valeurs viennent de la fiche « La saison » (dates, places, heures)
                     [
                         'name' => 'annonceHeures',
                         'type' => 'boolean',
                         'label' => 'Afficher les heures d’arrivée et de départ',
-                        'info' => 'Les heures sont saisies dans « Identité du site », rubrique Saison.',
+                        'info' => 'Les heures sont saisies dans la fiche « La saison ».',
                         'width' => '1-2',
                         'condition' => $isAnnonce,
                         'opts' => ['default' => false],
@@ -487,7 +487,7 @@ return [
                         'name' => 'sejour',
                         'type' => 'wysiwyg',
                         'label' => 'Durée du séjour',
-                        'info' => 'Encadré « Durée du séjour, arrivée et départ ». Les heures s’ajoutent seules, depuis « Identité du site ».',
+                        'info' => 'Encadré « Durée du séjour, arrivée et départ ». Les heures s’ajoutent seules, depuis la fiche « La saison ».',
                         'width' => '1-1',
                         'condition' => $isTarifs,
                         'opts' => ['toolbar' => $toolbar],

@@ -38,7 +38,16 @@ final class Repository
      */
     public function settings(): array
     {
-        return $this->settings ??= $this->client->singleton('settings') ?? [];
+        // CAMPING LES CHÊNES VERTS — la fiche « La saison » est lue avec l'identité : les gabarits
+        // continuent d'écrire site.placesDisponibles. Ses métadonnées (_id…) restent celles de l'identité.
+        return $this->settings ??= array_merge(
+            $this->client->singleton('settings') ?? [],
+            array_filter(
+                $this->client->singleton('saison') ?? [],
+                static fn (string $cle): bool => !str_starts_with($cle, '_'),
+                ARRAY_FILTER_USE_KEY,
+            ),
+        );
     }
 
     /**

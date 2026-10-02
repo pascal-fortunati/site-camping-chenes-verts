@@ -93,7 +93,7 @@
                 <h{{ niveau + 1 }}>Durée du séjour, arrivée et départ</h{{ niveau + 1 }}>
                 {# Texte mis en forme saisi dans l'administration : non échappé, comme dans le socle. #}
                 {{ bloc.sejour|default('')|raw }}
-                {# Heures saisies une seule fois, dans « Identité du site » (décision A2). #}
+                {# Heures saisies une seule fois, dans la fiche « La saison » (décision A2). #}
                 {% if site.heureArrivee|default('') or site.heureDepart|default('') %}
                     <p>Locations :
                         {%- if site.heureArrivee|default('') %} arrivée à partir de {{ site.heureArrivee }}{% endif %}
