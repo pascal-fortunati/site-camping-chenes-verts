@@ -280,6 +280,7 @@ $customerPermissions['content/messages/delete'] = true;
 // Images, without which no page can be illustrated.
 $customerPermissions['assets/upload'] = true;
 $customerPermissions['assets/edit'] = true;
+$customerPermissions['assets/delete'] = true;   // CAMPING : le client retire ses images (la médiathèque prévient si elles servent encore)
 
 $customerRole = $app->dataStorage->findOne('system/roles', ['appid' => $customerRoleId]);
 

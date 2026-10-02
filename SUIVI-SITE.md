@@ -26,6 +26,7 @@ encore `2.0.6` pour cette étiquette.
 | `tests/Site/RepositoryTest.php` | « une seule requête par page » devient « une par fiche » : identité et saison | Conséquence de la fiche « La saison » |
 | `bin/cockpit-init.php` | Rôles « Site public » et « Client » : droits sur `saison` | Même raison ; pour un site déjà installé : `_outils/migrer-saison.php` |
 | `bin/cockpit-init.php` | Pas d'actualités : le rôle « Client » n'a plus de droits sur `articles`, et l'actualité de démonstration du socle n'est plus créée | Le site n'en publie pas (le menu n'affiche « Actualités » que s'il y en a) ; pour un site déjà installé : `_outils/retirer-actualites.php` |
+| `bin/cockpit-init.php` | Le rôle « Client » peut supprimer les images (`assets/delete`) | Il ne pouvait pas retirer un fichier envoyé par erreur ; la médiathèque prévient si l'image sert encore. Site déjà installé : `_outils/autoriser-suppression-images.php` |
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |
 | `src/Contact/Submission.php` | Champ caché `formulaire=reservation` : vérifie et enregistre le séjour ; message facultatif. Un message de contact est traité exactement comme avant | Option A |
