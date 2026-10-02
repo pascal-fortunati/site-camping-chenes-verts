@@ -49,7 +49,7 @@ $this->on('before', function () {
     $dossier = __DIR__.'/generated';
     $uploads = rtrim((string) $this->path('#uploads:'), '/\\');
     $medias = rtrim((string) $this->fileStorage->getURL('uploads://'), '/');
-    $signature = substr(md5(implode('|', [$couleur, $texte, $logo, $image, $medias, filemtime(__DIR__.'/theme.php')])), 0, 10);
+    $signature = substr(md5(implode('|', [$couleur, $texte, $logo, $image, $medias, filemtime(__DIR__.'/theme.php'), filemtime(__FILE__)])), 0, 10);
     $css = "{$dossier}/theme-{$signature}.css";
 
     if (!is_file($css)) {
@@ -68,8 +68,22 @@ $this->on('before', function () {
         }
         file_put_contents($css, implode("\n", $regles)."\n");
 
+        // Le logo, réduit à 192 px en WebP : l'original (souvent plusieurs centaines de ko) mettait un instant à
+        // s'afficher à chaque page. Sans GD, ou pour un SVG, il est copié tel quel.
         if ($logo !== '' && is_file($uploads.$logo)) {
-            copy($uploads.$logo, "{$dossier}/logo-{$signature}.".pathinfo($logo, PATHINFO_EXTENSION));
+            $source = @imagecreatefromstring((string) file_get_contents($uploads.$logo));
+            if ($source !== false && function_exists('imagewebp')) {
+                $cote = 192;
+                [$l, $h] = [imagesx($source), imagesy($source)];
+                $ratio = min(1, $cote / max($l, $h));
+                $reduit = imagecreatetruecolor(max(1, (int) round($l * $ratio)), max(1, (int) round($h * $ratio)));
+                imagealphablending($reduit, false);
+                imagesavealpha($reduit, true);
+                imagecopyresampled($reduit, $source, 0, 0, 0, 0, imagesx($reduit), imagesy($reduit), $l, $h);
+                imagewebp($reduit, "{$dossier}/logo-{$signature}.webp", 86);
+            } else {
+                copy($uploads.$logo, "{$dossier}/logo-{$signature}.".pathinfo($logo, PATHINFO_EXTENSION));
+            }
         }
     }
 
@@ -186,6 +200,24 @@ $this->bind('/admincamping/usages', function () {
     $usages = include __DIR__.'/usages.php';
 
     return $usages($this);
+});
+
+// Les polices sont annoncées dès le haut de la page : sans cela, chaque nouvelle page s'affichait d'abord sans ses
+// icônes (police invisible tant qu'elle n'est pas prête), puis tout apparaissait d'un coup.
+$this->on('app.layout.head', function () {
+    $polices = [
+        $this->baseUrl('app:assets/fonts/material-icons/material-outline.woff2').'?v=2024-10-20',
+        $this->baseUrl('admincamping:assets/fonts/lexend-400.woff2'),
+        $this->baseUrl('admincamping:assets/fonts/lexend-700.woff2'),
+        $this->baseUrl('admincamping:assets/fonts/fraunces-600.woff2'),
+    ];
+    // Le logo de la barre latérale, lui aussi, pour qu'il ne s'affiche pas en rond vide.
+    echo '<link rel="preload" href="'.htmlspecialchars($this->helper('theme')->logo(), ENT_QUOTES, 'UTF-8').'" as="image">'."
+";
+    foreach ($polices as $url) {
+        echo '<link rel="preload" href="'.htmlspecialchars($url, ENT_QUOTES, 'UTF-8').'" as="font" type="font/woff2" crossorigin>'."
+";
+    }
 });
 
 $this->on('app.layout.assets', function (&$assets, $context) {

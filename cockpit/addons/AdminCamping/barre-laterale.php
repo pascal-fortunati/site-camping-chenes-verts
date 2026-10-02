@@ -80,7 +80,7 @@ return function (Lime\App $app, string $html): string {
     // En tête : le logo et le nom du site ; en bas : le bouton qui réduit ou déplie la barre.
     $reduite = ($_COOKIE['admincamping-sidebar'] ?? '') === 'reduite';
     $marque = '<a class="sidebar__marque" href="'.$e($app->routeUrl('/')).'">'
-        .'<img src="'.$e($app->helper('theme')->logo()).'" alt="">'
+        .'<img src="'.$e($app->helper('theme')->logo()).'" alt="" width="36" height="36" decoding="sync">'
         .'<span class="sidebar__libelle sidebar__nom">'.$e($app['app.name']).'</span></a>';
     $bouton = '<button type="button" class="sidebar__basculer" aria-expanded="'.($reduite ? 'false' : 'true').'" aria-label="'
         .($reduite ? 'Déplier le menu' : 'Réduire le menu').'"><icon aria-hidden="true">'.($reduite ? 'left_panel_open' : 'left_panel_close')

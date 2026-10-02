@@ -26,4 +26,4 @@
 
 .avatar-dialogue__choix { display: grid; gap: 0.5rem; margin: 1rem 0; }
 .avatar-dialogue__choix .kiss-button { justify-content: center; white-space: nowrap; }
-.avatar-dialogue__actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
+.avatar-dialogue__actions { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }
