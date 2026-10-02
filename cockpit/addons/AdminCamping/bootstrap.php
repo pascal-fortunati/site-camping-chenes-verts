@@ -208,5 +208,6 @@ $this->on('app.layout.assets', function (&$assets, $context) {
         $assets[] = ['src' => 'admincamping:assets/icones.js', 'type' => 'module', 'position' => 'footer'];
         $assets[] = ['src' => 'admincamping:assets/sidebar.js', 'type' => 'module', 'position' => 'footer'];
         $assets[] = ['src' => 'admincamping:assets/entete.js', 'type' => 'module', 'position' => 'footer'];
+        $assets[] = ['src' => 'admincamping:assets/fenetres.js', 'type' => 'module', 'position' => 'footer'];
     }
 });

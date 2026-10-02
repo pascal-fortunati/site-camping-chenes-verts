@@ -614,8 +614,8 @@ textarea:focus-visible {
 
 /* Une couleur par période, de la plus calme à la plus chargée (pastilles décoratives :
    le nom de la période est toujours écrit à côté). */
-.tarifs__p1 { --saison: #A9C79A; }
-.tarifs__p2 { --saison: #5E8F4E; }
+.tarifs__p1 { --saison: var(--vert-tendre); }
+.tarifs__p2 { --saison: var(--vert-moyen); }
 .tarifs__p3 { --saison: var(--bois-clair); }
 .tarifs__p4 { --saison: var(--bois); }
 
@@ -949,7 +949,7 @@ textarea:focus-visible {
     top: 2.2rem;
     bottom: 0.3rem;
     width: 2px;
-    background: #2F5A3D;
+    background: var(--vert-fil);
 }
 .reservation__deroule b { display: block; color: var(--sur-vert); }
 
@@ -1117,7 +1117,7 @@ textarea:focus-visible {
     content: "";
     position: absolute;
     inset: 0.75rem;
-    border: 1px dashed rgb(201 221 190 / 35%);
+    border: 1px dashed color-mix(in srgb, var(--sur-vert-doux) 35%, transparent);
     border-radius: var(--rayon-petit);
     pointer-events: none;
 }
@@ -1144,7 +1144,7 @@ textarea:focus-visible {
     padding: 0.6rem 0;
 }
 .ardoise__ligne + .ardoise__ligne { border-top: 1px solid var(--couleur-fond-doux); }
-.bloc-ardoise--ardoise .ardoise__ligne + .ardoise__ligne { border-top-color: rgb(201 221 190 / 20%); }
+.bloc-ardoise--ardoise .ardoise__ligne + .ardoise__ligne { border-top-color: color-mix(in srgb, var(--sur-vert-doux) 20%, transparent); }
 
 .ardoise__libelle { flex: 1; min-width: 0; }
 .ardoise__libelle b { display: block; font-size: 1.0625rem; }
@@ -1238,6 +1238,10 @@ main > .document {
 
 :root {
     --vert-profond: #183A23;              /* fond du titre des pages, des coordonnées, du pied */
+    --vert-sombre: #214A2D;               /* la feuille du bloc contact */
+    --vert-fil: #2F5A3D;                  /* filets sur vert profond */
+    --vert-tendre: #A9C79A;               /* période calme des tarifs (décoratif) */
+    --vert-moyen: #5E8F4E;                /* période moyenne des tarifs (décoratif) */
     --sur-vert: #FFFFFF;                  /* 12,59:1 sur vert profond */
     --sur-vert-doux: #C9DDBE;             /* 8,73:1 sur vert profond */
     --transition: 220ms ease;
@@ -1249,12 +1253,25 @@ main > .document {
     --silhouette-feuillage: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 40' preserveAspectRatio='none'%3E%3Cpath fill='%23183A23' d='M0 40V26c6-10 16-12 24-6 4-12 18-15 26-5 6-11 21-11 26 1 7-9 19-8 24 2 5-10 18-12 25-3 7-9 20-7 24 3 4-4 8-5 11-4v26z'/%3E%3C/svg%3E");
 }
 
+/* Les verts suivent la couleur principale de l'identité du site (--couleur-lien, couleurs.css) :
+   plus sombre pour les fonds, plus clair pour le texte posé dessus. */
+@supports (color: color-mix(in oklab, red, blue)) {
+    :root {
+        --vert-profond: color-mix(in oklab, var(--couleur-lien) 62%, #000);
+        --vert-sombre: color-mix(in oklab, var(--couleur-lien) 74%, #000);
+        --vert-fil: color-mix(in oklab, var(--couleur-lien) 82%, #000);
+        --vert-tendre: color-mix(in oklab, var(--couleur-lien) 45%, #FFF);
+        --vert-moyen: color-mix(in oklab, var(--couleur-lien) 78%, #FFF);
+        --sur-vert-doux: color-mix(in oklab, var(--couleur-lien) 20%, #FFF);
+    }
+}
+
 html { scroll-behavior: smooth; }
 html { scroll-padding-top: 7rem; }      /* l'en-tête collant ne cache ni la cible d'un lien, ni l'élément qui reçoit le focus */
 
 /* En-tête : reste en haut ; une ombre apparaît au défilement (menu.js) */
 .en-tete { position: sticky; top: 0; z-index: 50; transition: box-shadow var(--transition); }
-.en-tete--defile { box-shadow: 0 6px 22px rgb(24 58 35 / 10%); }
+.en-tete--defile { box-shadow: 0 6px 22px color-mix(in srgb, var(--vert-profond) 10%, transparent); }
 .lien-evitement:focus { z-index: 100; }               /* au-dessus de l'en-tête collant */
 select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2px; }   /* oublié par site.css */
 
@@ -1317,7 +1334,7 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
         height: var(--h, 0);
         border-radius: 999px;
         background: var(--couleur-lien);
-        box-shadow: 0 6px 16px rgb(43 90 22 / 30%);
+        box-shadow: 0 6px 16px color-mix(in srgb, var(--couleur-lien) 30%, transparent);
         transform: translate(var(--x, 0), var(--y, 0)) scale(0.4);
         transition: transform 450ms cubic-bezier(.3, 1.4, .5, 1), width 450ms cubic-bezier(.3, 1.4, .5, 1), visibility 0s 450ms;
         visibility: hidden;
@@ -1340,7 +1357,7 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
         background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 28%) 50%, transparent 70%);
         transform: translateX(-120%);
     }
-    .menu__liste a[href="/reserver"]:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgb(43 90 22 / 30%); }
+    .menu__liste a[href="/reserver"]:hover { transform: translateY(-2px); box-shadow: 0 8px 18px color-mix(in srgb, var(--couleur-lien) 30%, transparent); }
     .menu__liste a[href="/reserver"]:hover::before { transform: translateX(120%); transition: transform 700ms ease; }
 }
 
@@ -1541,7 +1558,7 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
     bottom: -3.5rem;
     width: 14rem;
     height: 14rem;
-    background: #214A2D;
+    background: var(--vert-sombre);
     mask: var(--icone-feuille) center / contain no-repeat;
     pointer-events: none;
 }
@@ -1563,7 +1580,8 @@ main > .bloc-cartes:last-child { margin-bottom: 0; padding-bottom: 6rem; }
     right: 0;
     top: -39px;
     height: 40px;
-    background: var(--silhouette-feuillage) bottom / 160px 40px repeat-x;
+    background: var(--vert-profond);
+    mask: var(--silhouette-feuillage) bottom / 160px 40px repeat-x;
     pointer-events: none;
 }
 .pied__titre,
@@ -1572,10 +1590,15 @@ main > .bloc-cartes:last-child { margin-bottom: 0; padding-bottom: 6rem; }
 .pied a:focus-visible { outline-color: var(--sur-vert); }
 .pied__classement,
 .pied__saisons dd { color: var(--sur-vert-doux); }
-.pied__legal { border-top-color: #2F5A3D; }
+.pied__legal { border-top-color: var(--vert-fil); }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .carte:hover, .carte:hover .carte__image, .hebergement:hover .hebergement__image { transform: none; }
 }
+
+/* Les feuilles du gland suivent la couleur principale */
+.remonter__feuille--gauche .remonter__limbe { fill: color-mix(in oklab, var(--couleur-lien) 85%, #FFF); }
+.remonter__feuille--droite .remonter__limbe { fill: color-mix(in oklab, var(--couleur-lien) 65%, #FFF); }
+.remonter__nervure { stroke: color-mix(in oklab, var(--couleur-lien) 80%, #000); }

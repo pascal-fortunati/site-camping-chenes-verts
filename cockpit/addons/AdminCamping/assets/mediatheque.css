@@ -200,3 +200,38 @@ html[data-theme] kiss-container.camping-page { max-width: 1280px; margin-top: 28
     .mt-carte__case { opacity: 1; }
 }
 .mt-vignette--attente { display: block; width: 100%; height: 100%; min-height: 48px; background: linear-gradient(100deg, var(--admin-surface-douce) 30%, var(--admin-surface) 50%, var(--admin-surface-douce) 70%) 0 0 / 300% 100%; animation: mt-reflet 1.4s linear infinite; }
+
+/* ═══ Le choix d'une image (choisir-image.js), dans une fenêtre ═══ */
+html[data-theme] kiss-dialog:has(.ci) kiss-content { width: min(1100px, calc(100vw - 32px)); max-width: none; padding: 0; overflow: hidden; border-radius: 20px; background: var(--admin-fond); }
+.ci { position: relative; display: flex; flex-direction: column; height: min(780px, calc(100vh - 64px)); }
+.ci-tete { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-bottom: 1px solid var(--admin-trait); background: var(--admin-surface); }
+.ci-tete__icone { display: grid; flex: none; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: var(--admin-primaire); color: var(--admin-sur-primaire); }
+.ci-tete__texte { flex: 1; min-width: 0; }
+.ci-tete h2 { margin: 0; font-size: 1.35rem; }
+.ci-tete p { margin: 2px 0 0; color: var(--admin-texte-doux); font-size: 0.8125rem; }
+.ci-outils { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 20px 6px; }
+.ci-outils .mt-recherche { background: var(--admin-surface); }
+.ci > .mt-chemin { padding: 4px 16px 0; }
+.ci-corps { flex: 1; display: grid; align-content: start; gap: 14px; padding: 12px 20px 20px; overflow-y: auto; }
+.ci-dossiers { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+.ci-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+.ci-image { position: relative; display: grid; padding: 0; overflow: hidden; border: 0; border-radius: 14px; background: var(--admin-surface); color: var(--admin-texte); text-align: left; cursor: pointer; box-shadow: var(--admin-ombre); transition: transform 150ms ease, box-shadow 150ms ease; animation: camping-pop 300ms cubic-bezier(.2, .7, .2, 1) backwards; }
+.ci-image:hover { transform: translateY(-2px); box-shadow: var(--admin-ombre-haute); }
+.ci-image:focus-visible { outline: none; box-shadow: var(--admin-halo), var(--admin-ombre); }
+.ci-image__apercu { display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--admin-surface-douce); }
+.ci-image__apercu .mt-vignette { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ci-image__texte { display: grid; gap: 1px; padding: 9px 11px 11px; }
+.ci-image__texte b { overflow: hidden; font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.ci-image__texte small { color: var(--admin-texte-doux); font-size: 0.6875rem; }
+.ci-image__coche { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgb(255 255 255 / 85%); color: transparent; box-shadow: 0 2px 8px rgb(0 0 0 / 20%); transition: background-color 150ms ease, transform 200ms cubic-bezier(.3, 1.4, .5, 1); }
+.ci-image__coche icon { font-size: 18px; }
+.ci-image--choisie { box-shadow: 0 0 0 3px var(--admin-accent), var(--admin-ombre-haute); }
+.ci-image--choisie .ci-image__coche { background: var(--admin-primaire); color: var(--admin-sur-primaire); transform: scale(1.08); }
+.ci-vide { box-shadow: none; }
+.ci-pied { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--admin-trait); background: var(--admin-surface); }
+.ci-pied__choix { display: inline-flex; flex: 1; align-items: center; gap: 8px; min-width: 0; overflow: hidden; color: var(--admin-texte-doux); font-size: 0.875rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.ci-pied__choix icon { flex: none; color: var(--admin-accent); }
+.ci-depot { position: absolute; inset: 0; z-index: 5; display: grid; place-content: center; justify-items: center; gap: 8px; border: 3px dashed var(--admin-accent); border-radius: 20px; background: var(--admin-voile-milieu); color: #FFFFFF; pointer-events: none; }
+.ci-depot icon { font-size: 56px; }
+.ci-depot b { font-family: "Fraunces", Georgia, serif; font-size: 1.4rem; }
+@media (max-width: 640px) { .ci-tete p { display: none; } .ci-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

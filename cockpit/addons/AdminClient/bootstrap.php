@@ -12,6 +12,8 @@
  *   hides the actions on the structure — edit, clone or delete a model, raw
  *   JSON. Cockpit shows them to everyone and refuses them only once clicked.
  *   Display only: security still rests on the role's permissions.
+ * - assets/notifications.js: Cockpit's notifications go through the
+ *   dictionary too, as its dialogs already do.
  *
  * An addon rather than a patch, so updating Cockpit never undoes it.
  */
@@ -29,6 +31,8 @@ $this->on('app.layout.assets', function (&$assets, $context) {
     }
 
     if ($context === 'app:footer') {
+        $assets[] = ['src' => 'adminclient:assets/notifications.js', 'type' => 'module', 'position' => 'footer'];
+
         $user = $this->helper('auth')->getUser();
 
         if ($user && ($user['role'] ?? '') !== 'admin') {
