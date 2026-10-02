@@ -60,7 +60,9 @@ function annotate(input) {
     let notice = input.parentNode.querySelector('.contraste');
 
     if (!isColour(input.value)) {
-        if (notice) notice.remove();
+        if (notice) {
+            notice.remove();
+        }
         return;
     }
 
@@ -72,11 +74,16 @@ function annotate(input) {
         input.parentNode.appendChild(notice);
     }
 
-    // N'écrire que ce qui change : réécrire le texte, même identique, remplace un nœud, ce qui réveille
-    // le MutationObserver, qui rappelle scan()… sans fin. La fiche « Identité du site » se figeait.
     const { className, text } = verdict(input.value.trim());
-    if (notice.className !== `contraste ${className}`) notice.className = `contraste ${className}`;
-    if (notice.textContent !== text) notice.textContent = text;
+    const nextClassName = `contraste ${className}`;
+
+    if (notice.className !== nextClassName) {
+        notice.className = nextClassName;
+    }
+
+    if (notice.textContent !== text) {
+        notice.textContent = text;
+    }
 }
 
 function scan() {

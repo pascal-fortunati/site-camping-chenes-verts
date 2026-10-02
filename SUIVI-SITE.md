@@ -3,6 +3,14 @@
 Site créé depuis le socle `jean-ely-pro/site-vitrine-cockpit-php` (version 2.0.6), dépôt distant `socle`.
 Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise à jour.
 
+## Version du socle
+
+Fusion de `v2.0.7` le 02/10/2026 (branche `maj-socle`, `--allow-unrelated-histories` : première fusion d'un dépôt
+créé depuis le template). Apports : correctifs des boucles sans fin de `contraste-couleurs.js` (fiche « Identité du
+site » figée, que nous avions corrigée de notre côté : la version du socle remplace la nôtre) et de `poids-images.js`
+(fenêtre de détail d'une image), `process-timeout: 0` dans `composer.json`. Le fichier `VERSION` du socle indique
+encore `2.0.6` pour cette étiquette.
+
 ## Fichiers du socle modifiés
 
 À relire à chaque fusion : un conflit y est possible. Les ajouts sont regroupés entre deux commentaires
@@ -15,7 +23,6 @@ Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |
 | `src/Contact/Submission.php` | Champ caché `formulaire=reservation` : vérifie et enregistre le séjour ; message facultatif. Un message de contact est traité exactement comme avant | Option A |
-| `cockpit/addons/EditorGuards/assets/contraste-couleurs.js` | N'écrit le message de contraste que s'il change | **Bogue du socle** : la réécriture réveillait son propre MutationObserver, boucle sans fin, la fiche « Identité du site » se figeait sans afficher ses champs. À signaler au socle ; garder cette version si le socle ne corrige pas |
 
 Après chaque fusion : `php bin/install-cockpit.php --force`, `php bin/purge-cache.php`, `composer test`.
 

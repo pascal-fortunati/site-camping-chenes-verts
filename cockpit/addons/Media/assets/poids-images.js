@@ -52,10 +52,6 @@ function warningFor(asset) {
 
 /** The asset dialog shows weight and dimensions; the notice goes under them. */
 function annotate() {
-    document.querySelectorAll('[data-media-asset]').forEach((node) => {
-        node.remove();
-    });
-
     const app = document.querySelector('kiss-dialog') || document;
 
     app.querySelectorAll('.kiss-text-monospace').forEach((node) => {
@@ -63,22 +59,37 @@ function annotate() {
         if (!match) return;
 
         const container = node.parentNode;
-        if (!container || container.querySelector('.media-alerte')) return;
+        if (!container) return;
+
+        let notice = container.querySelector('[data-media-asset]');
 
         const sizeNode = [...container.querySelectorAll('.kiss-text-monospace')].find((n) =>
             /\d\s*(ko|kb|mo|mb)/i.test(n.textContent),
         );
 
         const bytes = sizeNode ? parseSize(sizeNode.textContent) : 0;
-        const message = warningFor({ size: bytes, width: Number(match[1]) });
+        const message = warningFor({
+            size: bytes,
+            width: Number(match[1]),
+        });
 
-        if (!message) return;
+        if (!message) {
+            if (notice) {
+                notice.remove();
+            }
+            return;
+        }
 
-        const notice = document.createElement('div');
-        notice.className = 'media-alerte';
-        notice.dataset.mediaAsset = '1';
-        notice.textContent = message;
-        container.appendChild(notice);
+        if (!notice) {
+            notice = document.createElement('div');
+            notice.className = 'media-alerte';
+            notice.dataset.mediaAsset = '1';
+            container.appendChild(notice);
+        }
+
+        if (notice.textContent !== message) {
+            notice.textContent = message;
+        }
     });
 }
 

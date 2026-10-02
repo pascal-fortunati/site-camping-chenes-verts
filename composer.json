@@ -25,7 +25,8 @@
     },
     "config": {
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "process-timeout": 0
     },
     "scripts": {
         "install-cockpit": "@php bin/install-cockpit.php",
