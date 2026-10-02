@@ -12,6 +12,14 @@ $this->on('before', function () {
         return;
     }
 
+    // Le serveur garde les fichiers de l'administration un an en cache, et Cockpit les adresse par sa seule version
+    // (?ver=2.14.0) : un changement de nos styles ou scripts n'arrivait pas chez qui avait déjà ouvert l'admin.
+    // La version suit donc aussi la date du dernier fichier modifié des extensions.
+    $dates = array_map('filemtime', glob(dirname(__DIR__).'/*/assets/*.{css,js}', GLOB_BRACE) ?: []);
+    if ($dates !== [] && !str_contains((string) $this->retrieve('app.version'), '-')) {
+        $this->set('app.version', $this->retrieve('app.version').'-'.max($dates));
+    }
+
     // Clair par défaut, sombre si on l'a choisi dans l'en-tête (cookie). Le choix du profil n'est pas modifié.
     $theme = ($_COOKIE['admincamping-theme'] ?? '') === 'sombre' ? 'dark' : 'light';
     $this->set('theme/default', $theme);

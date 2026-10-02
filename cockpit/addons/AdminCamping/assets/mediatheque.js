@@ -5,8 +5,10 @@
  * /admincamping/usages.
  */
 
-import vignette from './vignette.js';
-import confirmer from './confirmer.js';
+// Les fichiers voisins sont chargés à la même version que celui-ci (?v=…) : le serveur les garde un an en cache.
+const version = new URL(import.meta.url).search;
+const { default: vignette } = await import(`./vignette.js${version}`);
+const { default: confirmer } = await import(`./confirmer.js${version}`);
 
 const LOURDE = 1024 * 1024;
 const PAR_PAGE = 48;

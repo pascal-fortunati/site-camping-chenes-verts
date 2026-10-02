@@ -4,7 +4,9 @@
  * en ligne, dupliquer, supprimer). S'appuie sur les routes de Cockpit /content/collection/*.
  */
 
-import confirmer from './confirmer.js';
+// Les fichiers voisins sont chargés à la même version que celui-ci (?v=…) : le serveur les garde un an en cache.
+const version = new URL(import.meta.url).search;
+const { default: confirmer } = await import(`./confirmer.js${version}`);
 
 const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];

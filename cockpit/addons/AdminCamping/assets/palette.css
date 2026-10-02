@@ -516,8 +516,10 @@ html[data-theme] .app-dashboard:has(.camping-tableau) section.kiss-flex-1 > div:
 .tdb-tout icon { transition: transform 150ms ease; }
 .tdb-tout:hover icon { transform: translateX(3px); }
 
-/* ── Passage d'une page à l'autre : pas de transition. La barre latérale et l'en-tête arrivent complets du serveur et
-   le navigateur garde l'ancienne page jusqu'à ce que la nouvelle soit prête ; une transition les vidait un instant. ── */
+/* ── Passage d'une page à l'autre : pas de fondu. Cockpit en active un (@view-transition dans app.css) : toute la page,
+   barre latérale comprise, s'effaçait au profit d'une page dont le contenu n'était pas encore dessiné. La barre et
+   l'en-tête arrivent complets du serveur ; le navigateur garde l'ancienne page jusqu'à ce que la nouvelle soit prête. ── */
+@view-transition { navigation: none; }
 
 /* ── La barre d'actions du bas (Enregistrer, Fermer…) : un vrai fond, elle ne flotte plus sur le contenu ── */
 html[data-theme] app-actionbar {

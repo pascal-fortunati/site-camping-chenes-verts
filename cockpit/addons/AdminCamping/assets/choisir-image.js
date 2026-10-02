@@ -4,7 +4,9 @@
  * l'envoi depuis l'ordinateur sans quitter la fenêtre — l'image envoyée est aussitôt choisie.
  */
 
-import vignette from './vignette.js';
+// Les fichiers voisins sont chargés à la même version que celui-ci (?v=…) : le serveur les garde un an en cache.
+const version = new URL(import.meta.url).search;
+const { default: vignette } = await import(`./vignette.js${version}`);
 
 const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 const taille = (octets) => !octets ? '' : (octets < 1048576 ? Math.max(1, Math.round(octets / 1024)) + ' ko' : (octets / 1048576).toFixed(1).replace('.', ',') + ' Mo');
