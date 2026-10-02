@@ -25,3 +25,39 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// Le menu du compte, sous l'avatar : s'ouvre au clic, se ferme au clic ailleurs ou avec Échap.
+const compte = document.querySelector('[data-entete-compte]');
+const menu = document.getElementById('app-account-menu');
+
+if (compte && menu && menu.classList.contains('entete__menu')) {
+    const liens = () => [...menu.querySelectorAll('a, button')];
+    const ouvrir = (oui) => {
+        menu.hidden = !oui;
+        compte.setAttribute('aria-expanded', oui ? 'true' : 'false');
+        if (oui) requestAnimationFrame(() => liens()[0]?.focus());
+    };
+
+    compte.addEventListener('click', (e) => {
+        e.stopPropagation();
+        ouvrir(menu.hidden);
+    });
+    document.addEventListener('click', (e) => {
+        if (!menu.hidden && !menu.contains(e.target)) ouvrir(false);
+    });
+    document.addEventListener('keydown', (e) => {
+        if (menu.hidden) return;
+        if (e.key === 'Escape') {
+            ouvrir(false);
+            compte.focus();
+        }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const l = liens();
+            const i = l.indexOf(document.activeElement);
+            l[(i + (e.key === 'ArrowDown' ? 1 : -1) + l.length) % l.length]?.focus();
+        }
+    });
+    // « Mon avatar » ouvre sa fenêtre : le menu se referme derrière.
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) ouvrir(false); });
+}

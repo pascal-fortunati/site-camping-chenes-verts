@@ -4,7 +4,8 @@
  * en ligne, dupliquer, supprimer). S'appuie sur les routes de Cockpit /content/collection/*.
  */
 
-const echapper = (texte) => String(texte).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+import confirmer from './confirmer.js';
+
 const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
@@ -189,14 +190,19 @@ export default {
             }).catch((r) => App.ui.notify((r && r.error) || 'Le changement a échoué.', 'error'));
         },
 
-        supprimer(e) {
+        async supprimer(e) {
             this.menu = null;
-            App.ui.confirm(`Supprimer « ${echapper(this.titre(e))} » ?<br><br>Cette action est définitive.`, () => {
-                this.$request(`/content/collection/remove/${this.model.name}`, { ids: [e._id] }).then(() => {
-                    this.elements = this.elements.filter((x) => x._id !== e._id);
-                    App.ui.notify('Supprimé.');
-                }).catch((r) => App.ui.notify((r && r.error) || 'La suppression a échoué.', 'error'));
+            const oui = await confirmer({
+                titre: `Supprimer « ${this.titre(e)} » ?`,
+                texte: this.model.name === 'pages' ? 'La page disparaît du site et du menu. Cette action est définitive.' : 'Cette action est définitive.',
+                bouton: 'Supprimer',
+                danger: true
             });
+            if (!oui) return;
+            this.$request(`/content/collection/remove/${this.model.name}`, { ids: [e._id] }).then(() => {
+                this.elements = this.elements.filter((x) => x._id !== e._id);
+                App.ui.notify('Supprimé.');
+            }).catch((r) => App.ui.notify((r && r.error) || 'La suppression a échoué.', 'error'));
         }
     },
 

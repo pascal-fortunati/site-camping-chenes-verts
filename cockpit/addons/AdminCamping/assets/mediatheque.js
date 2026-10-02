@@ -6,6 +6,7 @@
  */
 
 import vignette from './vignette.js';
+import confirmer from './confirmer.js';
 
 const LOURDE = 1024 * 1024;
 const PAR_PAGE = 48;
@@ -17,8 +18,6 @@ const taille = (octets) => {
 };
 
 const date = (secondes) => new Date(secondes * 1000).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-
-const echapper = (texte) => String(texte).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -225,20 +224,26 @@ export default {
             if (i > -1) this.choisies.splice(i, 1); else this.choisies.push(a._id);
         },
 
-        supprimer(ids) {
+        async supprimer(ids) {
             const noms = [];
             ids.forEach((id) => (this.utilisations({ _id: id }) || []).forEach((u) => noms.includes(u.libelle) || noms.push(u.libelle)));
-            const message = (ids.length > 1 ? `Supprimer ces ${ids.length} fichiers ?` : 'Supprimer ce fichier ?')
-                + (noms.length ? `<br><br><strong>Attention, encore utilisé sur :</strong><br>${noms.map(echapper).join('<br>')}` : '')
-                + '<br><br>Cette action est définitive.';
-            App.ui.confirm(message, () => {
-                this.$request('/assets/remove', { assets: ids }).then(() => {
-                    this.images = this.images.filter((a) => !ids.includes(a._id));
-                    this.choisies = [];
-                    if (this.ouverte && ids.includes(this.ouverte._id)) this.fermer();
-                    App.ui.notify(ids.length > 1 ? 'Fichiers supprimés.' : 'Fichier supprimé.');
-                }).catch((r) => App.ui.notify((r && r.error) || 'La suppression a échoué.', 'error'));
+            const plusieurs = ids.length > 1;
+            const oui = await confirmer({
+                titre: plusieurs ? `Supprimer ces ${ids.length} fichiers ?` : 'Supprimer ce fichier ?',
+                texte: noms.length
+                    ? (plusieurs ? 'Attention, certains servent encore sur le site. Ils disparaîtront de :' : 'Attention, il sert encore sur le site. Il disparaîtra de :')
+                    : 'Cette action est définitive.',
+                details: noms,
+                bouton: 'Supprimer',
+                danger: true
             });
+            if (!oui) return;
+            this.$request('/assets/remove', { assets: ids }).then(() => {
+                this.images = this.images.filter((a) => !ids.includes(a._id));
+                this.choisies = [];
+                if (this.ouverte && ids.includes(this.ouverte._id)) this.fermer();
+                App.ui.notify(plusieurs ? 'Fichiers supprimés.' : 'Fichier supprimé.');
+            }).catch((r) => App.ui.notify((r && r.error) || 'La suppression a échoué.', 'error'));
         },
 
         // ── Panneau d'une image ──

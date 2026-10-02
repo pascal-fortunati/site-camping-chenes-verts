@@ -30,6 +30,7 @@ html[data-theme]:root {
     --admin-alerte-texte: #8A3A12;
     --admin-alerte-point: #D2541E;
     --admin-danger: #A12A1F;
+    --admin-danger-fond: #A12A1F;
     --admin-succes: #1E5A32;
     --admin-ombre: 0 1px 2px rgb(31 42 34 / 6%), 0 6px 18px rgb(31 42 34 / 7%);
     --admin-ombre-haute: 0 2px 4px rgb(31 42 34 / 8%), 0 14px 32px rgb(31 42 34 / 12%);
@@ -143,7 +144,7 @@ html[data-theme] .kiss-button-primary {
 }
 html[data-theme] .kiss-button-primary:hover { background: var(--admin-primaire-fort); border-color: var(--admin-primaire-fort); color: var(--admin-sur-primaire); }
 
-html[data-theme] .kiss-button-danger { border-color: var(--admin-danger); background: var(--admin-danger); color: #FFFFFF; }
+html[data-theme] .kiss-button-danger { border-color: var(--admin-danger-fond, var(--admin-danger)); background: var(--admin-danger-fond, var(--admin-danger)); color: #FFFFFF; }   /* fond plus sombre que le texte rouge : le blanc s'y lit (5:1) */
 html[data-theme] .kiss-button-danger:hover { filter: brightness(.88); }
 html[data-theme] .kiss-button-outline.kiss-button-primary { background: var(--admin-surface); color: var(--admin-accent); }
 html[data-theme] .kiss-button-outline.kiss-button-primary:hover { background: var(--admin-surface-douce); }
@@ -611,3 +612,58 @@ html[data-theme] .entete__droite .passerelle-bouton { min-height: 40px; padding:
 }
 
 html[data-theme="dark"] .app-container-aside-menu { box-shadow: inset -1px 0 0 rgb(255 255 255 / 6%); }
+
+/* ═══ Les petites fenêtres (confirmer, prévenir, saisir) : Cockpit les dessine sans fond, pour un voile noir ;
+   ici une vraie carte, dans les deux thèmes ═══ */
+html[data-theme] kiss-dialog[type="alert"],
+html[data-theme] kiss-dialog[type="confirm"],
+html[data-theme] kiss-dialog[type="prompt"] { background: color-mix(in srgb, var(--admin-barre) 45%, transparent); backdrop-filter: blur(4px); }
+html[data-theme] kiss-dialog[type="alert"] > kiss-content,
+html[data-theme] kiss-dialog[type="confirm"] > kiss-content,
+html[data-theme] kiss-dialog[type="prompt"] > kiss-content {
+    width: min(460px, calc(100vw - 32px));
+    padding: 26px 26px 22px;
+    border: 1px solid var(--admin-trait);
+    border-radius: 18px;
+    background: var(--admin-surface);
+    color: var(--admin-texte);
+    box-shadow: var(--admin-ombre-haute);
+    font-size: 1rem;
+}
+html[data-theme] .kiss-dialog-confirm-message,
+html[data-theme] .kiss-dialog-prompt-message,
+html[data-theme] kiss-dialog[type="alert"] kiss-content > div:first-child { margin: 0 0 18px !important; font-size: 1rem; font-weight: 600; line-height: 1.5; }
+html[data-theme] kiss-dialog[type="confirm"] .kiss-button-group,
+html[data-theme] kiss-dialog[type="prompt"] .kiss-button-group { justify-content: flex-end; gap: 10px; }
+html[data-theme] kiss-dialog[type] .kiss-button-group > .kiss-button { flex: 0 1 auto !important; min-height: 42px; margin: 0 !important; border-radius: var(--admin-rayon-petit) !important; }
+
+/* La nôtre (confirmer.js) : une icône, un titre, l'explication, un bouton qui dit ce qu'il fait */
+.dlg { display: grid; justify-items: start; gap: 8px; }
+.dlg-icone { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 6px; border-radius: 14px; background: var(--admin-surface-douce); color: var(--admin-accent); }
+.dlg-icone icon { font-size: 26px; }
+.dlg-icone--danger { background: color-mix(in srgb, var(--admin-danger) 14%, var(--admin-surface)); color: var(--admin-danger); }
+.dlg-titre { margin: 0; color: var(--admin-texte); font-size: 1.3rem; line-height: 1.25; }
+.dlg-texte { margin: 0; color: var(--admin-texte-doux); font-size: 0.9375rem; }
+.dlg-details { display: grid; gap: 4px; width: 100%; margin: 4px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); font-size: 0.875rem; font-weight: 600; list-style: none; }
+.dlg-details li::before { content: "• "; }
+.dlg-boutons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; width: 100%; margin-top: 14px; }
+
+/* ═══ Le menu du compte, sous l'avatar (entete.php) ═══ */
+.entete__compte-zone { position: relative; }
+html[data-theme] .entete__compte { padding: 0; border: 0; background: transparent; cursor: pointer; }
+.entete__compte[aria-expanded="true"] { box-shadow: 0 0 0 2px var(--admin-surface), 0 0 0 4px var(--admin-accent); }
+.entete__compte:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--admin-surface), 0 0 0 4px var(--admin-accent); }
+.entete__menu { position: absolute; top: calc(100% + 12px); right: 0; z-index: 120; width: 270px; padding: 8px; border: 1px solid var(--admin-trait); border-radius: 16px; background: var(--admin-surface); color: var(--admin-texte); box-shadow: var(--admin-ombre-haute); transform-origin: top right; animation: camping-pop 160ms cubic-bezier(.2, .7, .2, 1) backwards; }
+.entete__menu[hidden] { display: none; }
+.entete__menu::before { content: ""; position: absolute; top: -7px; right: 14px; width: 12px; height: 12px; border-top: 1px solid var(--admin-trait); border-left: 1px solid var(--admin-trait); background: var(--admin-surface); transform: rotate(45deg); }
+.entete__menu-tete { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; padding: 10px 10px 14px; border-bottom: 1px solid var(--admin-surface-douce); }
+.entete__menu-tete span { display: grid; min-width: 0; }
+.entete__menu-tete b { overflow: hidden; font-size: 0.9375rem; text-overflow: ellipsis; white-space: nowrap; }
+.entete__menu-tete small { overflow: hidden; color: var(--admin-texte-doux); font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.entete__menu kiss-navlist ul { margin: 0; padding: 0; list-style: none; }
+html[data-theme] .entete__menu kiss-navlist a { display: flex !important; align-items: center; gap: 12px; padding: 9px 10px !important; border-radius: 9px; color: var(--admin-texte) !important; font-size: 0.875rem; font-weight: 600; text-decoration: none; opacity: 1 !important; transition: background-color 120ms ease; }
+html[data-theme] .entete__menu kiss-navlist a:hover, html[data-theme] .entete__menu kiss-navlist a:focus-visible { outline: none; background: var(--admin-surface-douce); }
+html[data-theme] .entete__menu kiss-navlist a icon { margin: 0 !important; color: var(--admin-accent); font-size: 20px; }
+.entete__menu-filet { height: 1px; margin: 6px 4px; background: var(--admin-surface-douce); }
+html[data-theme] .entete__menu .entete__menu-sortie, html[data-theme] .entete__menu .entete__menu-sortie icon { color: var(--admin-danger) !important; }
+.entete__passerelle { gap: 8px; }
