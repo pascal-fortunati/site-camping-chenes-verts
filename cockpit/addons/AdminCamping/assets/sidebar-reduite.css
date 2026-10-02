@@ -1,0 +1,2 @@
+/* Chargé par le serveur quand la barre est réduite (cookie « admincamping-sidebar ») : la largeur est juste dès l'affichage. */
+html[data-theme]:root { --sidebar-l: 72px; }

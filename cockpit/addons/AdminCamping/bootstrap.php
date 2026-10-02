@@ -80,10 +80,25 @@ $this->on('before', function () {
     $this->set('admincamping.theme', 'admincamping:generated/'.basename($css));
 });
 
+// Le tableau de bord du client remplace celui de Cockpit (ses blocs par défaut sont retirés).
+$this->on('app.dashboard.widgets', function ($widgets) {
+    $construire = include __DIR__.'/tableau-de-bord.php';
+    $widgets->exchangeArray([[
+        'name' => 'camping-tableau',
+        'area' => 'primary',
+        'prio' => 100,
+        'html' => $construire($this),
+    ]]);
+}, -100);
+
 $this->on('app.layout.assets', function (&$assets, $context) {
 
     if ($context === 'app:header') {
         $assets[] = 'admincamping:assets/palette.css';
+
+        if (($_COOKIE['admincamping-sidebar'] ?? '') === 'reduite') {
+            $assets[] = 'admincamping:assets/sidebar-reduite.css';
+        }
 
         if ($theme = $this->retrieve('admincamping.theme')) {
             $assets[] = $theme;
@@ -92,5 +107,6 @@ $this->on('app.layout.assets', function (&$assets, $context) {
 
     if ($context === 'app:footer') {
         $assets[] = ['src' => 'admincamping:assets/icones.js', 'type' => 'module', 'position' => 'footer'];
+        $assets[] = ['src' => 'admincamping:assets/sidebar.js', 'type' => 'module', 'position' => 'footer'];
     }
 });
