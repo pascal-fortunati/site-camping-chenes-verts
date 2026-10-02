@@ -20,6 +20,7 @@
     {# Menu repliable au téléphone. Sans JavaScript, le menu reste déplié. #}
     <script src="/assets/js/menu.js" defer></script>
     <script src="/assets/js/remonter.js" defer></script>
+    <script src="/assets/js/passerelle.js" defer></script>
     {% if jsonld|default('') is not empty %}
         {# Built and encoded in PHP, so it is inserted as is. #}
         <script type="application/ld+json">{{ jsonld|raw }}</script>

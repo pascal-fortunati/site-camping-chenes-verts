@@ -1,0 +1,66 @@
+/* L'avatar « connecté à l'administration », en bas à gauche (le gland « Revenir en haut » est à droite). */
+
+.passerelle {
+    position: fixed;
+    left: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.4rem 1rem 0.4rem 0.4rem;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #1F2A22;
+    font: 700 0.9375rem/1.2 "Lexend", system-ui, sans-serif;
+    text-decoration: none;
+    box-shadow: 0 0 0 2px var(--couleur-lien, #2B5A16), 0 10px 24px rgb(31 42 34 / 22%);
+    animation: passerelle-arrivee 500ms cubic-bezier(.3, 1.4, .5, 1) both;
+    transition: transform 200ms ease;
+}
+.passerelle:hover { transform: translateY(-3px); }
+.passerelle:focus-visible { outline: 3px solid var(--couleur-lien, #2B5A16); outline-offset: 4px; }
+
+.passerelle__avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--couleur-lien, #2B5A16);
+    color: #FFFFFF;
+    font-size: 1.125rem;
+}
+
+/* La pastille verte « en ligne », qui respire doucement */
+.passerelle__pastille {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #2EB84B;
+    box-shadow: 0 0 0 2px #FFFFFF;
+    animation: passerelle-pouls 2s ease-out infinite;
+}
+
+.passerelle__texte { display: flex; flex-direction: column; font-weight: 400; font-size: 0.8125rem; color: #4D5A51; }   /* 6,8:1 sur blanc */
+.passerelle__texte b { font-size: 0.875rem; font-weight: 700; color: #1F2A22; }
+
+@media (max-width: 39.99rem) {
+    .passerelle { padding-right: 0.4rem; }
+    .passerelle__texte { display: none; }
+}
+
+@keyframes passerelle-arrivee { from { transform: translateY(140%); } to { transform: none; } }
+@keyframes passerelle-pouls {
+    0% { box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 2px rgb(46 184 75 / 60%); }
+    70% { box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 9px rgb(46 184 75 / 0%); }
+    100% { box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 2px rgb(46 184 75 / 0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .passerelle, .passerelle__pastille { animation: none; transition: none; }
+}
