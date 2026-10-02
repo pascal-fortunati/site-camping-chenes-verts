@@ -367,3 +367,11 @@ html[data-theme] .couleur__code { width: 130px; font-family: ui-monospace, "Casc
 .oui-non__bouton:focus-visible { outline: none; }
 .oui-non__bouton:focus-visible .oui-non__piste { box-shadow: var(--admin-halo); }
 .oui-non__libelle { color: var(--admin-texte); font-size: 0.875rem; cursor: pointer; }
+
+/* Le choix libre d'une couleur, dans le panneau (carré saturation / luminosité, barre de teinte) */
+.couleur__libre { display: grid; gap: 12px; }
+.couleur__carre { position: relative; height: 150px; border-radius: 10px; cursor: crosshair; touch-action: none; }
+.couleur__teintes { position: relative; height: 14px; border-radius: 7px; background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); cursor: pointer; touch-action: none; }
+.couleur__carre:focus-visible, .couleur__teintes:focus-visible { outline: none; box-shadow: var(--admin-halo); }
+.couleur__curseur { position: absolute; width: 18px; height: 18px; border: 3px solid #FFFFFF; border-radius: 50%; box-shadow: 0 1px 4px rgb(0 0 0 / 45%); transform: translate(-50%, -50%); pointer-events: none; }
+.couleur__curseur--teinte { top: 50%; }

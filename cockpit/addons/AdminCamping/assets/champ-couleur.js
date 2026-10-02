@@ -28,13 +28,26 @@ const luminance = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16
     .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
     .reduce((t, c, i) => t + c * [0.2126, 0.7152, 0.0722][i], 0);
 const contraste = (hex) => 1.05 / (luminance(hex) + 0.05);
+// Teinte, saturation, valeur (le carré du sélecteur libre).
+const hexVersTsv = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+    const max = Math.max(r, g, b), d = max - Math.min(r, g, b);
+    const h = d === 0 ? 0 : (max === r ? ((g - b) / d + 6) % 6 : (max === g ? (b - r) / d + 2 : (r - g) / d + 4)) * 60;
+    return [h, max === 0 ? 0 : d / max * 100, max * 100];
+};
+const tsvVersHex = (h, s, v) => {
+    s /= 100; v /= 100;
+    const f = (n) => { const k = (n + h / 60) % 6; return Math.round(255 * (v - v * s * Math.max(0, Math.min(k, 4 - k, 1)))).toString(16).padStart(2, '0'); };
+    return ('#' + f(5) + f(3) + f(1)).toUpperCase();
+};
+const borne = (x, a, b) => Math.min(b, Math.max(a, x));
 const valide = (v) => /^#[0-9a-f]{6}$/i.test(String(v || '').trim());
 
 export default {
     ...origine,
 
     data() {
-        return { ...origine.data.call(this), ouvert: false, saisie: String(this.modelValue || '').toUpperCase() };
+        return { ...origine.data.call(this), ouvert: false, saisie: String(this.modelValue || '').toUpperCase(), libre: false, tsv: [100, 70, 40] };
     },
 
     computed: {
@@ -95,21 +108,48 @@ export default {
             if (valide(v)) this.val = v.toUpperCase();
         },
 
-        // Le sélecteur du système, créé au clic seulement : présent dans la page, EditorGuards y ajouterait un
-        // second message de contraste.
-        autreCouleur() {
-            const boite = document.createElement('div');
-            boite.style.cssText = 'position:fixed;left:-9999px;top:0';
-            const champ = document.createElement('input');
-            champ.type = 'color';
-            champ.dataset.contraste = '1';
-            champ.value = valide(this.val) ? this.val.toLowerCase() : '#2b5a16';
-            champ.addEventListener('input', () => this.choisir(champ.value));
-            champ.addEventListener('change', () => setTimeout(() => boite.remove(), 0));
-            boite.append(champ);
-            document.body.append(boite);
-            champ.click();
-            setTimeout(() => { if (document.activeElement !== champ) boite.remove(); }, 60000);
+        // Le choix libre, dans le panneau même (le sélecteur du système s'ouvrait n'importe où sur l'écran).
+        basculerLibre() {
+            this.libre = !this.libre;
+            if (this.libre && valide(this.val)) this.tsv = hexVersTsv(this.val);
+        },
+
+        appliquerTsv() {
+            this.choisir(tsvVersHex(...this.tsv));
+        },
+
+        glisser(e, quoi) {
+            const zone = e.currentTarget;
+            const lire = (ev) => {
+                const r = zone.getBoundingClientRect();
+                const x = borne((ev.clientX - r.left) / r.width, 0, 1), y = borne((ev.clientY - r.top) / r.height, 0, 1);
+                if (quoi === 'carre') this.tsv = [this.tsv[0], x * 100, (1 - y) * 100];
+                else this.tsv = [x * 359.9, this.tsv[1], this.tsv[2]];
+                this.appliquerTsv();
+            };
+            if (zone.setPointerCapture && e.pointerId !== undefined) {
+                try { zone.setPointerCapture(e.pointerId); } catch (erreur) { /* clic simulé */ }
+            }
+            lire(e);
+            const bouger = (ev) => lire(ev);
+            const finir = () => {
+                zone.removeEventListener('pointermove', bouger);
+                zone.removeEventListener('pointerup', finir);
+                zone.removeEventListener('pointercancel', finir);
+            };
+            zone.addEventListener('pointermove', bouger);
+            zone.addEventListener('pointerup', finir);
+            zone.addEventListener('pointercancel', finir);
+        },
+
+        clavier(e, quoi) {
+            const pas = e.shiftKey ? 10 : 2;
+            const d = { ArrowLeft: [-pas, 0], ArrowRight: [pas, 0], ArrowUp: [0, pas], ArrowDown: [0, -pas] }[e.key];
+            if (!d) return;
+            e.preventDefault();
+            const [h, sat, v] = this.tsv;
+            this.tsv = quoi === 'carre' ? [h, borne(sat + d[0], 0, 100), borne(v + d[1], 0, 100)] : [(h + d[0] * 2 + 360) % 360, sat, v];
+            this.appliquerTsv();
         }
     },
 
@@ -133,7 +173,18 @@ export default {
                     <input type="range" min="8" max="92" step="1" v-model.number="clarte" :style="fondCurseur" aria-label="Clarté de la couleur">
                     <span>Plus clair</span>
                 </label>
-                <button type="button" class="couleur__systeme" @click="autreCouleur"><icon>colorize</icon>Autre couleur…</button>
+                <button type="button" class="couleur__systeme" @click="basculerLibre" :aria-expanded="libre ? 'true' : 'false'"><icon>{{ libre ? 'expand_less' : 'colorize' }}</icon>{{ libre ? 'Masquer le choix libre' : 'Autre couleur…' }}</button>
+                <div class="couleur__libre" v-if="libre">
+                    <div class="couleur__carre" :style="{background: 'linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(' + tsv[0] + ', 100%, 50%))'}"
+                        tabindex="0" role="slider" aria-label="Saturation et luminosité" :aria-valuetext="val"
+                        @pointerdown.prevent="glisser($event, 'carre')" @keydown="clavier($event, 'carre')">
+                        <span class="couleur__curseur" :style="{left: tsv[1] + '%', top: (100 - tsv[2]) + '%', background: val}"></span>
+                    </div>
+                    <div class="couleur__teintes" tabindex="0" role="slider" aria-label="Teinte" aria-valuemin="0" aria-valuemax="360" :aria-valuenow="Math.round(tsv[0])"
+                        @pointerdown.prevent="glisser($event, 'teinte')" @keydown="clavier($event, 'teinte')">
+                        <span class="couleur__curseur couleur__curseur--teinte" :style="{left: (tsv[0] / 360 * 100) + '%', background: 'hsl(' + tsv[0] + ', 100%, 50%)'}"></span>
+                    </div>
+                </div>
             </div>
         </div>
     `
