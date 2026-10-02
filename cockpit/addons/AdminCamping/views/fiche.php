@@ -122,6 +122,7 @@ $droits = [
                     locales: <?= json_encode($langues) ?>,
                     droits: <?= json_encode($droits) ?>,
                     nouveau: <?= json_encode($vue['nouveau'], JSON_UNESCAPED_UNICODE) ?>,
+                    libelle: <?= json_encode($vue['libelle'], JSON_UNESCAPED_UNICODE) ?>,
                     saving: false
                 };
             },
@@ -131,7 +132,7 @@ $droits = [
                     return this.model.type === 'collection';
                 },
                 titre() {
-                    if (!this.estCollection) return this.model.label || this.model.name;
+                    if (!this.estCollection) return this.libelle;
                     const champ = ['titre', 'title', 'nom', 'name'].find((n) => this.fields.some((f) => f.name === n));
                     const t = champ ? this.item[champ] : '';
                     return (typeof t === 'string' && t.trim()) ? t : (this.item._id ? 'Sans titre' : this.nouveau);
