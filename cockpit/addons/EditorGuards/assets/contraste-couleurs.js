@@ -72,9 +72,11 @@ function annotate(input) {
         input.parentNode.appendChild(notice);
     }
 
+    // N'écrire que ce qui change : réécrire le texte, même identique, remplace un nœud, ce qui réveille
+    // le MutationObserver, qui rappelle scan()… sans fin. La fiche « Identité du site » se figeait.
     const { className, text } = verdict(input.value.trim());
-    notice.className = `contraste ${className}`;
-    notice.textContent = text;
+    if (notice.className !== `contraste ${className}`) notice.className = `contraste ${className}`;
+    if (notice.textContent !== text) notice.textContent = text;
 }
 
 function scan() {

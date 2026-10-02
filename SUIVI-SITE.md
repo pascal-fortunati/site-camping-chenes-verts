@@ -15,6 +15,7 @@ Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |
 | `src/Contact/Submission.php` | Champ caché `formulaire=reservation` : vérifie et enregistre le séjour ; message facultatif. Un message de contact est traité exactement comme avant | Option A |
+| `cockpit/addons/EditorGuards/assets/contraste-couleurs.js` | N'écrit le message de contraste que s'il change | **Bogue du socle** : la réécriture réveillait son propre MutationObserver, boucle sans fin, la fiche « Identité du site » se figeait sans afficher ses champs. À signaler au socle ; garder cette version si le socle ne corrige pas |
 
 Après chaque fusion : `php bin/install-cockpit.php --force`, `php bin/purge-cache.php`, `composer test`.
 
