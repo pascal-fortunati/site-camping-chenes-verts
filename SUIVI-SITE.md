@@ -36,6 +36,7 @@ Une correction du socle sur ces fichiers ne s'applique plus : relire `git log so
 | `templates-client/partials/pied.html.twig` | `templates/partials/pied.html.twig` | Classement, horaires par saison, lien vers les CGV |
 | `templates-client/confidentialite.html.twig` | `templates/confidentialite.html.twig` | « Ce qui est collecté » : le formulaire de réservation recueille aussi le séjour et le téléphone (option A) ; rubriques en cartes (retour client) |
 | `templates-client/mentions-legales.html.twig` | `templates/mentions-legales.html.twig` | Rubriques en cartes, éditeur en liste libellé / valeur (retour client : « trop brouillon ») |
+| `templates-client/blocs/hero.html.twig` | `templates/blocs/hero.html.twig` | Logo du site en grand, dans un médaillon, sur le bandeau de la page d'accueil (retour client) |
 | `templates-client/page.html.twig` | `templates/page.html.twig` | Mode document : à partir de 5 sections de texte titrées sans image (CGV), feuille centrée et sommaire |
 | `templates-client/blocs/texte-image.html.twig` | `templates/blocs/texte-image.html.twig` | Ancre `id` sur la section, pour le sommaire du mode document |
 

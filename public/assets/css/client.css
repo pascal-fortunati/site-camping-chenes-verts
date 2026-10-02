@@ -1144,8 +1144,12 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
     .en-tete__interieur { flex-wrap: nowrap; }             /* jamais de menu sous le logo */
     .menu { margin-left: auto; }
     .menu__liste { flex-wrap: nowrap; white-space: nowrap; }
-    .menu__liste a:not([href="/reserver"]) { position: relative; text-decoration: none; }
-    .menu__liste a:not([href="/reserver"])::after {
+    .en-tete__nom { white-space: nowrap; }
+    .en-tete__interieur { gap: 1.5rem; }
+    .en-tete__logo { flex: none; }
+    /* Sans JavaScript : un trait sous l'entrée survolée ou en cours */
+    .menu:not(.menu--bulle) .menu__liste a:not([href="/reserver"]) { position: relative; text-decoration: none; }
+    .menu:not(.menu--bulle) .menu__liste a:not([href="/reserver"])::after {
         content: "";
         position: absolute;
         left: 0;
@@ -1158,10 +1162,95 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
         transform-origin: left;
         transition: transform var(--transition);
     }
-    .menu__liste a:hover::after,
-    .menu__liste a[aria-current="page"]::after { transform: scaleX(1); }
-    .menu__liste a[href="/reserver"]:hover { box-shadow: inset 0 0 0 100vmax rgb(0 0 0 / 18%); }
+    .menu:not(.menu--bulle) .menu__liste a:hover::after,
+    .menu:not(.menu--bulle) .menu__liste a[aria-current="page"]::after { transform: scaleX(1); }
+
+    /* Avec JavaScript (menu.js) : une barre lin, une bulle verte qui glisse d'une entrée à l'autre */
+    .menu--bulle { position: relative; }
+    .menu--bulle .menu__liste {
+        gap: 0.15rem;
+        padding: 0.3rem;
+        border-radius: 999px;
+        background: var(--couleur-fond-doux);
+        box-shadow: inset 0 0 0 1px var(--couleur-trait);
+    }
+    .menu--bulle .menu__liste a {
+        position: relative;
+        z-index: 1;
+        padding: 0.55rem 0.72rem;
+        border-radius: 999px;
+        font-size: 0.9375rem;
+        text-decoration: none;
+        transition: color 250ms ease;
+    }
+    .menu--bulle .menu__liste a[aria-current="page"] { text-decoration: none; }
+    .menu--bulle .menu__liste a:hover { color: var(--couleur-texte); }
+    .menu--bulle .menu__liste a.sur-bulle { color: var(--blanc); }        /* 8,9:1 sur le vert */
+    .menu--bulle .menu__liste a:focus-visible { outline-offset: 3px; }
+    .menu--bulle .menu__liste li:has(a[href="/reserver"]) { margin-left: 0.35rem; }
+    .menu--bulle .menu__liste a[href="/reserver"] { min-height: 44px; padding: 0.55rem 1.3rem; }
+
+    .menu__bulle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        width: var(--l, 0);
+        height: var(--h, 0);
+        border-radius: 999px;
+        background: var(--couleur-lien);
+        box-shadow: 0 6px 16px rgb(43 90 22 / 30%);
+        transform: translate(var(--x, 0), var(--y, 0)) scale(0.4);
+        transition: transform 450ms cubic-bezier(.3, 1.4, .5, 1), width 450ms cubic-bezier(.3, 1.4, .5, 1), visibility 0s 450ms;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    .menu--bulle-visible .menu__bulle {
+        transform: translate(var(--x, 0), var(--y, 0));
+        visibility: visible;
+        transition: transform 450ms cubic-bezier(.3, 1.4, .5, 1), width 450ms cubic-bezier(.3, 1.4, .5, 1), visibility 0s;
+    }
+    .menu--sans-transition .menu__bulle { transition: none; }
+
+    /* « Réserver » : un reflet passe au survol */
+    .menu__liste a[href="/reserver"] { overflow: hidden; isolation: isolate; transition: transform var(--transition); }
+    .menu__liste a[href="/reserver"]::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 28%) 50%, transparent 70%);
+        transform: translateX(-120%);
+    }
+    .menu__liste a[href="/reserver"]:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgb(43 90 22 / 30%); }
+    .menu__liste a[href="/reserver"]:hover::before { transform: translateX(120%); transition: transform 700ms ease; }
 }
+
+/* Au défilement, l'en-tête se resserre et le logo rapetisse */
+.en-tete__interieur { transition: padding 300ms ease; }
+.en-tete__logo img { transition: width 300ms ease, height 300ms ease; }
+.en-tete--defile .en-tete__interieur { padding-block: 0.4rem; }
+@media (min-width: 80rem) {
+    .en-tete--defile .en-tete__logo img { width: 48px; height: 48px; }
+}
+
+/* Téléphone : l'icône ☰ devient ✕, les entrées arrivent en cascade */
+.menu__bouton rect { transform-box: fill-box; transform-origin: center; transition: transform 300ms ease; }
+.menu__bouton[aria-expanded="true"] rect:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.menu__bouton[aria-expanded="true"] rect:nth-child(2) { transform: scaleX(0); }
+.menu__bouton[aria-expanded="true"] rect:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+@media (max-width: 79.99rem) {
+    .en-tete.js:not(.menu-replie) .menu__liste li { animation: cascade 380ms cubic-bezier(.2, .8, .3, 1) both; }
+    .en-tete.js:not(.menu-replie) .menu__liste li:nth-child(2) { animation-delay: 40ms; }
+    .en-tete.js:not(.menu-replie) .menu__liste li:nth-child(3) { animation-delay: 80ms; }
+    .en-tete.js:not(.menu-replie) .menu__liste li:nth-child(4) { animation-delay: 120ms; }
+    .en-tete.js:not(.menu-replie) .menu__liste li:nth-child(5) { animation-delay: 160ms; }
+    .en-tete.js:not(.menu-replie) .menu__liste li:nth-child(6) { animation-delay: 200ms; }
+    .en-tete.js:not(.menu-replie) .menu__liste li:nth-child(7) { animation-delay: 240ms; }
+    .menu__liste a { transition: padding-left 200ms ease, color 200ms ease; }
+    .menu__liste a:hover { padding-left: 0.75rem; color: var(--couleur-lien); }
+}
+@keyframes cascade { from { transform: translateX(-24px); } to { transform: none; } }
 
 /* Boutons et liens d'action : une flèche qui avance au survol */
 .bouton:not(.en-tete__reserver)::after,
@@ -1186,6 +1275,46 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
     background: var(--bois-clair);
 }
 @keyframes monter { from { transform: translateY(28px); } to { transform: none; } }
+
+/* Bandeau d'accueil avec le logo : carte vert profond, le logo en grand dans un médaillon qui la chevauche */
+.bloc-hero__texte--logo {
+    padding-top: 6.5rem;
+    background: var(--vert-profond);
+    color: var(--sur-vert-doux);
+    text-align: center;
+}
+.bloc-hero__texte--logo::before { display: none; }
+.bloc-hero__texte--logo .bloc-hero__titre { color: var(--sur-vert); }
+.bloc-hero__texte--logo .bloc-hero__accroche { color: var(--sur-vert-doux); }       /* 8,73:1 */
+.bloc-hero__texte--logo .bouton { background: var(--couleur-fond); color: var(--vert-profond); }   /* 12:1 */
+.bloc-hero__texte--logo .bouton:hover { background: #FFFFFF; }
+.bloc-hero__texte--logo .bouton:focus-visible { outline-color: var(--sur-vert); }
+
+.bloc-hero__logo {
+    position: absolute;
+    top: -5.5rem;
+    left: 50%;
+    width: 11rem;
+    height: 11rem;
+    margin-left: -5.5rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 6px var(--vert-profond), 0 14px 34px rgb(0 0 0 / 28%);
+    animation: medaillon 900ms cubic-bezier(.2, .9, .3, 1.25) both 150ms;
+}
+.bloc-hero__logo-image { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+@keyframes medaillon { from { transform: scale(.6) rotate(-12deg); } to { transform: none; } }
+
+@media (max-width: 47.99rem) {
+    .bloc-hero__texte--logo { margin-top: -2rem; }
+    .bloc-hero__logo { width: 8.5rem; height: 8.5rem; top: -4.25rem; margin-left: -4.25rem; }
+    .bloc-hero__texte--logo { padding-top: 5rem; }
+}
+
+@media (min-width: 48rem) {
+    .bloc-hero__texte--logo { bottom: 3rem; max-width: 32rem; padding: 6.75rem 2.5rem 2.25rem; }
+}
 
 /* Titre des pages intérieures : une bande vert profond */
 .page__titre {
