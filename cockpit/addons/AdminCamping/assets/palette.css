@@ -714,3 +714,33 @@ html[data-theme] .kiss-toast[type="info"]::before { content: "check_circle"; }  
 html[data-theme] .kiss-toast[type="success"]::before { content: "check_circle"; }
 html[data-theme] .kiss-toast-content { text-shadow: none; }
 html[data-theme] [data-title="false"] .kiss-toast-message { font-weight: 600; }
+
+/* ═══ Les fenêtres et menus de Cockpit ═══ */
+/* Derrière : un voile léger aux couleurs du site plutôt que le fond passé en gris */
+html[data-theme] kiss-dialog, html[data-theme] kiss-popout, html[data-theme] kiss-offcanvas { backdrop-filter: blur(4px); }
+html[data-theme] kiss-popout { background: color-mix(in srgb, var(--admin-barre) 22%, transparent); }
+html[data-theme] kiss-dialog:not([type]) { background: color-mix(in srgb, var(--admin-barre) 40%, transparent); }
+
+/* Les menus « … » : une carte nette, sans liseré de couleur ni titre technique */
+html[data-theme] kiss-popout kiss-content, html[data-theme] kiss-dropdownbox { min-width: 230px; padding: 6px; border: 1px solid var(--admin-trait); border-top: 1px solid var(--admin-trait); border-radius: 14px; background: var(--admin-surface); box-shadow: var(--admin-ombre-haute); }
+html[data-theme] kiss-popout kiss-navlist > ul > li.kiss-nav-header:first-child { display: none; }
+html[data-theme] kiss-popout kiss-navlist a { display: flex !important; align-items: center; gap: 10px; padding: 9px 10px !important; border-radius: 9px; color: var(--admin-texte) !important; font-size: 0.875rem; font-weight: 600; }
+html[data-theme] kiss-popout kiss-navlist a:hover { background: var(--admin-surface-douce); }
+html[data-theme] kiss-popout kiss-navlist a > icon { margin: 0 !important; color: var(--admin-accent); transform: none !important; }
+html[data-theme] kiss-popout kiss-navlist a.kiss-color-danger, html[data-theme] kiss-popout kiss-navlist a.kiss-color-danger > icon { color: var(--admin-danger) !important; }
+html[data-theme] kiss-popout .kiss-nav-divider { margin: 4px 6px; border-color: var(--admin-surface-douce); }
+
+/* Modifier un élément d'une liste (une section de page…) */
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content { width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 24px; overflow-y: auto; border: 1px solid var(--admin-trait); border-radius: 20px; background: var(--admin-fond); box-shadow: var(--admin-ombre-haute); }
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-flex:first-child kiss-svg,
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-flex:first-child .kiss-text-upper,
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-flex:first-child .kiss-text-light { display: none; }
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-flex:first-child .kiss-margin-start { margin: 0 !important; }
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-flex:first-child strong { display: inline-flex; align-items: center; gap: 10px; font-family: "Fraunces", Georgia, serif; font-size: 1.4rem; text-transform: none; }
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-flex:first-child strong::before { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--admin-primaire); color: var(--admin-sur-primaire); font: normal 22px/1 "Material Icons Outlined"; content: "edit_note"; }
+/* le cadre « Valeur de l'élément » autour des champs n'apporte rien */
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-margin > .fields-renderer > app-fieldcontainer { padding: 0; border: 0; background: transparent; box-shadow: none; }
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-margin > .fields-renderer > app-fieldcontainer > .fields-renderer-field,
+html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-margin > .fields-renderer > app-fieldcontainer > div:first-child > .fields-renderer-field { display: none; }
+html[data-theme] kiss-dialog[data-field-render-uid] .kiss-button-group.kiss-child-width-1-2 { position: sticky; bottom: -24px; justify-content: flex-end; gap: 10px; margin: 16px -24px -24px !important; padding: 14px 24px; border-top: 1px solid var(--admin-trait); background: var(--admin-surface); }
+html[data-theme] kiss-dialog[data-field-render-uid] .kiss-button-group.kiss-child-width-1-2 > * { flex: 0 1 auto !important; width: auto !important; border-radius: var(--admin-rayon-petit) !important; margin: 0 !important; }
