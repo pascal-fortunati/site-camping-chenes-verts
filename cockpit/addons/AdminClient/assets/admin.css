@@ -1,0 +1,5 @@
+/* Les libellés sont écrits en français correct dans les modèles : ne pas mettre une majuscule à chaque mot. */
+.kiss-text-capitalize { text-transform: none !important; }
+
+/* Éléments masqués au client par actions-client.js */
+.adminclient-masque { display: none !important; }
