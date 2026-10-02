@@ -15,46 +15,73 @@
 
         <h1 class="page__titre">Politique de confidentialité</h1>
 
-        <h2>Ce qui est collecté</h2>
-        <p>
-            Seul le formulaire de demande de réservation collecte des informations : votre nom,
-            votre adresse e-mail, votre séjour (dates, hébergement souhaité, nombre de personnes
-            et de personnes majeures, nombre d’animaux) et, si vous les donnez, votre téléphone
-            et votre message. Rien d’autre n’est recueilli — ce site n’utilise ni mesure
-            d’audience, ni traceur publicitaire, et ne dépose aucun cookie.
-        </p>
+        <div class="legale">
 
-        <h2>À quoi elles servent</h2>
-        <p>
-            Uniquement à répondre à votre demande. Elles ne sont ni vendues, ni cédées, ni
-            utilisées pour vous envoyer autre chose que cette réponse.
-        </p>
+            <p class="legale__intro">
+                Ce que deviennent les informations que vous nous confiez en demandant une réservation.
+            </p>
 
-        <h2>Combien de temps</h2>
-        <p>Les messages sont conservés {{ duree }}, puis supprimés.</p>
+            <div class="legale__grille">
 
-        <h2>Vos droits</h2>
-        <p>
-            Vous pouvez demander à consulter, corriger ou supprimer les informations vous
-            concernant{% if site.email %}, en écrivant à
-            <a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}. La demande est
-            traitée dans un délai d’un mois.
-        </p>
+                <section class="legale__carte legale__carte--large">
+                    <h2>Ce qui est collecté</h2>
+                    <p>
+                        Seul le formulaire de demande de réservation collecte des informations : votre nom,
+                        votre adresse e-mail, votre séjour (dates, hébergement souhaité, nombre de personnes
+                        et de personnes majeures, nombre d’animaux) et, si vous les donnez, votre téléphone
+                        et votre message. Rien d’autre n’est recueilli — ce site n’utilise ni mesure
+                        d’audience, ni traceur publicitaire, et ne dépose aucun cookie.
+                    </p>
+                </section>
 
-        <h2>Qui les détient</h2>
-        <p>
-            {% if site.nom %}{{ site.nom }}{% else %}L’éditeur du site{% endif %}{% if site.adresse %},
-            {{ site.adresse|replace({"\n": ", "}) }}{% endif %}. Les informations sont conservées
-            sur l’hébergement du site{% if legal.hebergeurNom %}, chez {{ legal.hebergeurNom }}{% endif %},
-            et ne sont transmises à personne d’autre.
-        </p>
+                <section class="legale__carte">
+                    <h2>À quoi elles servent</h2>
+                    <p>
+                        Uniquement à répondre à votre demande. Elles ne sont ni vendues, ni cédées, ni
+                        utilisées pour vous envoyer autre chose que cette réponse.
+                    </p>
+                </section>
 
-        {% if legal.complementConfidentialite %}
-            {# Rich text produced by the admin editor: intentionally not escaped. #}
-            {{ legal.complementConfidentialite|raw }}
-        {% endif %}
+                <section class="legale__carte">
+                    <h2>Combien de temps</h2>
+                    <p>Les messages sont conservés {{ duree }}, puis supprimés.</p>
+                </section>
 
-        <p class="page__retour"><a href="/mentions-legales">Mentions légales</a></p>
+                <section class="legale__carte">
+                    <h2>Vos droits</h2>
+                    <p>
+                        Vous pouvez demander à consulter, corriger ou supprimer les informations vous
+                        concernant{% if site.email %}, en écrivant à
+                        <a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}. La demande est
+                        traitée dans un délai d’un mois.
+                    </p>
+                </section>
+
+                <section class="legale__carte">
+                    <h2>Qui les détient</h2>
+                    <p>
+                        {% if site.nom %}{{ site.nom }}{% else %}L’éditeur du site{% endif %}{% if site.adresse %},
+                        {{ site.adresse|replace({"\n": ", "}) }}{% endif %}. Les informations sont conservées
+                        sur l’hébergement du site{% if legal.hebergeurNom %}, chez {{ legal.hebergeurNom }}{% endif %},
+                        et ne sont transmises à personne d’autre.
+                    </p>
+                </section>
+
+                {% if legal.complementConfidentialite %}
+                    <section class="legale__carte legale__carte--large">
+                        {# Rich text produced by the admin editor: intentionally not escaped. #}
+                        {{ legal.complementConfidentialite|raw }}
+                    </section>
+                {% endif %}
+
+            </div>
+
+            <p class="legale__liens">
+                <a href="/mentions-legales">Mentions légales</a>
+                <a href="/conditions-generales-de-vente">Conditions générales de vente</a>
+            </p>
+
+        </div>
 
     </article>
 {% endblock %}

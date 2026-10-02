@@ -543,7 +543,7 @@ textarea:focus-visible {
     font-weight: 700;
 }
 
-.hebergement__lien { display: inline-block; margin-top: 1rem; font-weight: 700; }
+.hebergement__lien { margin-top: 1.25rem; white-space: nowrap; }
 
 @media (min-width: 64rem) {
     .hebergement { padding: 1.75rem; }
@@ -1037,6 +1037,85 @@ textarea:focus-visible {
     .bloc-carte__actions .bouton { flex: 1 1 100%; justify-content: center; text-align: center; }
 }
 
+/* ── Pages légales : des cartes centrées (mentions légales, confidentialité) ── */
+
+.legale { max-width: 64rem; margin: 2.5rem auto 0; padding: 0; }
+
+.legale__intro { margin: 0 0 1.75rem; font-size: 1.125rem; color: var(--couleur-texte-doux); }
+
+.legale__grille { display: grid; gap: 1.25rem; align-items: start; }
+
+@media (min-width: 48rem) {
+    .legale__grille { grid-template-columns: 1fr 1fr; }
+    .legale__carte--large,
+    .legale__carte:first-child:has(.legale__liste),
+    .legale__carte:last-child:nth-child(even) { grid-column: 1 / -1; }
+}
+
+.legale__carte {
+    padding: 1.6rem 1.75rem;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.legale__carte h2 { margin: 0 0 0.9rem; font-size: 1.375rem; }
+.legale__carte p { max-width: none; margin: 0; }
+.legale__carte p + p { margin-top: 0.75rem; }
+
+.legale__liste { display: grid; gap: 0.25rem 1.25rem; margin: 0; }
+.legale__liste dt { color: var(--couleur-texte-doux); font-size: 0.9375rem; }
+.legale__liste dd { margin: 0 0 0.6rem; font-weight: 700; }
+
+@media (min-width: 40rem) {
+    .legale__liste { grid-template-columns: max-content 1fr; gap: 0.7rem 1.5rem; }
+    .legale__liste dd { margin: 0; }
+}
+
+@media (min-width: 64rem) {
+    .legale__liste { grid-template-columns: max-content 1fr max-content 1fr; }
+}
+
+.legale__liens { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; margin: 2rem 0 0; font-weight: 700; }
+
+/* ── Documents (CGV…) : une feuille centrée, un sommaire ── */
+
+main > .document {
+    box-sizing: border-box;
+    width: min(52rem, 100% - 2 * var(--gouttiere));
+    margin: 2.5rem auto 0;
+    padding: 2rem clamp(1.25rem, 4vw, 3rem) 2.5rem;
+    background: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.document > .bloc { margin: 0; padding: 1.75rem 0; border-top: 1px solid var(--couleur-fond-doux); }
+.document > .bloc:first-child { padding-top: 0; border-top: 0; }
+.document .bloc-texte-image:not(:has(.bloc-texte-image__image)),
+.document .bloc-texte-image:not(:has(.bloc-texte-image__image)) + .bloc-texte-image:not(:has(.bloc-texte-image__image)) { margin: 0; }
+.document h2 { margin: 0 0 0.75rem; font-size: 1.375rem; }
+.document p { max-width: none; }
+.document .bloc-texte-image__texte > :last-child { margin-bottom: 0; }
+
+.document__sommaire {
+    margin: 0 0 0.5rem;
+    padding: 1.4rem 1.6rem;
+    background: var(--couleur-fond-doux);
+    border-radius: var(--rayon-petit);
+}
+
+.document__sommaire h2 { margin: 0 0 0.75rem; font-size: 1.125rem; }
+.document__sommaire ol { margin: 0; padding: 0; list-style: none; }
+.document__sommaire li { max-width: none; }
+.document__sommaire li + li { margin-top: 0.4rem; }
+.document__sommaire a { font-weight: 700; }
+
+@media (min-width: 40rem) {
+    .document__sommaire ol { columns: 2; column-gap: 2rem; }
+    .document__sommaire li { break-inside: avoid; }
+}
+
 /* ═══ Finitions — au-delà de la maquette, même direction : vert, bois, crème ═══ */
 
 :root {
@@ -1182,9 +1261,6 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
 .hebergement__corps > div:first-child { overflow: hidden; border-radius: var(--rayon-petit); }
 .hebergement__image { transition: transform 600ms ease; }
 .hebergement:hover .hebergement__image { transform: scale(1.03); }
-.hebergement__lien { display: inline-flex; align-items: center; gap: 0.45rem; }   /* la flèche reste avec le texte */
-.hebergement__lien::after { content: "→"; flex: none; transition: transform var(--transition); }
-.hebergement__lien:hover::after { transform: translateX(4px); }
 
 /* Coordonnées : un vrai appel à l'action, sur vert profond, avec icônes */
 .bloc-contact {

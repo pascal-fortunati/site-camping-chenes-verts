@@ -75,7 +75,7 @@
                                 <p class="hebergement__mention">{{ h.mention }}</p>
                             {% endif %}
 
-                            <a class="hebergement__lien" href="/tarifs{{ h.ancre|default('') ? '#' ~ h.ancre : '' }}">Voir les prix de cet hébergement</a>
+                            <a class="bouton hebergement__lien" href="/tarifs{{ h.ancre|default('') ? '#' ~ h.ancre : '' }}" aria-label="Voir les tarifs : {{ h.nom }}">Voir les tarifs</a>
                         </div>
 
                     </div>

@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% set titreOnglet = page.seoTitre ?: page.titre %}
+{% set resume = page.seoDescription ?: site.description|default('') %}
+
+{# When the page opens on a banner, that banner carries the only <h1>; the page
+   title would otherwise be said twice, once as a heading and once as a banner. #}
+{% set premierBloc = page.blocs|first %}
+{% set titreDansBandeau = premierBloc and premierBloc.type == 'hero' %}
+
+{# The banner image stands for the page when a link to it is shared. #}
+{% set imagePartage = titreDansBandeau ? premierBloc.image|default(null) : null %}
+{% set imagePartageAlt = titreDansBandeau ? premierBloc.alt|default('') : '' %}
+
+{# The site name is appended only when the title does not already carry it,
+   so a hand-written SEO title never reads « … Bloom — Bloom ». #}
+{% block title %}{{ titreOnglet }}{% if site.nom and site.nom not in titreOnglet %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block main %}
+    {% if not titreDansBandeau %}
+        <h1 class="page__titre">{{ page.titre }}</h1>
+    {% endif %}
+
+    {# Mode document (CGV…) : à partir de 5 sections de texte titrées sans image, une feuille centrée et un sommaire. #}
+    {% set ancres = {} %}
+    {% for i, b in page.blocs %}
+        {% if b.type == 'texte-image' and not b.image|default(null) and b.titre|default('') %}
+            {% set ancres = ancres|merge({('b' ~ i): 'article-' ~ (ancres|length + 1)}) %}
+        {% endif %}
+    {% endfor %}
+    {% set document = ancres|length >= 5 %}
+
+    {% if document %}<div class="document">{% endif %}
+
+    {% set sommaireFait = false %}
+    {% for bloc in page.blocs %}
+        {% set ancre = ancres['b' ~ loop.index0] ?? '' %}
+
+        {% if document and ancre and not sommaireFait %}
+            <nav class="document__sommaire" aria-labelledby="sommaire-titre">
+                <h2 id="sommaire-titre">Sommaire</h2>
+                <ol>
+                    {% for j, b in page.blocs %}
+                        {% if ancres['b' ~ j] is defined %}
+                            <li><a href="#{{ ancres['b' ~ j] }}">{{ b.titre }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            </nav>
+            {% set sommaireFait = true %}
+        {% endif %}
+
+        {% include 'blocs/' ~ bloc.type ~ '.html.twig' with {
+            bloc: bloc,
+            site: site,
+            titre: titreDansBandeau and loop.first ? page.titre : bloc.titre,
+            niveau: titreDansBandeau and loop.first ? 1 : 2,
+            premier: loop.first,
+            slug: slug,
+            accueilSlug: accueilSlug,
+            contactActif: contactActif|default(false),
+            jetonContact: jetonContact|default(''),
+            formulaire: formulaire|default({}),
+            ancre: ancre
+        } only %}
+    {% endfor %}
+
+    {% if document %}</div>{% endif %}
+{% endblock %}

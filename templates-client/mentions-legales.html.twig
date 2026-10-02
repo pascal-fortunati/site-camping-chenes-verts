@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% set resume = 'Éditeur, hébergeur et informations légales' ~ (site.nom ? ' de ' ~ site.nom : '') ~ '.' %}
+
+{% block title %}Mentions légales{% if site.nom %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block main %}
+    <article class="page page--legale">
+
+        <h1 class="page__titre">Mentions légales</h1>
+
+        <div class="legale">
+
+            <p class="legale__intro">
+                Les informations sur l’éditeur et l’hébergeur de ce site, conformément à la loi
+                pour la confiance dans l’économie numérique.
+            </p>
+
+            <div class="legale__grille">
+
+                <section class="legale__carte">
+                    <h2>Éditeur du site</h2>
+                    <dl class="legale__liste">
+                        {% if site.nom %}<dt>Nom</dt><dd>{{ site.nom }}</dd>{% endif %}
+                        {% if legal.formeJuridique %}<dt>Société</dt><dd>{{ legal.formeJuridique }}</dd>{% endif %}
+                        {% if site.adresse %}<dt>Adresse</dt><dd>{{ site.adresse|nl2br }}</dd>{% endif %}
+                        {% if site.telephone %}<dt>Téléphone</dt><dd><a href="tel:{{ tel_href(site.telephone) }}">{{ site.telephone }}</a></dd>{% endif %}
+                        {% if site.email %}<dt>Courriel</dt><dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd>{% endif %}
+                        {% if site.siret %}<dt>SIRET</dt><dd>{{ site.siret }}</dd>{% endif %}
+                        {% if legal.tva %}<dt>TVA</dt><dd>{{ legal.tva }}</dd>{% endif %}
+                        {% if legal.directeurPublication %}<dt>Directeur de la publication</dt><dd>{{ legal.directeurPublication }}</dd>{% endif %}
+                    </dl>
+                </section>
+
+                <section class="legale__carte">
+                    <h2>Hébergement</h2>
+                    {% if legal.hebergeurNom or legal.hebergeurAdresse %}
+                        <p>
+                            {% if legal.hebergeurNom %}<strong>{{ legal.hebergeurNom }}</strong><br>{% endif %}
+                            {% if legal.hebergeurAdresse %}{{ legal.hebergeurAdresse|nl2br }}{% endif %}
+                        </p>
+                    {% else %}
+                        <p>Les informations sur l’hébergeur du site n’ont pas encore été renseignées.</p>
+                    {% endif %}
+                </section>
+
+                <section class="legale__carte">
+                    <h2>Propriété intellectuelle</h2>
+                    <p>
+                        L’ensemble des textes et des images de ce site est protégé. Toute reproduction, même
+                        partielle, est soumise à l’autorisation préalable de l’éditeur.
+                    </p>
+                </section>
+
+                {% if legal.complementMentions %}
+                    <section class="legale__carte">
+                        {# Texte mis en forme saisi dans l'administration : non échappé, comme dans le socle. #}
+                        {{ legal.complementMentions|raw }}
+                    </section>
+                {% endif %}
+
+            </div>
+
+            <p class="legale__liens">
+                <a href="/confidentialite">Politique de confidentialité</a>
+                <a href="/conditions-generales-de-vente">Conditions générales de vente</a>
+            </p>
+
+        </div>
+
+    </article>
+{% endblock %}
