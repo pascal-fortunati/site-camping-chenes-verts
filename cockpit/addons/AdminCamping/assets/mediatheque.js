@@ -174,6 +174,10 @@ export default {
                 this.images = r.assets || [];
                 this.dossiers = r.folders || [];
                 this.chargement = false;
+                // Arrivée depuis la recherche (?image=…) : l'image s'ouvre directement.
+                const demandee = new URLSearchParams(location.search).get('image');
+                const image = demandee && this.images.find((a) => a._id === demandee);
+                if (image) this.ouvrir(image);
             }).catch(() => {
                 this.chargement = false;
                 App.ui.notify('La liste des images n’a pas pu être chargée.', 'error');

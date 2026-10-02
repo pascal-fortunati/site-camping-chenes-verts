@@ -75,7 +75,7 @@ button.ls-etat:focus-visible { outline: none; box-shadow: var(--admin-halo); }
 /* ═══ La fiche : un élément ou une fiche unique ═══ */
 html[data-theme] vue-view.camping-fiche { display: block; margin-top: 28px !important; }
 html[data-theme] .camping-fiche > kiss-container.fiche { max-width: 1440px; }
-.fiche-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; padding: 22px 24px; border-radius: 18px; background: var(--admin-surface); box-shadow: var(--admin-ombre); animation: camping-monte 400ms cubic-bezier(.2, .7, .2, 1) backwards; }
+.fiche-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; padding: 22px 24px; border-radius: 18px; background: var(--admin-surface); box-shadow: var(--admin-ombre); animation: camping-fondu 200ms ease backwards; }
 .fiche-tete__icone { display: grid; flex: none; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--admin-primaire); color: var(--admin-sur-primaire); box-shadow: 0 8px 20px var(--admin-accent-doux); }
 .fiche-tete__icone icon { font-size: 28px; }
 .fiche-tete__texte { display: grid; flex: 1 1 320px; gap: 2px; min-width: 0; }
@@ -105,7 +105,7 @@ html[data-theme] .camping-fiche > kiss-container.fiche { max-width: 1440px; }
 
 /* Le côté : publication, historique, actions */
 .fiche-cote { position: sticky; top: 92px; display: grid; gap: 16px; }
-.fiche-carte { padding: 18px; border-radius: 16px; background: var(--admin-surface); box-shadow: var(--admin-ombre); animation: camping-monte 400ms cubic-bezier(.2, .7, .2, 1) backwards 80ms; }
+.fiche-carte { padding: 18px; border-radius: 16px; background: var(--admin-surface); box-shadow: var(--admin-ombre); animation: camping-fondu 200ms ease backwards; }
 .fiche-carte h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 1.0625rem; }
 .fiche-carte h2 icon { color: var(--admin-accent); font-size: 20px; }
 .fiche-choix { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: var(--admin-surface-douce); }

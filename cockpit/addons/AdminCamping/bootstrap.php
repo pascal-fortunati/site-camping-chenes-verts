@@ -199,6 +199,17 @@ $this->bind('/admincamping/reprendre/:id', function ($params) {
     return ['ok' => true];
 });
 
+$this->bind('/admincamping/recherche', function () {
+    $this->response->mime = 'json';
+    if (!$this->helper('auth')->getUser()) {
+        $this->response->status = 403;
+        return [];
+    }
+    $chercher = include __DIR__.'/recherche.php';
+
+    return $chercher($this, (string) $this->param('q', ''));
+});
+
 $this->bind('/admincamping/usages', function () {
     $this->response->mime = 'json';
     if (!$this->helper('auth')->getUser()) {
