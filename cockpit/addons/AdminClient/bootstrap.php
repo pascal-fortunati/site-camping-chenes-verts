@@ -1,14 +1,19 @@
 <?php
 
 /**
- * L'administration du client, en français et sans les actions qui ne lui sont pas permises.
+ * The customer's admin, in French and without the actions their role forbids.
  *
- * - i18n/fr.php : Cockpit ne fournit aucune traduction française ; elle est chargée quand la langue est « fr »
- *   (réglage « i18n » de config.php, ou langue choisie dans le compte).
- * - assets/admin.css : les libellés gardent leurs majuscules d'origine (« Nom du site », pas « Nom Du Site »).
- * - assets/actions-client.js : pour tout compte qui n'est pas administrateur, masque les actions sur la
- *   structure (modifier, dupliquer, supprimer un modèle, objet JSON). Cockpit les refuse déjà côté serveur :
- *   ce n'est qu'une question d'affichage, la sécurité reste celle des droits du rôle.
+ * - i18n/fr.php: Cockpit ships no French translation. It is loaded whenever
+ *   the language is « fr » — the « i18n » setting of config.php, or the
+ *   language chosen in the account.
+ * - assets/admin.css: labels keep the case they were written in (« Nom du
+ *   site », not « Nom Du Site »).
+ * - assets/actions-client.js: for every account that is not an administrator,
+ *   hides the actions on the structure — edit, clone or delete a model, raw
+ *   JSON. Cockpit shows them to everyone and refuses them only once clicked.
+ *   Display only: security still rests on the role's permissions.
+ *
+ * An addon rather than a patch, so updating Cockpit never undoes it.
  */
 
 $this->on('app.admin.i18n.load', function ($locale, $i18n) {

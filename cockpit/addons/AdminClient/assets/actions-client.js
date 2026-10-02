@@ -1,9 +1,11 @@
 /**
- * Masque au client les actions sur la structure du site, que son rôle ne permet pas :
- * Cockpit les affiche à tous et ne les refuse qu'au clic (« Unauthorized request »).
+ * Hides from the customer the actions on the site's structure that their role
+ * does not allow: Cockpit shows them to everyone and refuses them only once
+ * clicked (« Unauthorized request »).
  *
- * Ne modifie la page que lorsqu'un élément n'est pas encore masqué : le MutationObserver ne se
- * relance donc pas sans fin (voir le correctif de contraste-couleurs.js, socle v2.0.7).
+ * The page is changed only when an element is not hidden yet, so the
+ * MutationObserver never wakes itself up endlessly (see the fix to
+ * contraste-couleurs.js in 2.0.7).
  */
 
 const MASQUE = 'adminclient-masque';
@@ -19,7 +21,7 @@ function iconeVaut(icone, nom) {
 }
 
 function scan() {
-    // Modifier ou créer un modèle, et le séparateur qui précède l'entrée.
+    // Editing or creating a model, and the divider before the entry.
     document.querySelectorAll('a[href*="/content/models/"]').forEach((lien) => {
         const ligne = lien.closest('li');
         masquer(ligne || lien);
@@ -27,19 +29,19 @@ function scan() {
         if (avant && avant.classList.contains('kiss-nav-divider')) masquer(avant);
     });
 
-    // L'objet JSON brut d'une fiche : inutile au client.
+    // The raw JSON object of an item: of no use to the customer.
     document.querySelectorAll('kiss-popout icon').forEach((icone) => {
         if (iconeVaut(icone, 'manage_search')) masquer(icone.closest('li'));
     });
 
-    // Sur la liste des contenus, le menu « ⋮ » de chaque modèle ne porte que des actions sur la structure.
+    // On the content overview, the « ⋮ » menu of each model only holds actions on the structure.
     if (/\/content\/?$/.test(location.pathname)) {
         document.querySelectorAll('icon').forEach((icone) => {
             if (iconeVaut(icone, 'more_vert')) masquer(icone.closest('a'));
         });
     }
 
-    // Un menu « … » qui n'a plus rien à proposer disparaît.
+    // A « … » menu left with nothing to offer disappears.
     document.querySelectorAll('[kiss-popout^="#"]').forEach((bouton) => {
         const menu = document.querySelector(bouton.getAttribute('kiss-popout'));
         if (!menu) return;

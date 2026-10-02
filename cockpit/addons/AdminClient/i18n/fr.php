@@ -1,6 +1,6 @@
 <?php
 
-// Traduction française de l’administration Cockpit (textes relevés dans Cockpit 2.14).
+// French translation of the Cockpit admin (strings found in Cockpit 2.14).
 
 return [
     'API & Security' => 'API et sécurité',
