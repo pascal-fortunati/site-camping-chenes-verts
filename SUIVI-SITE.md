@@ -5,6 +5,8 @@ Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise
 
 ## Version du socle
 
+Fusion de `v2.0.8` le 02/10/2026 (branche `maj-socle-2.0.8`, sans conflit) : elle apporte le module `AdminClient` proposé depuis ce site (PR #44), le vidage du cache des modules dans `bin/install-cockpit.php` et la documentation de `--allow-unrelated-histories`. Le fichier `VERSION` du socle indique encore `2.0.6`.
+
 Fusion de `v2.0.7` le 02/10/2026 (branche `maj-socle`, `--allow-unrelated-histories` : première fusion d'un dépôt
 créé depuis le template). Apports : correctifs des boucles sans fin de `contraste-couleurs.js` (fiche « Identité du
 site » figée, que nous avions corrigée de notre côté : la version du socle remplace la nôtre) et de `poids-images.js`
