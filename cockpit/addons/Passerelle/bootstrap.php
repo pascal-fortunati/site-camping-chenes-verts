@@ -46,8 +46,16 @@ $this->on('before', function () {
     }
 
     $nom = trim((string) ($user['name'] ?? '')) ?: (string) ($user['user'] ?? '');
+
+    // The account photo, when the Avatar addon has set one (read from the account, not the session).
+    $compte = $this->dataStorage->findOne('system/users', ['_id' => $user['_id']]) ?? [];
+    $photo = str_starts_with((string) ($compte['avatar'] ?? ''), '/avatars/')
+        ? rtrim((string) $this->fileStorage->getURL('uploads://'), '/').$compte['avatar']
+        : null;
+
     $valeur = rtrim(strtr(base64_encode((string) json_encode([
         'nom' => $nom,
+        'photo' => $photo,
         // On Windows, dirname() in getSiteUrl() may end the address with a backslash.
         'admin' => rtrim(str_replace('\\', '/', (string) $this->getSiteUrl(true)), '/').'/',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)), '+/', '-_'), '=');

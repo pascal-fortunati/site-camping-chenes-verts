@@ -1,0 +1,29 @@
+/* The photo drawn in place of Cockpit's initials (assets/avatar.js). */
+.avatar-cache { display: none !important; }
+
+.avatar-photo {
+    display: inline-block;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--kiss-color-primary);
+}
+
+.avatar-dialogue__apercu {
+    display: grid;
+    place-items: center;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1.25rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--kiss-color-primary);
+    color: #fff;
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+.avatar-dialogue__apercu img { width: 100%; height: 100%; object-fit: cover; }
+
+.avatar-dialogue__choix { display: grid; gap: 0.5rem; margin: 1rem 0; }
+.avatar-dialogue__choix .kiss-button { justify-content: center; white-space: nowrap; }
+.avatar-dialogue__actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }

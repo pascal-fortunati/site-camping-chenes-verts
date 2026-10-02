@@ -37,7 +37,16 @@
         var avatar = document.createElement('span');
         avatar.className = 'passerelle__avatar';
         avatar.setAttribute('aria-hidden', 'true');
-        avatar.textContent = nom.trim().charAt(0).toUpperCase();
+        // La photo du compte (module Avatar) si elle existe, sinon l'initiale.
+        if (typeof infos.photo === 'string' && /^(https?:\/\/[^\s"<>]+|\/[^\s"<>]*)\.webp$/.test(infos.photo)) {
+            var photo = document.createElement('img');
+            photo.className = 'passerelle__photo';
+            photo.src = infos.photo;
+            photo.alt = '';
+            avatar.appendChild(photo);
+        } else {
+            avatar.textContent = nom.trim().charAt(0).toUpperCase();
+        }
 
         var pastille = document.createElement('span');
         pastille.className = 'passerelle__pastille';

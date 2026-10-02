@@ -1,0 +1,49 @@
+/**
+ * Shows the account photos in place of Cockpit's initials, and adds « Mon avatar » to the account menu.
+ *
+ * An element is changed only once (data-avatar), so the MutationObserver never
+ * wakes itself up endlessly.
+ */
+
+let photos = {};
+
+function remplacer() {
+    document.querySelectorAll('app-avatar:not([data-avatar])').forEach((avatar) => {
+        const url = photos[(avatar.getAttribute('name') || '').trim()];
+        if (!url) return;
+        const taille = parseInt(avatar.getAttribute('size') || '40', 10);
+        const img = document.createElement('img');
+        img.className = 'avatar-photo';
+        img.src = url;
+        img.alt = '';
+        img.width = taille;
+        img.height = taille;
+        avatar.dataset.avatar = '1';
+        avatar.classList.add('avatar-cache');
+        avatar.after(img);
+    });
+
+    const menu = document.querySelector('#app-account-menu kiss-navlist ul');
+    if (menu && !menu.querySelector('[data-avatar-menu]')) {
+        const compte = [...menu.querySelectorAll('li')].find((li) => li.querySelector('a[href*="/system/users/user"]'));
+        const ligne = document.createElement('li');
+        ligne.dataset.avatarMenu = '1';
+        ligne.innerHTML = '<a class="kiss-flex kiss-flex-middle" href="#"><icon class="kiss-margin-small-end">face</icon> Mon avatar</a>';
+        ligne.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+            VueView.ui.modal('avatar:assets/dialog-avatar.js', { actuel: photos[App.user?.name] || null });
+        });
+        (compte || menu.firstElementChild).after(ligne);
+    }
+}
+
+fetch(App.route('/avatar/liste'), { credentials: 'same-origin' })
+    .then((r) => (r.ok ? r.json() : { comptes: [] }))
+    .then((data) => {
+        (data.comptes || []).forEach((c) => { photos[c.nom] = c.url; });
+    })
+    .catch(() => {})
+    .finally(() => {
+        remplacer();
+        new MutationObserver(remplacer).observe(document.documentElement, { childList: true, subtree: true });
+    });
