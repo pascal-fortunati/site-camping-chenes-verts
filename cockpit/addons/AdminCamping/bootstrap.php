@@ -99,6 +99,13 @@ $this->on('app.dashboard.widgets', function ($widgets) {
     ]]);
 }, -100);
 
+// L'accueil du contenu suit le tableau de bord ; l'administrateur garde la vue de Cockpit pour gérer les modèles.
+$this->on('app.render.view/content:views/index.php', function (&$view) {
+    if (!$this->param('cockpit')) {
+        $view = 'admincamping:views/contenu.php';
+    }
+});
+
 $this->on('app.layout.assets', function (&$assets, $context) {
 
     if ($context === 'app:header') {

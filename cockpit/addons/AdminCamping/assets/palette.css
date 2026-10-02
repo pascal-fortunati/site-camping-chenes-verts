@@ -215,19 +215,22 @@ html[data-theme] kiss-tabs .kiss-tabs-nav-link { border-radius: 8px; transition:
 /* ── Animations : la page monte doucement, les cartes l'une après l'autre ── */
 @keyframes camping-monte { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes camping-pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes camping-fondu { from { opacity: 0; } to { opacity: 1; } }
 
+/* Un transform, même nul, ferait de la page le repère de la barre d'actions fixe : la page ne fait donc qu'apparaître,
+   et les autres animations ne gardent rien une fois finies (backwards, pas both). */
 html[data-theme] main > kiss-container,
 html[data-theme] main > vue-view,
-html[data-theme] main > div { animation: camping-monte 450ms cubic-bezier(.2, .7, .2, 1) both; }
-html[data-theme] kiss-card[hover~="shadow"] { animation: camping-pop 400ms cubic-bezier(.2, .7, .2, 1) both; }
+html[data-theme] main > div { animation: camping-fondu 350ms ease backwards; }
+html[data-theme] kiss-card[hover~="shadow"] { animation: camping-pop 400ms cubic-bezier(.2, .7, .2, 1) backwards; }
 html[data-theme] kiss-card[hover~="shadow"]:nth-child(2) { animation-delay: 50ms; }
 html[data-theme] kiss-card[hover~="shadow"]:nth-child(3) { animation-delay: 100ms; }
 html[data-theme] kiss-card[hover~="shadow"]:nth-child(4) { animation-delay: 150ms; }
 html[data-theme] kiss-card[hover~="shadow"]:nth-child(5) { animation-delay: 200ms; }
 html[data-theme] kiss-card[hover~="shadow"]:nth-child(n+6) { animation-delay: 250ms; }
-html[data-theme] .fields-renderer > app-fieldcontainer { animation: camping-monte 400ms cubic-bezier(.2, .7, .2, 1) both; }
-html[data-theme] kiss-dialog kiss-content, html[data-theme] kiss-popout kiss-content { animation: camping-pop 200ms ease both; }
-html[data-theme] .auth-dialog { animation: camping-monte 600ms cubic-bezier(.2, .7, .2, 1) both; }
+html[data-theme] .fields-renderer > app-fieldcontainer { animation: camping-monte 400ms cubic-bezier(.2, .7, .2, 1) backwards; }
+html[data-theme] kiss-dialog kiss-content, html[data-theme] kiss-popout kiss-content { animation: camping-pop 200ms ease backwards; }
+html[data-theme] .auth-dialog { animation: camping-monte 600ms cubic-bezier(.2, .7, .2, 1) backwards; }
 
 @media (prefers-reduced-motion: reduce) {
     html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after { animation: none !important; transition: none !important; }
@@ -355,7 +358,7 @@ html[data-theme] .app-dashboard:has(.camping-tableau) section.kiss-flex-1 > .app
     background: var(--camping-vert-profond) center / cover no-repeat;
     color: #FFFFFF;
     box-shadow: var(--camping-ombre-haute);
-    animation: camping-monte 500ms cubic-bezier(.2, .7, .2, 1) both;
+    animation: camping-monte 500ms cubic-bezier(.2, .7, .2, 1) backwards;
 }
 .tdb-accueil__date { margin: 0 0 6px; color: #DCE9D3; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em; }
 .tdb-accueil__titre { margin: 0 0 8px; color: #FFFFFF; font-family: "Fraunces", Georgia, serif; font-size: 2.25rem; font-weight: 600; line-height: 1.1; }
@@ -377,7 +380,7 @@ html[data-theme] .app-dashboard:has(.camping-tableau) section.kiss-flex-1 > .app
     text-decoration: none;
     box-shadow: var(--camping-ombre);
     transition: transform 200ms ease, box-shadow 200ms ease;
-    animation: camping-pop 450ms cubic-bezier(.2, .7, .2, 1) both;
+    animation: camping-pop 450ms cubic-bezier(.2, .7, .2, 1) backwards;
 }
 .tdb-indicateur:nth-child(2) { animation-delay: 60ms; }
 .tdb-indicateur:nth-child(3) { animation-delay: 120ms; }
@@ -424,7 +427,7 @@ html[data-theme] .app-dashboard:has(.camping-tableau) section.kiss-flex-1 > .app
     border-radius: 16px;
     background: #FFFFFF;
     box-shadow: var(--camping-ombre);
-    animation: camping-monte 500ms cubic-bezier(.2, .7, .2, 1) both 150ms;
+    animation: camping-monte 500ms cubic-bezier(.2, .7, .2, 1) backwards 150ms;
 }
 .tdb-carte h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-size: 1.25rem; }
 .tdb-carte h2 icon { color: var(--camping-vert); font-size: 22px; }
@@ -486,3 +489,20 @@ html[data-theme] app-actionbar {
     box-shadow: 0 -8px 24px rgb(31 42 34 / 8%);
 }
 html[data-theme] main { padding-bottom: 90px; }
+
+/* ═══ L'accueil du contenu (contenu.php), dans l'esprit du tableau de bord ═══ */
+html[data-theme] kiss-container:has(> .camping-contenu) { max-width: 1280px; }
+.tdb-accueil--page { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding: 26px 32px 28px; }
+.tdb-accueil--page .tdb-accueil__titre { flex: 1 0 100%; font-size: 1.9rem; }
+.tdb-accueil--page .tdb-accueil__phrase { flex: 1 1 24rem; }
+.ctn-admin { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 10px; background: rgb(255 255 255 / 14%); color: #FFFFFF; font-size: 0.875rem; font-weight: 700; text-decoration: none; transition: background-color 150ms ease; }
+.ctn-admin:hover { background: rgb(255 255 255 / 24%); color: #FFFFFF; }
+@media (min-width: 1100px) { .ctn-grille { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; } }
+.ctn-colonne { display: grid; gap: 22px; }
+.camping-contenu .tdb-raccourcis { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.ctn-modele { align-items: flex-start; }
+.ctn-modele .tdb-raccourci__fleche { align-self: center; }
+.camping-contenu .tdb-raccourci span .ctn-modele__detail { margin-top: 6px; color: var(--camping-vert); font-size: 0.8125rem; font-weight: 700; }
+.ctn-modele--alerte .tdb-raccourci__icone { background: #FBE3D6; color: #8A3A12; }
+.camping-contenu .ctn-modele--alerte span .ctn-modele__detail { color: #8A3A12; }
+.tdb-raccourci__icone icon { font-size: 22px; }
