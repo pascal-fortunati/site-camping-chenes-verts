@@ -19,3 +19,10 @@ VueView.component('fields-renderer', 'admincamping:assets/champs.js');
 VueView.component('field-asset', 'admincamping:assets/champ-image.js');
 // Le lien vers un contenu (la page d'une entrée du menu) : une liste déroulante avec recherche (champ-lien.js).
 VueView.component('field-contentItemLink', 'admincamping:assets/champ-lien.js');
+
+// Les morceaux que Cockpit charge lui-même (App.utils.import) : le menu « format » du texte riche (format-texte.js).
+const MORCEAUX = {
+    'app:assets/vue-components/fields/richtext/components/format.js': 'admincamping:assets/format-texte.js',
+};
+const importer = App.utils.import.bind(App.utils);
+App.utils.import = (uri, ...reste) => importer(MORCEAUX[uri] || uri, ...reste);

@@ -277,3 +277,18 @@ html[data-theme] kiss-dialog:has(.lt) > kiss-content { width: min(560px, calc(10
 .lt-pied { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px solid var(--admin-surface-douce); color: var(--admin-texte-doux); font-size: 0.8125rem; }
 .lt-pied code { padding: 2px 6px; border-radius: 6px; background: var(--admin-surface-douce); color: var(--admin-texte); }
 @media (max-width: 560px) { .lt-modes { grid-template-columns: 1fr; } }
+
+/* ═══ Le menu « format » du texte riche (format-texte.js) ═══ */
+.ft-bouton { display: inline-flex; align-items: center; }
+.ft-menu { position: fixed; z-index: 1200; display: grid; width: 240px; padding: 6px; border: 1px solid var(--admin-trait); border-radius: 14px; background: var(--admin-surface); box-shadow: var(--admin-ombre-haute); animation: camping-pop 150ms ease backwards; }
+.ft-option { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 0; border-radius: 9px; background: transparent; color: var(--admin-texte); font-family: var(--kiss-base-font-family); text-align: left; cursor: pointer; }
+.ft-apercu--paragraphe { font-family: var(--kiss-base-font-family); }
+.ft-option:hover, .ft-option:focus-visible { outline: none; background: var(--admin-surface-douce); }
+.ft-option > icon { color: var(--admin-accent); font-size: 20px; }
+.ft-option span { display: grid; flex: 1; }
+.ft-option small { color: var(--admin-texte-doux); font-size: 0.75rem; }
+.ft-option b { font-weight: 600; }
+.ft-apercu--h2 { font-family: "Fraunces", Georgia, serif; font-size: 1.15rem; }
+.ft-apercu--h3 { font-family: "Fraunces", Georgia, serif; font-size: 1rem; }
+.ft-option--actif { background: var(--admin-accent-doux); }
+.ft-coche { color: var(--admin-accent); font-size: 18px; }
