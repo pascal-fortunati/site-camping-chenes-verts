@@ -10,8 +10,8 @@ Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise
 
 | Fichier | Modification | Pourquoi |
 |---|---|---|
-| `cockpit/models/pages.model.php` | 5 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`) et leurs champs ; libellé des sections dans la liste : titre puis type en clair (« hero » devenait « Bandeau d’ouverture (grande photo) », support 07) | Support 06 : seul fichier partagé prévu par le socle |
-| `cockpit/models/settings.model.php` | 7 champs de l'identité : `classement`, `saisonOuverture`, `saisonFermeture`, `placesDisponibles`, `heureArrivee`, `heureDepart`, `horairesSaisons` | Décisions A1, A2, A6 : saisis une seule fois, affichés sur plusieurs pages |
+| `cockpit/models/pages.model.php` | 6 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`) et leurs champs ; `$hasImage` (ligne du socle) inclut `carte`, pour que sa description d'image soit exigée ; libellé des sections dans la liste : titre puis type en clair (« hero » devenait « Bandeau d’ouverture (grande photo) », support 07) | Support 06 : seul fichier partagé prévu par le socle |
+| `cockpit/models/settings.model.php` | 7 champs de l'identité : `classement`, `saisonOuverture`, `saisonFermeture`, `placesDisponibles`, `heureArrivee`, `heureDepart`, `horairesSaisons`, `latitude`, `longitude` | Décisions A1, A2, A6 : saisis une seule fois, affichés sur plusieurs pages |
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |
 | `src/Contact/Submission.php` | Champ caché `formulaire=reservation` : vérifie et enregistre le séjour ; message facultatif. Un message de contact est traité exactement comme avant | Option A |
@@ -31,9 +31,42 @@ Une correction du socle sur ces fichiers ne s'applique plus : relire `git log so
 
 ## Fichiers propres au site
 
-- `templates-client/blocs/` : `annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`.
+- `templates-client/blocs/` : `annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`.
 - `public/assets/css/client.css` ; `public/assets/fonts/` (Lexend, Fraunces, licences OFL) ; `public/assets/js/menu.js`.
 - `tests/Site/ReservationTest.php` : 17 tests de la demande de réservation (et du contact inchangé).
+
+## Section « Carte d'accès »
+
+Une image de la carte, l'adresse en texte et deux boutons vers openstreetmap.org (« Itinéraire », « Voir sur la
+carte »). Rien n'est chargé depuis un autre site : la politique de sécurité (`.htaccess`) reste inchangée, aucune
+donnée du visiteur ne part chez un tiers tant qu'il ne clique pas, et le vérificateur d'accessibilité reste vert.
+Une carte interactive (Leaflet et tuiles OpenStreetMap) demanderait d'ouvrir `img-src` à `tile.openstreetmap.org`
+et de compléter la politique de confidentialité ; écartée pour l'instant.
+
+**Données nécessaires** (« Identité du site », groupe Coordonnées) : `latitude` et `longitude` (nombres décimaux,
+ex. 44.5442312 et 4.4197889) ; l'adresse postale déjà saisie. Pour les trouver : sur openstreetmap.org, clic droit
+sur le lieu, « Afficher l'adresse » : les deux nombres affichés.
+
+**La section** (Pages › la page › Contenu de la page › Add item › « Carte d'accès (OpenStreetMap) ») :
+
+| Champ | Effet |
+|---|---|
+| Titre, Texte d'introduction | Facultatifs |
+| Image + Description de l'image | L'image de la carte (voir ci-dessous) ; la description est obligatoire |
+| Afficher la carte | Décoché : la section disparaît, ses réglages restent |
+| Afficher le bouton « Itinéraire » | Ouvre `openstreetmap.org/directions` avec le lieu en destination |
+| Zoom du lien « Voir sur la carte » | De 5 à 19 (15 par défaut) |
+
+**Cas dégradés** : sans latitude ou longitude valides, pas de boutons (l'image et l'adresse restent) ; sans image ni
+coordonnées, la section n'affiche rien. Sans adresse, pas de bloc adresse. Aucun cas ne casse la page.
+
+**L'image de la carte** : sur openstreetmap.org, « Partager », « Image », cocher « Inclure un marqueur », exporter en
+PNG ; ou, comme ici, capturer `https://www.openstreetmap.org/export/embed.html?bbox=…&layer=mapnik&marker=LAT,LON`.
+Garder la mention « © OpenStreetMap contributors » (licence ODbL) : elle est aussi écrite sous l'image.
+
+**Pour un autre client** : copier `templates-client/blocs/carte.html.twig`, le type `carte` de `pages.model.php`
+et les champs `latitude`, `longitude` de `settings.model.php`, puis saisir ses coordonnées et son image : le gabarit
+ne contient ni nom, ni adresse, ni coordonnée. À proposer au socle pour qu'il en dispose d'office.
 
 ## À prévoir chez l'hébergeur
 

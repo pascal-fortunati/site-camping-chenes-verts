@@ -309,6 +309,31 @@ return [
                 ],
             ],
         ],
+        [
+            'name' => 'latitude',
+            'type' => 'number',
+            'label' => 'Latitude',
+            'info' => 'Position du lieu, pour la section « Carte d’accès ». Sur openstreetmap.org : clic droit sur le lieu, '
+                .'« Afficher l’adresse » : le premier nombre. Ex. : 44.5442312. Vide : pas de liens vers la carte.',
+            'required' => false,
+            'localize' => false,
+            'multiple' => false,
+            'group' => 'Coordonnées',
+            'width' => '1-2',
+            'opts' => ['min' => -90, 'max' => 90, 'step' => 0.0000001],
+        ],
+        [
+            'name' => 'longitude',
+            'type' => 'number',
+            'label' => 'Longitude',
+            'info' => 'Le second nombre. Ex. : 4.4197889.',
+            'required' => false,
+            'localize' => false,
+            'multiple' => false,
+            'group' => 'Coordonnées',
+            'width' => '1-2',
+            'opts' => ['min' => -180, 'max' => 180, 'step' => 0.0000001],
+        ],
         // ── fin CAMPING LES CHÊNES VERTS ──────────────────────────────────────
     ],
 ];

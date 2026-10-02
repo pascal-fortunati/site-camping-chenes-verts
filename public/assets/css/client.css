@@ -1005,6 +1005,38 @@ textarea:focus-visible {
    (Un :has() ne peut pas en contenir un autre : d'où cette règle plutôt qu'un « :has(+ …) ».) */
 .bloc-texte-image:not(:has(.bloc-texte-image__image)) { margin-bottom: 2.5rem; }
 
+/* ── Carte d'accès (étape 07) ───────────────────────────────────────────── */
+
+.bloc-carte__intro { margin: 0 0 1.5rem; }
+
+.bloc-carte__contenu { display: grid; gap: 1.5rem; align-items: center; }
+
+@media (min-width: 64rem) {
+    .bloc-carte__contenu { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 2.5rem; }
+}
+
+.bloc-carte__figure { margin: 0; }
+
+.bloc-carte__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.bloc-carte__attribution { margin-top: 0.5rem; font-size: 0.875rem; color: var(--couleur-texte-doux); }
+
+.bloc-carte__adresse { margin: 0 0 1.25rem; font-style: normal; line-height: 1.6; }
+
+.bloc-carte__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0; }
+
+.bloc-carte__note { margin: 0.75rem 0 0; font-size: 0.9375rem; color: var(--couleur-texte-doux); }
+
+@media (max-width: 39.99rem) {
+    .bloc-carte__actions .bouton { flex: 1 1 100%; justify-content: center; text-align: center; }
+}
+
 /* ═══ Finitions — au-delà de la maquette, même direction : vert, bois, crème ═══ */
 
 :root {
@@ -1092,11 +1124,13 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
 .bloc-hebergements > h2,
 .bloc-tarifs > h2,
 .bloc-reservation > h2,
+.bloc-carte > h2,
 .bloc-texte-image:has(.bloc-texte-image__image) h2 { display: flex; align-items: center; gap: 0.6rem; }
 .bloc-cartes > h2::before,
 .bloc-hebergements > h2::before,
 .bloc-tarifs > h2::before,
-.bloc-reservation > h2::before,
+.bloc-reservation > h2,
+.bloc-carte > h2::before,
 .bloc-texte-image:has(.bloc-texte-image__image) h2::before {
     content: "";
     flex: none;

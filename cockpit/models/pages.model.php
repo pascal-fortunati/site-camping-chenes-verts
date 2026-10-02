@@ -25,7 +25,7 @@ $isTexteImage = "data.type === 'texte-image'";
 $isContact = "data.type === 'contact'";
 $isFormulaire = "data.type === 'formulaire'";
 $isTemoignages = "data.type === 'temoignages'";
-$hasImage = "['hero', 'texte-image'].includes(data.type)";
+$hasImage = "['hero', 'texte-image', 'carte'].includes(data.type)";   // CAMPING LES CHÊNES VERTS : + carte
 $hasTexte = "['texte-image', 'contact', 'formulaire'].includes(data.type)";
 
 // ── CAMPING LES CHÊNES VERTS — conditions des types propres au site (étape 06) ──
@@ -34,7 +34,8 @@ $isCartes = "data.type === 'cartes'";
 $isHebergements = "data.type === 'hebergements'";
 $isTarifs = "data.type === 'tarifs'";
 $isReservation = "data.type === 'reservation'";
-$hasPresentation = "['cartes', 'hebergements', 'tarifs', 'reservation'].includes(data.type)";
+$isCarte = "data.type === 'carte'";
+$hasPresentation = "['cartes', 'hebergements', 'tarifs', 'reservation', 'carte'].includes(data.type)";
 $hasMessageVide = "['cartes', 'hebergements', 'tarifs'].includes(data.type)";
 // ── fin CAMPING LES CHÊNES VERTS ──────────────────────────────────────────
 
@@ -90,7 +91,7 @@ return [
             'width' => '1-1',
             'opts' => [
                 // CAMPING LES CHÊNES VERTS — le titre, puis le type en clair : « hero » ne disait rien au client (recette, support 07).
-                'display' => '${(data.titre ? data.titre + \' · \' : \'\') + (({\'hero\': \'Bandeau d’ouverture (grande photo)\', \'texte-image\': \'Texte et image\', \'contact\': \'Coordonnées\', \'formulaire\': \'Formulaire de contact\', \'temoignages\': \'Témoignages\', \'annonce\': \'Annonce de la saison\', \'cartes\': \'Cartes\', \'hebergements\': \'Fiches hébergement\', \'tarifs\': \'Grille des tarifs\', \'reservation\': \'Formulaire de réservation\'})[data.type] || \'Section\')}',
+                'display' => '${(data.titre ? data.titre + \' · \' : \'\') + (({\'hero\': \'Bandeau d’ouverture (grande photo)\', \'texte-image\': \'Texte et image\', \'contact\': \'Coordonnées\', \'formulaire\': \'Formulaire de contact\', \'temoignages\': \'Témoignages\', \'annonce\': \'Annonce de la saison\', \'cartes\': \'Cartes\', \'hebergements\': \'Fiches hébergement\', \'tarifs\': \'Grille des tarifs\', \'reservation\': \'Formulaire de réservation\', \'carte\': \'Carte d’accès\'})[data.type] || \'Section\')}',
                 'fields' => [
                     [
                         'name' => 'type',
@@ -111,6 +112,7 @@ return [
                                 ['value' => 'hebergements', 'label' => 'Fiches hébergement'],
                                 ['value' => 'tarifs', 'label' => 'Grille des tarifs'],
                                 ['value' => 'reservation', 'label' => 'Formulaire de demande de réservation'],
+                                ['value' => 'carte', 'label' => 'Carte d’accès (OpenStreetMap)'],
                                 // ── fin CAMPING LES CHÊNES VERTS ──
                             ],
                         ],
@@ -516,6 +518,36 @@ return [
                         'width' => '1-1',
                         'condition' => $isReservation,
                         'opts' => ['maxlength' => 120],
+                    ],
+
+                    // Carte d'accès : une image de la carte, et deux liens vers openstreetmap.org.
+                    // La position vient de « Identité du site » (latitude, longitude, adresse).
+                    [
+                        'name' => 'carteAfficher',
+                        'type' => 'boolean',
+                        'label' => 'Afficher la carte',
+                        'info' => 'Décocher pour masquer la section sans perdre ses réglages.',
+                        'width' => '1-2',
+                        'condition' => $isCarte,
+                        'opts' => ['default' => true],
+                    ],
+                    [
+                        'name' => 'carteItineraire',
+                        'type' => 'boolean',
+                        'label' => 'Afficher le bouton « Itinéraire »',
+                        'info' => 'Ouvre le calcul d’itinéraire d’OpenStreetMap vers le lieu.',
+                        'width' => '1-2',
+                        'condition' => $isCarte,
+                        'opts' => ['default' => true],
+                    ],
+                    [
+                        'name' => 'carteZoom',
+                        'type' => 'number',
+                        'label' => 'Zoom du lien « Voir sur la carte »',
+                        'info' => 'De 5 (la région) à 19 (la rue). 15 montre le village et ses abords.',
+                        'width' => '1-2',
+                        'condition' => $isCarte,
+                        'opts' => ['min' => 5, 'max' => 19, 'step' => 1, 'default' => 15],
                     ],
                     // ── fin CAMPING LES CHÊNES VERTS ─────────────────────────────
                 ],

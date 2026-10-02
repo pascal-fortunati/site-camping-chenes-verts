@@ -1,0 +1,60 @@
+{% set lat = site.latitude ?? null %}
+{% set lon = site.longitude ?? null %}
+{% set position = lat is not null and lon is not null
+    and (lat ~ '') matches '/^-?\\d+(\\.\\d+)?$/' and (lon ~ '') matches '/^-?\\d+(\\.\\d+)?$/'
+    and lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180 %}
+{% set image = bloc.image|default(null) %}
+
+{% if (bloc.carteAfficher ?? true) and (position or image) %}
+    <section class="bloc bloc-carte">
+
+        {% if titre %}
+            <h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+        {% endif %}
+
+        {% if bloc.presentation|default('') %}
+            <p class="bloc-carte__intro">{{ bloc.presentation }}</p>
+        {% endif %}
+
+        <div class="bloc-carte__contenu">
+
+            {% if image %}
+                <figure class="bloc-carte__figure">
+                    {% include 'partials/image.html.twig' with {
+                        asset: image,
+                        alt: bloc.alt|default(''),
+                        classe: 'bloc-carte__image',
+                        sizes: '(min-width: 64rem) 44rem, 100vw'
+                    } only %}
+                    <figcaption class="bloc-carte__attribution">
+                        Carte : <a href="https://www.openstreetmap.org/copyright" lang="en">© OpenStreetMap contributors</a>
+                    </figcaption>
+                </figure>
+            {% endif %}
+
+            <div class="bloc-carte__infos">
+                {% if site.adresse|default('') %}
+                    <address class="bloc-carte__adresse">
+                        {% if site.nom|default('') %}<strong>{{ site.nom }}</strong><br>{% endif %}
+                        {{ site.adresse|nl2br }}
+                    </address>
+                {% endif %}
+
+                {% if position %}
+                    {% set la = lat|number_format(7, '.', '') %}
+                    {% set lo = lon|number_format(7, '.', '') %}
+                    {% set zoom = bloc.carteZoom|default(15) %}
+                    <p class="bloc-carte__actions">
+                        {% if bloc.carteItineraire ?? true %}
+                            <a class="bouton" href="https://www.openstreetmap.org/directions?route=%3B{{ la }}%2C{{ lo }}">Itinéraire</a>
+                        {% endif %}
+                        <a class="bouton bouton--secondaire" href="https://www.openstreetmap.org/?mlat={{ la }}&amp;mlon={{ lo }}#map={{ zoom }}/{{ la }}/{{ lo }}">Voir sur la carte</a>
+                    </p>
+                    <p class="bloc-carte__note">Les deux boutons ouvrent openstreetmap.org.</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </section>
+{% endif %}
