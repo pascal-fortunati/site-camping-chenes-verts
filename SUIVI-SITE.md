@@ -10,7 +10,7 @@ Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise
 
 | Fichier | Modification | Pourquoi |
 |---|---|---|
-| `cockpit/models/pages.model.php` | 5 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`) et leurs champs | Support 06 : seul fichier partagé prévu par le socle |
+| `cockpit/models/pages.model.php` | 5 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`) et leurs champs ; libellé des sections dans la liste : titre puis type en clair (« hero » devenait « Bandeau d’ouverture (grande photo) », support 07) | Support 06 : seul fichier partagé prévu par le socle |
 | `cockpit/models/settings.model.php` | 7 champs de l'identité : `classement`, `saisonOuverture`, `saisonFermeture`, `placesDisponibles`, `heureArrivee`, `heureDepart`, `horairesSaisons` | Décisions A1, A2, A6 : saisis une seule fois, affichés sur plusieurs pages |
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |

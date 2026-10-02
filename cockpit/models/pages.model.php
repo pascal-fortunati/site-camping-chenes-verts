@@ -89,7 +89,8 @@ return [
             'group' => 'Contenu',
             'width' => '1-1',
             'opts' => [
-                'display' => '${data.titre || data.type || \'Section\'}',
+                // CAMPING LES CHÊNES VERTS — le titre, puis le type en clair : « hero » ne disait rien au client (recette, support 07).
+                'display' => '${(data.titre ? data.titre + \' · \' : \'\') + (({\'hero\': \'Bandeau d’ouverture (grande photo)\', \'texte-image\': \'Texte et image\', \'contact\': \'Coordonnées\', \'formulaire\': \'Formulaire de contact\', \'temoignages\': \'Témoignages\', \'annonce\': \'Annonce de la saison\', \'cartes\': \'Cartes\', \'hebergements\': \'Fiches hébergement\', \'tarifs\': \'Grille des tarifs\', \'reservation\': \'Formulaire de réservation\'})[data.type] || \'Section\')}',
                 'fields' => [
                     [
                         'name' => 'type',
