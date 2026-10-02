@@ -1,8 +1,10 @@
 /**
- * Une vraie barre latérale : le logo et le nom du site, chaque entrée avec son icône Material et son libellé,
- * un bouton pour la réduire aux seules icônes. Le choix est gardé dans un cookie, que le serveur lit pour
- * charger tout de suite la bonne largeur (sidebar-reduite.css) : la page ne se décale pas au chargement.
+ * La barre latérale : le serveur l'envoie déjà construite (barre-laterale.php) ; ce script ne fait que brancher le
+ * bouton qui la réduit ou la déplie. Le choix est gardé dans un cookie, lu par le serveur à la page suivante.
+ * Si le serveur n'a pas pu la construire (balisage de Cockpit changé), elle est construite ici, comme avant.
  */
+
+const racine = document.documentElement;
 
 const ICONES = [
     [/\/content/, 'article'],
@@ -13,9 +15,6 @@ const ICONES = [
     [/\/system/, 'tune'],
 ];
 
-const racine = document.documentElement;
-if (/(?:^|;\s*)admincamping-sidebar=reduite/.test(document.cookie)) racine.classList.add('sidebar-reduite');
-
 function icone(nom) {
     const i = document.createElement('icon');
     i.setAttribute('aria-hidden', 'true');
@@ -23,13 +22,21 @@ function icone(nom) {
     return i;
 }
 
-function construire() {
-    const menu = document.querySelector('.app-container-aside-menu');
-    if (!menu || menu.dataset.sidebar) return;
-    menu.dataset.sidebar = '1';
-    racine.classList.add('avec-sidebar');
+function brancher(bouton) {
+    if (!bouton || bouton.dataset.branche) return;
+    bouton.dataset.branche = '1';
+    bouton.addEventListener('click', () => {
+        const reduite = racine.classList.toggle('sidebar-reduite');
+        racine.style.setProperty('--sidebar-l', reduite ? '72px' : '248px');
+        document.cookie = 'admincamping-sidebar=' + (reduite ? 'reduite' : 'depliee') + '; path=/; max-age=31536000; samesite=lax';
+        bouton.querySelector('icon').textContent = reduite ? 'left_panel_open' : 'left_panel_close';
+        bouton.setAttribute('aria-label', reduite ? 'Déplier le menu' : 'Réduire le menu');
+        bouton.setAttribute('aria-expanded', reduite ? 'false' : 'true');
+    });
+}
 
-    // En tête : le logo et le nom du site, repris de l'en-tête de Cockpit.
+/** Secours : la même barre, construite dans le navigateur. */
+function construire(menu) {
     const logo = document.querySelector('app-header .app-logo');
     const nom = document.querySelector('app-header .kiss-text-bold');
     const tete = document.createElement('a');
@@ -47,7 +54,6 @@ function construire() {
     tete.append(titre);
     menu.prepend(tete);
 
-    // Chaque entrée : une icône Material (les SVG de Cockpit manquent de contraste sur le vert) et un libellé.
     menu.querySelectorAll('kiss-navlist a[aria-label]').forEach((lien) => {
         const href = lien.getAttribute('href') || '';
         let nomIcone = null;
@@ -57,7 +63,6 @@ function construire() {
             const trouve = ICONES.find(([motif]) => motif.test(href));
             if (trouve) nomIcone = trouve[1];
         }
-
         const svg = lien.querySelector('kiss-svg');
         if (nomIcone) {
             if (svg) svg.replaceWith(icone(nomIcone));
@@ -70,29 +75,30 @@ function construire() {
         lien.append(libelle);
     });
 
-    // En bas : le bouton qui réduit ou déplie la barre.
+    const reduite = racine.classList.contains('sidebar-reduite');
     const bouton = document.createElement('button');
     bouton.type = 'button';
     bouton.className = 'sidebar__basculer';
-    const maj = () => {
-        const reduite = racine.classList.contains('sidebar-reduite');
-        bouton.replaceChildren(icone(reduite ? 'left_panel_open' : 'left_panel_close'));
-        const texte = document.createElement('span');
-        texte.className = 'sidebar__libelle';
-        texte.textContent = 'Réduire le menu';
-        bouton.append(texte);
-        bouton.setAttribute('aria-label', reduite ? 'Déplier le menu' : 'Réduire le menu');
-        bouton.setAttribute('aria-expanded', reduite ? 'false' : 'true');
-    };
-    bouton.addEventListener('click', () => {
-        const reduite = racine.classList.toggle('sidebar-reduite');
-        racine.style.setProperty('--sidebar-l', reduite ? '72px' : '248px');
-        document.cookie = 'admincamping-sidebar=' + (reduite ? 'reduite' : 'depliee') + '; path=/; max-age=31536000; samesite=lax';
-        maj();
-    });
-    maj();
+    bouton.append(icone(reduite ? 'left_panel_open' : 'left_panel_close'));
+    const texte = document.createElement('span');
+    texte.className = 'sidebar__libelle';
+    texte.textContent = 'Réduire le menu';
+    bouton.append(texte);
+    bouton.setAttribute('aria-label', reduite ? 'Déplier le menu' : 'Réduire le menu');
+    bouton.setAttribute('aria-expanded', reduite ? 'false' : 'true');
     menu.append(bouton);
 }
 
-construire();
-new MutationObserver(construire).observe(document.documentElement, { childList: true, subtree: true });
+function preparer() {
+    const menu = document.querySelector('.app-container-aside-menu');
+    if (!menu) return;
+    if (!menu.dataset.sidebar) {
+        menu.dataset.sidebar = 'navigateur';
+        if (/(?:^|;\s*)admincamping-sidebar=reduite/.test(document.cookie)) racine.classList.add('sidebar-reduite');
+        construire(menu);
+    }
+    brancher(menu.querySelector('.sidebar__basculer'));
+}
+
+preparer();
+new MutationObserver(preparer).observe(document.documentElement, { childList: true, subtree: true });

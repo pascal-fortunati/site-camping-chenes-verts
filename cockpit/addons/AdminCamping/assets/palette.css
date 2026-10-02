@@ -466,3 +466,23 @@ html[data-theme] .app-dashboard:has(.camping-tableau) section.kiss-flex-1 > .app
 .tdb-tout { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--camping-vert); font-weight: 700; text-decoration: none; }
 .tdb-tout icon { transition: transform 150ms ease; }
 .tdb-tout:hover icon { transform: translateX(3px); }
+
+/* ── Passage d'une page à l'autre : la barre latérale et l'en-tête restent en place, le contenu change en fondu ── */
+@view-transition { navigation: auto; }
+html[data-theme] .app-container-aside-menu { view-transition-name: camping-barre; }
+html[data-theme] app-header { view-transition-name: camping-entete; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 160ms; }
+::view-transition-group(camping-barre), ::view-transition-group(camping-entete) { animation-duration: 0s; }
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+}
+
+/* ── La barre d'actions du bas (Enregistrer, Fermer…) : un vrai fond, elle ne flotte plus sur le contenu ── */
+html[data-theme] app-actionbar {
+    padding-block: 12px;
+    background: rgb(251 248 241 / 94%);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--camping-trait);
+    box-shadow: 0 -8px 24px rgb(31 42 34 / 8%);
+}
+html[data-theme] main { padding-bottom: 90px; }

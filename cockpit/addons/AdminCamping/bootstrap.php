@@ -80,6 +80,14 @@ $this->on('before', function () {
     $this->set('admincamping.theme', 'admincamping:generated/'.basename($css));
 });
 
+// La barre latérale arrive construite dans la page (barre-laterale.php) : rien ne bouge au chargement.
+$this->on('after', function () {
+    if (is_string($this->response->body ?? null) && str_contains($this->response->body, 'app-container-aside-menu')) {
+        $retoucher = include __DIR__.'/barre-laterale.php';
+        $this->response->body = $retoucher($this, $this->response->body);
+    }
+});
+
 // Le tableau de bord du client remplace celui de Cockpit (ses blocs par défaut sont retirés).
 $this->on('app.dashboard.widgets', function ($widgets) {
     $construire = include __DIR__.'/tableau-de-bord.php';
