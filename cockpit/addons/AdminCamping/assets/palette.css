@@ -682,3 +682,35 @@ html[data-theme] kiss-dialog:has(#app-search.rc) > kiss-content { width: min(680
 .rc-pied { display: flex; gap: 18px; padding: 10px 18px; border-top: 1px solid var(--admin-surface-douce); color: var(--admin-texte-doux); font-size: 0.75rem; }
 .rc-pied kbd { margin-right: 4px; }
 @media (max-width: 640px) { .rc-pied { display: none; } }
+
+/* ═══ Les notifications : une carte, une icône selon le type, plutôt qu'un bandeau de couleur ═══ */
+html[data-theme] .kiss-toast-container { top: 76px; width: min(380px, calc(100vw - 32px)); }
+html[data-theme] .kiss-toast {
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--admin-trait);
+    border-radius: 14px;
+    background: var(--admin-surface) !important;
+    color: var(--admin-texte);
+    font-size: 0.875rem;
+    box-shadow: var(--admin-ombre-haute);
+}
+html[data-theme] .kiss-toast::before {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--admin-accent-doux);
+    color: var(--admin-accent);
+    font: normal 20px/1 "Material Icons Outlined";
+    content: "check_circle";
+    font-feature-settings: "liga";
+}
+html[data-theme] .kiss-toast[type="error"]::before { background: color-mix(in srgb, var(--admin-danger) 14%, var(--admin-surface)); color: var(--admin-danger); content: "error"; }
+html[data-theme] .kiss-toast[type="warning"]::before { background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); content: "warning"; }
+html[data-theme] .kiss-toast[type="info"]::before { content: "check_circle"; }   /* Cockpit envoie ses confirmations en « info » */
+html[data-theme] .kiss-toast[type="success"]::before { content: "check_circle"; }
+html[data-theme] .kiss-toast-content { text-shadow: none; }
+html[data-theme] [data-title="false"] .kiss-toast-message { font-weight: 600; }

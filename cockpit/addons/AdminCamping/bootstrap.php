@@ -175,6 +175,23 @@ foreach ([
     });
 }
 
+// Sa propre fiche de compte n'a pas à être verrouillée contre soi-même (autre onglet, autre appareil).
+$this->on('before', function () {
+    if (rtrim((string) $this->request->route, '/') === '/system/users/user' && ($moi = $this->helper('auth')->getUser())) {
+        $verrou = $this->helper('admin')->isResourceLocked($moi['_id']);
+        if ($verrou && ($verrou['user']['_id'] ?? null) === $moi['_id']) {
+            $this->helper('admin')->unlockResourceId($moi['_id']);
+        }
+    }
+});
+
+// « Mon compte » : sa propre fiche, présentée simplement. Un administrateur qui gère les comptes garde l'écran de Cockpit.
+$this->on('app.render.view/system:views/users/user.php', function (&$view, &$slots) {
+    if (!empty($slots['isAccountView']) && !$this->param('cockpit')) {
+        $view = 'admincamping:views/compte.php';
+    }
+});
+
 // Une fiche verrouillée : si c'est par soi-même (autre onglet, autre appareil), on peut la reprendre.
 $this->on('app.render.view/app:views/lockedResouce.php', function (&$view) {
     $view = 'admincamping:views/verrou.php';
