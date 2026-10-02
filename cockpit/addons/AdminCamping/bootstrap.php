@@ -140,6 +140,43 @@ $this->on('app.render.view/assets:views/index.php', function (&$view) {
     }
 });
 
+// Les listes et les fiches du contenu : nos vues, avec l'éditeur de champs et les routes d'enregistrement de Cockpit.
+foreach ([
+    'content:views/collection/items.php' => 'admincamping:views/liste.php',
+    'content:views/collection/item.php' => 'admincamping:views/fiche.php',
+    'content:views/singleton/item.php' => 'admincamping:views/fiche.php',
+] as $origine => $remplacement) {
+    $this->on("app.render.view/{$origine}", function (&$view) use ($remplacement) {
+        if (!$this->param('cockpit')) {
+            $view = $remplacement;
+        }
+    });
+}
+
+// Une fiche verrouillée : si c'est par soi-même (autre onglet, autre appareil), on peut la reprendre.
+$this->on('app.render.view/app:views/lockedResouce.php', function (&$view) {
+    $view = 'admincamping:views/verrou.php';
+});
+
+$this->bind('/admincamping/reprendre/:id', function ($params) {
+    $this->response->mime = 'json';
+    $user = $this->helper('auth')->getUser();
+    $jeton = $this->request->server['HTTP_X_CSRF_TOKEN'] ?? null;
+    if (!$user || !$this->helper('csrf')->isValid('app.csrf', $jeton)) {
+        $this->response->status = 403;
+        return ['erreur' => 'Action non autorisée'];
+    }
+    $id = (string) ($params['id'] ?? '');
+    $meta = $this->helper('admin')->isResourceLocked($id);
+    if ($meta && ($meta['user']['_id'] ?? null) !== $user['_id'] && !$this->helper('acl')->isAllowed('app/resources/unlock')) {
+        $this->response->status = 403;
+        return ['erreur' => 'Fiche verrouillée par une autre personne'];
+    }
+    $this->helper('admin')->unlockResourceId($id);
+
+    return ['ok' => true];
+});
+
 $this->bind('/admincamping/usages', function () {
     $this->response->mime = 'json';
     if (!$this->helper('auth')->getUser()) {
@@ -156,6 +193,7 @@ $this->on('app.layout.assets', function (&$assets, $context) {
     if ($context === 'app:header') {
         $assets[] = 'admincamping:assets/palette.css';
         $assets[] = 'admincamping:assets/mediatheque.css';
+        $assets[] = 'admincamping:assets/contenu.css';
 
         if (($_COOKIE['admincamping-sidebar'] ?? '') === 'reduite') {
             $assets[] = 'admincamping:assets/sidebar-reduite.css';

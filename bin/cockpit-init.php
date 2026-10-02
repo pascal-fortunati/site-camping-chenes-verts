@@ -257,14 +257,15 @@ $customerRoleId = 'client';
 
 $customerPermissions = [];
 
-foreach (['settings', 'saison', 'pages', 'menu', 'articles', 'legal'] as $model) {   // CAMPING : + saison
+foreach (['settings', 'saison', 'pages', 'menu', 'legal'] as $model) {   // CAMPING : + saison, sans actualités
     $customerPermissions["content/{$model}/read"] = true;
     $customerPermissions["content/{$model}/update"] = true;
 }
 
 // Pages and news items are created and published; identity and menu are
 // single items that only ever get updated.
-foreach (['pages', 'articles'] as $model) {
+// CAMPING LES CHÊNES VERTS : pas d'actualités, le client ne les voit pas.
+foreach (['pages'] as $model) {
     $customerPermissions["content/{$model}/create"] = true;
     $customerPermissions["content/{$model}/publish"] = true;
     $customerPermissions["content/{$model}/delete"] = true;
@@ -730,29 +731,9 @@ if (empty($content->item('legal')['hebergeurNom'])) {
 }
 
 // 4d bis. Demo news item --------------------------------------------------
-
-if ($content->item('articles', ['slug' => 'portes-ouvertes-de-printemps']) === null) {
-
-    $content->saveItem('articles', [
-        'titre' => 'Portes ouvertes de printemps',
-        'slug' => 'portes-ouvertes-de-printemps',
-        'date' => date('Y-m-d'),
-        'categorie' => 'evenement',
-        'resume' => 'Deux jours pour découvrir l’atelier, rencontrer nos producteurs et repartir '
-            .'avec un bouquet composé sous vos yeux.',
-        'image' => $assets['Atelier'] ?? null,
-        'alt' => 'Bouquets préparés pour les portes ouvertes',
-        'contenu' => '<p>L’atelier ouvre ses portes le premier week-end du mois. '
-            .'Deux producteurs de Loire-Atlantique seront présents.</p>'
-            .'<h2>Au programme</h2>'
-            .'<p>Démonstrations de composition, vente de fleurs coupées et conseils d’entretien.</p>',
-        '_state' => 1,
-    ]);
-
-    step('Actualité de démonstration publiée.');
-} else {
-    step('L’actualité de démonstration existe déjà — inchangée.');
-}
+//
+// CAMPING LES CHÊNES VERTS : pas d'actualité de démonstration (celle du socle
+// parlait d'un atelier de fleurs, et ferait apparaître « Actualités » au menu).
 
 // 4e. Refresh caches ------------------------------------------------------
 //
