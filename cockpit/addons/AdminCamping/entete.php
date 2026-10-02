@@ -1,7 +1,7 @@
 <?php
 
 /**
- * L'en-tête rendu par le serveur : la recherche à gauche ; à droite « Voir le site » (Passerelle), le choix du
+ * L'en-tête rendu par le serveur, à droite : la recherche (Ctrl K), « Voir le site » (Passerelle), le choix du
  * thème clair ou sombre et le compte. Le nom du site reste dans la page, masqué à l'œil : Passerelle place ses
  * boutons juste après lui. Si Cockpit change ce balisage, l'en-tête d'origine est gardé tel quel.
  *
@@ -37,11 +37,10 @@ return function (Lime\App $app, string $html, bool $sombre): string {
     $theme = '<button type="button" class="entete__theme" data-entete-theme aria-pressed="'.($sombre ? 'true' : 'false').'" aria-label="Thème sombre" kiss-tooltip="bottom">'
         .'<icon aria-hidden="true">'.($sombre ? 'light_mode' : 'dark_mode').'</icon></button>';
 
-    $nouveau = '<div class="entete__gauche">'.$logo.$tiroir
-        .'<button type="button" class="entete__recherche" app-search aria-label="Rechercher">'
-        .'<icon aria-hidden="true">search</icon><span class="entete__recherche-texte">Rechercher une page, une image…</span><kbd>Ctrl K</kbd></button>'
-        .'</div>'
+    $nouveau = '<div class="entete__gauche">'.$logo.$tiroir.'</div>'
         .'<div class="entete__droite">'.$ajouts
+        .'<button type="button" class="entete__recherche" app-search aria-label="Rechercher (Ctrl K)" kiss-tooltip="bottom">'
+        .'<icon aria-hidden="true">search</icon><kbd>Ctrl K</kbd></button>'
         .'<div class="entete__site">'.str_replace('class="kiss-text-bold"', 'class="kiss-text-bold entete__nom"', $nom).'</div>'
         .$theme
         .str_replace('class="kiss-margin-start"', 'class="entete__compte"', $compte)

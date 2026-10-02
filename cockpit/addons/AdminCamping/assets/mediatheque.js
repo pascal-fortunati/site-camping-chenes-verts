@@ -20,7 +20,31 @@ const echapper = (texte) => String(texte).replace(/[&<>"']/g, (c) => ({ '&': '&a
 
 const sansAccents = (texte) => String(texte || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
+// Une vignette : Cockpit en donne l'adresse (re=0) plutôt que d'y rediriger, car sa redirection ajoute /admin
+// devant une adresse de médias relative (/medias, en production). Chaque adresse n'est demandée qu'une fois.
+const adresses = new Map();
+const vignette = {
+    props: { asset: Object, largeur: { type: Number, default: 480 } },
+    data: () => ({ src: null }),
+    watch: { 'asset._modified'() { this.charger(); } },
+    mounted() { this.charger(); },
+    methods: {
+        charger() {
+            const a = this.asset;
+            const cle = `${a._id}-${this.largeur}-${a._modified}`;
+            if (!adresses.has(cle)) {
+                adresses.set(cle, App.request(`/assets/thumbnail/${a._id}?m=bestFit&mime=auto&w=${this.largeur}&h=${Math.round(this.largeur * 0.75)}&q=70&t=${a._modified}&re=0`)
+                    .then((r) => (r && r.url) || null).catch(() => null));
+            }
+            adresses.get(cle).then((src) => { this.src = src; });
+        }
+    },
+    template: '<img v-if="src" :src="src" alt="" decoding="async" class="mt-vignette"><span v-else class="mt-vignette mt-vignette--attente"></span>'
+};
+
 export default {
+
+    components: { mtVignette: vignette },
 
     props: {
         droits: { type: Object, default: () => ({}) }
@@ -176,10 +200,6 @@ export default {
 
         chargerUsages() {
             return this.$request('/admincamping/usages').then((u) => { this.usages = u || {}; }).catch(() => { this.usages = null; });
-        },
-
-        vignette(a, largeur = 480) {
-            return App.route(`/assets/thumbnail/${a._id}?m=bestFit&mime=auto&w=${largeur}&h=${Math.round(largeur * 0.75)}&q=70&t=${a._modified}`);
         },
 
         adresse(a) {
@@ -410,7 +430,7 @@ export default {
         <div class="mt-grille" v-else-if="vue === 'grille'">
             <article class="mt-carte" v-for="a in visibles" :key="a._id" :class="{'mt-carte--choisie': choisies.includes(a._id), 'mt-carte--ouverte': ouverte && ouverte._id === a._id}">
                 <button type="button" class="mt-carte__image" @click="ouvrir(a)" :aria-label="'Ouvrir ' + a.title">
-                    <img v-if="a.type === 'image'" :src="vignette(a)" alt="" loading="lazy" decoding="async">
+                    <mt-vignette v-if="a.type === 'image'" :asset="a"></mt-vignette>
                     <span v-else class="mt-carte__fichier"><icon>{{ icone(a) }}</icon><small>{{ (a.mime || '').split('/').pop() }}</small></span>
                 </button>
                 <label class="mt-carte__case" v-if="droits.supprimer" :title="'Choisir ' + a.title">
@@ -434,7 +454,7 @@ export default {
                 <span></span><span>Nom</span><span>Utilisation</span><span>Taille</span><span>Envoyée le</span>
             </div>
             <button type="button" class="mt-ligne" v-for="a in visibles" :key="a._id" @click="ouvrir(a)" :class="{'mt-carte--ouverte': ouverte && ouverte._id === a._id}">
-                <span class="mt-ligne__image"><img v-if="a.type === 'image'" :src="vignette(a, 160)" alt="" loading="lazy"><icon v-else>{{ icone(a) }}</icon></span>
+                <span class="mt-ligne__image"><mt-vignette v-if="a.type === 'image'" :asset="a" :largeur="160"></mt-vignette><icon v-else>{{ icone(a) }}</icon></span>
                 <span class="mt-ligne__nom"><b>{{ a.title }}</b><small v-if="a.description">{{ a.description }}</small></span>
                 <span><template v-if="utilisations(a)"><em :class="{'mt-inutilisee': !utilisations(a).length}">{{ utilisations(a).length ? utilisations(a).map(u => u.libelle).join(', ') : 'Non utilisée' }}</em></template></span>
                 <span :class="{'mt-ligne__alerte': a.size > 1048576}">{{ taille(a.size) }}<template v-if="a.width"><br><small>{{ a.width }} × {{ a.height }}</small></template></span>
@@ -481,7 +501,7 @@ export default {
 
                     <div class="mt-panneau__corps">
                         <a class="mt-panneau__apercu" :href="adresse(ouverte)" target="_blank" rel="noopener" title="Ouvrir en grand dans un nouvel onglet">
-                            <img v-if="ouverte.type === 'image'" :src="vignette(ouverte, 900)" alt="">
+                            <mt-vignette v-if="ouverte.type === 'image'" :asset="ouverte" :largeur="900" :key="ouverte._id"></mt-vignette>
                             <span v-else class="mt-carte__fichier"><icon>{{ icone(ouverte) }}</icon></span>
                         </a>
                         <p class="mt-panneau__infos">

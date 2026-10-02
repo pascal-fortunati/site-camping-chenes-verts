@@ -34,6 +34,9 @@ return function (Lime\App $app, string $html): string {
     ];
 
     $menu = substr($html, $debut, $fin - $debut);
+
+    // La recherche est dans l'en-tête (Ctrl K) : son entrée de la barre, et le filet qui la précède, feraient doublon.
+    $menu = preg_replace('#<li class="kiss-nav-divider"></li>\s*<li>\s*<a\b[^>]*\bapp-search\b.*?</li>#s', '', $menu);
     $compteSeul = (bool) $app->retrieve('admincamping.compteSeul');
     $reglages = rtrim($app->routeUrl('/system'), '/');
     $compte = $app->routeUrl('/system/users/user');

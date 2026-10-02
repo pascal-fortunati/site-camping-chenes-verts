@@ -392,6 +392,7 @@ html[data-theme] .app-dashboard:has(.camping-tableau) .app-dashboard-widget-cont
 html[data-theme] .app-dashboard:has(.camping-tableau) kiss-container { max-width: 1280px; }
 html[data-theme] .app-dashboard:has(.camping-tableau) { margin-top: 28px !important; }
 html[data-theme] .app-dashboard:has(.camping-tableau) .app-dashboard-widget-container { margin-top: 0 !important; }
+html[data-theme] .app-dashboard:has(.camping-tableau) section.kiss-flex-1 > div:empty { display: none; }   /* les zones vides de Cockpit gardaient 45 px de marge */
 
 .camping-tableau { display: grid; gap: 22px; }
 
@@ -562,24 +563,21 @@ html[data-theme] app-header > kiss-container[data-entete] { display: flex; align
 .entete__recherche {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: min(460px, 100%);
-    height: 42px;
-    padding: 0 8px 0 14px;
+    gap: 8px;
+    height: 40px;
+    padding: 0 8px 0 10px;
     border: 1px solid var(--admin-trait);
-    border-radius: 12px;
+    border-radius: 10px;
     background: var(--admin-surface);
     color: var(--admin-texte-doux);
-    font: 400 0.9375rem var(--kiss-base-font-family);
     cursor: pointer;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+    transition: background-color 150ms ease, transform 150ms ease;
 }
-.entete__recherche:hover { border-color: var(--admin-surface-forte); box-shadow: var(--admin-ombre); }
-.entete__recherche:focus-visible { outline: none; border-color: var(--admin-accent); box-shadow: var(--admin-halo); }
+.entete__recherche:hover { background: var(--admin-surface-douce); transform: translateY(-1px); }
+.entete__recherche:focus-visible { outline: none; box-shadow: var(--admin-halo); }
 .entete__recherche icon { color: var(--admin-accent); font-size: 20px; }
-.entete__recherche-texte { flex: 1; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
-.entete__recherche kbd { padding: 3px 7px; border: 1px solid var(--admin-trait); border-radius: 6px; background: var(--admin-surface-douce); color: var(--admin-texte-doux); font: 600 0.75rem var(--kiss-base-font-family); }
+.entete__recherche kbd { padding: 2px 6px; border: 1px solid var(--admin-trait); border-radius: 6px; background: var(--admin-surface-douce); color: var(--admin-texte-doux); font: 600 0.75rem var(--kiss-base-font-family); }
 
 html[data-theme] .entete__droite .passerelle-bouton { min-height: 40px; padding: 0 14px; border-radius: 10px; font-size: 0.875rem; }
 .entete__theme, .entete__tiroir {
@@ -607,8 +605,8 @@ html[data-theme] .entete__droite .passerelle-bouton { min-height: 40px; padding:
     .entete__gauche .app-logo { height: 34px !important; }
 }
 @media (max-width: 640px) {
-    .entete__recherche { width: 42px; padding: 0; justify-content: center; }
-    .entete__recherche-texte, .entete__recherche kbd { display: none; }
+    .entete__recherche { width: 40px; padding: 0; justify-content: center; }
+    .entete__recherche kbd { display: none; }
     html[data-theme] .entete__droite .passerelle-bouton { gap: 0; padding: 0 11px; font-size: 0; }
 }
 

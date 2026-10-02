@@ -91,8 +91,8 @@ html[data-theme] kiss-container.camping-page { max-width: 1280px; margin-top: 28
 .mt-carte--fantome { aspect-ratio: 4 / 4.1; background: linear-gradient(100deg, var(--admin-surface) 30%, var(--admin-surface-douce) 50%, var(--admin-surface) 70%) 0 0 / 300% 100%; animation: mt-reflet 1.4s linear infinite; }
 @keyframes mt-reflet { to { background-position: -150% 0; } }
 .mt-carte__image { display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; overflow: hidden; border: 0; background: var(--admin-surface-douce); cursor: zoom-in; }
-.mt-carte__image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 400ms cubic-bezier(.2, .7, .2, 1); }
-.mt-carte:hover .mt-carte__image img { transform: scale(1.05); }
+.mt-carte__image .mt-vignette { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 400ms cubic-bezier(.2, .7, .2, 1); }
+.mt-carte:hover .mt-carte__image .mt-vignette { transform: scale(1.05); }
 .mt-carte__image:focus-visible { outline: 3px solid var(--admin-accent); outline-offset: -3px; }
 .mt-carte__fichier { display: grid; place-items: center; align-content: center; gap: 4px; width: 100%; height: 100%; color: var(--admin-accent); }
 .mt-carte__fichier icon { font-size: 48px; }
@@ -118,7 +118,7 @@ html[data-theme] kiss-container.camping-page { max-width: 1280px; margin-top: 28
 .mt-ligne--tete { border-top: 0; background: var(--admin-surface-douce); color: var(--admin-texte-doux); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: default; }
 .mt-ligne--tete:hover { background: var(--admin-surface-douce); }
 .mt-ligne__image { display: grid; place-items: center; width: 64px; height: 48px; overflow: hidden; border-radius: 8px; background: var(--admin-surface-douce); color: var(--admin-accent); }
-.mt-ligne__image img { width: 100%; height: 100%; object-fit: cover; }
+.mt-ligne__image .mt-vignette { width: 100%; height: 100%; object-fit: cover; }
 .mt-ligne__nom { display: grid; min-width: 0; }
 .mt-ligne__nom b, .mt-ligne__nom small, .mt-ligne > span:nth-child(3) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mt-ligne small { color: var(--admin-texte-doux); font-size: 0.75rem; }
@@ -165,7 +165,7 @@ html[data-theme] kiss-container.camping-page { max-width: 1280px; margin-top: 28
 .mt-rond:focus-visible { outline: none; box-shadow: var(--admin-halo); }
 .mt-panneau__corps { flex: 1; display: grid; align-content: start; gap: 16px; padding: 18px; overflow-y: auto; }
 .mt-panneau__apercu { display: grid; place-items: center; min-height: 200px; max-height: 320px; overflow: hidden; border-radius: 14px; background: var(--admin-surface-douce) repeating-conic-gradient(var(--admin-surface-douce) 0% 25%, var(--admin-surface) 0% 50%) 0 0 / 20px 20px; cursor: zoom-in; box-shadow: var(--admin-ombre); }
-.mt-panneau__apercu img { display: block; max-width: 100%; max-height: 320px; object-fit: contain; }
+.mt-panneau__apercu img.mt-vignette { display: block; max-width: 100%; max-height: 320px; object-fit: contain; }
 .mt-panneau__infos { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
 .mt-panneau__infos span { padding: 3px 9px; border-radius: 7px; background: var(--admin-surface-douce); color: var(--admin-texte-doux); font-size: 0.75rem; font-weight: 600; }
 .mt-conseil { display: flex; gap: 10px; margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); font-size: 0.8125rem; }
@@ -199,3 +199,4 @@ html[data-theme] kiss-container.camping-page { max-width: 1280px; margin-top: 28
     .mt-grille, .mt-chargement { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .mt-carte__case { opacity: 1; }
 }
+.mt-vignette--attente { display: block; width: 100%; height: 100%; min-height: 48px; background: linear-gradient(100deg, var(--admin-surface-douce) 30%, var(--admin-surface) 50%, var(--admin-surface-douce) 70%) 0 0 / 300% 100%; animation: mt-reflet 1.4s linear infinite; }
