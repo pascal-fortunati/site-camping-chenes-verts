@@ -1021,11 +1021,13 @@ textarea:focus-visible {
 }
 
 html { scroll-behavior: smooth; }
-[id] { scroll-margin-top: 6.5rem; }    /* l'en-tête collant ne cache pas la cible d'un lien */
+html { scroll-padding-top: 7rem; }      /* l'en-tête collant ne cache ni la cible d'un lien, ni l'élément qui reçoit le focus */
 
 /* En-tête : reste en haut ; une ombre apparaît au défilement (menu.js) */
 .en-tete { position: sticky; top: 0; z-index: 50; transition: box-shadow var(--transition); }
 .en-tete--defile { box-shadow: 0 6px 22px rgb(24 58 35 / 10%); }
+.lien-evitement:focus { z-index: 100; }               /* au-dessus de l'en-tête collant */
+select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2px; }   /* oublié par site.css */
 
 @media (min-width: 80rem) {
     .en-tete__interieur { flex-wrap: nowrap; }             /* jamais de menu sous le logo */

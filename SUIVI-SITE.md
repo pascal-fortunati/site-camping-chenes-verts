@@ -26,6 +26,7 @@ Une correction du socle sur ces fichiers ne s'applique plus : relire `git log so
 |---|---|---|
 | `templates-client/base.html.twig` | `templates/base.html.twig` | Logo et nom, bouton « Réserver », bouton « Menu » |
 | `templates-client/partials/pied.html.twig` | `templates/partials/pied.html.twig` | Classement, horaires par saison, lien vers les CGV |
+| `templates-client/confidentialite.html.twig` | `templates/confidentialite.html.twig` | « Ce qui est collecté » : le formulaire de réservation recueille aussi le séjour et le téléphone (option A) |
 
 ## Fichiers propres au site
 
