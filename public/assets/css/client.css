@@ -1037,6 +1037,124 @@ textarea:focus-visible {
     .bloc-carte__actions .bouton { flex: 1 1 100%; justify-content: center; text-align: center; }
 }
 
+/* ── Le gland « Revenir en haut » ──────────────────────────────────────── */
+
+.remonter {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--blanc);
+    box-shadow: 0 0 0 3px var(--couleur-lien), 0 10px 24px rgb(31 42 34 / 25%);
+    transition: transform 350ms cubic-bezier(.3, 1.4, .5, 1), visibility 0s;
+}
+.remonter__gland { width: 52px; height: 52px; overflow: visible; }
+
+/* Avec JavaScript : caché en haut de page, il arrive en roulant depuis le bas */
+.remonter--js:not(.remonter--visible) {
+    visibility: hidden;
+    transform: translateY(140%) rotate(-40deg);
+    transition: transform 350ms ease, visibility 0s 350ms;
+}
+.remonter:hover { transform: translateY(-4px); }
+.remonter:hover .remonter__gland { animation: gland-balance 600ms ease; }
+.remonter:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 4px; }
+
+/* Les feuilles tournent autour de la queue du gland, comme sous le vent */
+.remonter__feuille { transform-box: view-box; transform-origin: 32px 22px; }
+.remonter--vent-bas .remonter__feuille--gauche { animation: vent-bas 900ms ease-out; }
+.remonter--vent-bas .remonter__feuille--droite { animation: vent-bas 900ms ease-out 80ms; }
+.remonter--vent-haut .remonter__feuille--gauche { animation: vent-haut 900ms ease-out; }
+.remonter--vent-haut .remonter__feuille--droite { animation: vent-haut 900ms ease-out 80ms; }
+.remonter--vent-bas .remonter__gland,
+.remonter--vent-haut .remonter__gland { transform-origin: 50% 30%; }
+
+@keyframes vent-bas {
+    0%   { transform: rotate(0); }
+    20%  { transform: rotate(18deg) skewX(-6deg); }
+    45%  { transform: rotate(-10deg); }
+    70%  { transform: rotate(5deg); }
+    100% { transform: rotate(0); }
+}
+@keyframes vent-haut {
+    0%   { transform: rotate(0); }
+    20%  { transform: rotate(-18deg) skewX(6deg); }
+    45%  { transform: rotate(10deg); }
+    70%  { transform: rotate(-5deg); }
+    100% { transform: rotate(0); }
+}
+@keyframes gland-balance {
+    0%, 100% { transform: rotate(0); }
+    30% { transform: rotate(-10deg); }
+    65% { transform: rotate(6deg); }
+}
+
+/* ── Ardoise : menu du jour, horaires, tarifs ──────────────────────────── */
+
+.bloc-ardoise .ardoise {
+    position: relative;
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 2.25rem clamp(1.5rem, 5vw, 3rem) 2rem;
+    border-radius: var(--rayon);
+}
+
+/* Ardoise : fond vert, un trait de craie intérieur, un léger penché qui se redresse au survol */
+.bloc-ardoise--ardoise .ardoise {
+    background: var(--vert-profond);
+    color: var(--sur-vert-doux);
+    box-shadow: 0 0 0 10px #6E4220, 0 0 0 12px #5A3519, 0 22px 40px rgb(31 42 34 / 28%);   /* le cadre en bois */
+    transform: rotate(-0.6deg);
+    transition: transform 400ms ease;
+}
+.bloc-ardoise--ardoise .ardoise:hover { transform: none; }
+.bloc-ardoise--ardoise .ardoise::before {
+    content: "";
+    position: absolute;
+    inset: 0.75rem;
+    border: 1px dashed rgb(201 221 190 / 35%);
+    border-radius: var(--rayon-petit);
+    pointer-events: none;
+}
+.bloc-ardoise--ardoise .ardoise__titre { color: var(--sur-vert); }
+.bloc-ardoise--ardoise .ardoise__libelle b,
+.bloc-ardoise--ardoise .ardoise__prix { color: var(--sur-vert); }
+
+/* Fiche : fond clair */
+.bloc-ardoise--fiche .ardoise { background: var(--blanc); box-shadow: var(--ombre); }
+.bloc-ardoise--fiche .ardoise__detail,
+.bloc-ardoise--fiche .ardoise__note { color: var(--couleur-texte-doux); }
+.bloc-ardoise--fiche .ardoise__prix { color: var(--couleur-lien); }
+
+.ardoise__titre { margin: 0 0 1.25rem; text-align: center; font-size: 1.75rem; }
+
+.ardoise__lignes { margin: 0; padding: 0; list-style: none; }
+
+.ardoise__ligne {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    max-width: none;
+    padding: 0.6rem 0;
+}
+.ardoise__ligne + .ardoise__ligne { border-top: 1px solid var(--couleur-fond-doux); }
+.bloc-ardoise--ardoise .ardoise__ligne + .ardoise__ligne { border-top-color: rgb(201 221 190 / 20%); }
+
+.ardoise__libelle { flex: 1; min-width: 0; }
+.ardoise__libelle b { display: block; font-size: 1.0625rem; }
+.ardoise__detail { display: block; font-size: 0.9375rem; }
+.ardoise__prix { flex: none; font-family: var(--police-titres); font-size: 1.25rem; font-weight: 600; white-space: nowrap; }
+
+.ardoise__note { margin: 1.25rem 0 0; text-align: center; font-style: italic; font-size: 0.9375rem; }
+
+.bloc-ardoise + .bloc-ardoise { margin-top: calc(var(--espace-section) * -0.4); }
+
 /* ── Pages légales : des cartes centrées (mentions légales, confidentialité) ── */
 
 .legale { max-width: 64rem; margin: 2.5rem auto 0; padding: 0; }

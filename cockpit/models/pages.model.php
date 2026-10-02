@@ -35,6 +35,7 @@ $isHebergements = "data.type === 'hebergements'";
 $isTarifs = "data.type === 'tarifs'";
 $isReservation = "data.type === 'reservation'";
 $isCarte = "data.type === 'carte'";
+$isArdoise = "data.type === 'ardoise'";
 $hasPresentation = "['cartes', 'hebergements', 'tarifs', 'reservation', 'carte'].includes(data.type)";
 $hasMessageVide = "['cartes', 'hebergements', 'tarifs'].includes(data.type)";
 // ── fin CAMPING LES CHÊNES VERTS ──────────────────────────────────────────
@@ -91,7 +92,7 @@ return [
             'width' => '1-1',
             'opts' => [
                 // CAMPING LES CHÊNES VERTS — le titre, puis le type en clair : « hero » ne disait rien au client (recette, support 07).
-                'display' => '${(data.titre ? data.titre + \' · \' : \'\') + (({\'hero\': \'Bandeau d’ouverture (grande photo)\', \'texte-image\': \'Texte et image\', \'contact\': \'Coordonnées\', \'formulaire\': \'Formulaire de contact\', \'temoignages\': \'Témoignages\', \'annonce\': \'Annonce de la saison\', \'cartes\': \'Cartes\', \'hebergements\': \'Fiches hébergement\', \'tarifs\': \'Grille des tarifs\', \'reservation\': \'Formulaire de réservation\', \'carte\': \'Carte d’accès\'})[data.type] || \'Section\')}',
+                'display' => '${(data.titre ? data.titre + \' · \' : \'\') + (({\'hero\': \'Bandeau d’ouverture (grande photo)\', \'texte-image\': \'Texte et image\', \'contact\': \'Coordonnées\', \'formulaire\': \'Formulaire de contact\', \'temoignages\': \'Témoignages\', \'annonce\': \'Annonce de la saison\', \'cartes\': \'Cartes\', \'hebergements\': \'Fiches hébergement\', \'tarifs\': \'Grille des tarifs\', \'reservation\': \'Formulaire de réservation\', \'carte\': \'Carte d’accès\', \'ardoise\': \'Ardoise\'})[data.type] || \'Section\')}',
                 'fields' => [
                     [
                         'name' => 'type',
@@ -113,6 +114,7 @@ return [
                                 ['value' => 'tarifs', 'label' => 'Grille des tarifs'],
                                 ['value' => 'reservation', 'label' => 'Formulaire de demande de réservation'],
                                 ['value' => 'carte', 'label' => 'Carte d’accès (OpenStreetMap)'],
+                                ['value' => 'ardoise', 'label' => 'Ardoise (menu du jour, horaires, prix…)'],
                                 // ── fin CAMPING LES CHÊNES VERTS ──
                             ],
                         ],
@@ -548,6 +550,49 @@ return [
                         'width' => '1-2',
                         'condition' => $isCarte,
                         'opts' => ['min' => 5, 'max' => 19, 'step' => 1, 'default' => 15],
+                    ],
+
+                    // Ardoise : une liste libellé / détail / prix, en ardoise verte ou en fiche claire.
+                    [
+                        'name' => 'ardoiseStyle',
+                        'type' => 'select',
+                        'label' => 'Apparence',
+                        'info' => 'Ardoise : fond vert, comme une pancarte (menu du jour). Fiche : fond clair (horaires, infos pratiques).',
+                        'width' => '1-2',
+                        'condition' => $isArdoise,
+                        'opts' => ['default' => 'ardoise', 'options' => [
+                            ['value' => 'ardoise', 'label' => 'Ardoise (fond vert)'],
+                            ['value' => 'fiche', 'label' => 'Fiche (fond clair)'],
+                        ]],
+                    ],
+                    [
+                        'name' => 'ardoiseLignes',
+                        'type' => 'set',
+                        'label' => 'Lignes',
+                        'info' => 'Une ligne par plat, horaire ou tarif, dans l’ordre d’affichage. Le prix est facultatif.',
+                        'width' => '1-1',
+                        'condition' => $isArdoise,
+                        'multiple' => true,
+                        'opts' => [
+                            'display' => '${data.libelle || \'Ligne\'}',
+                            'fields' => [
+                                ['name' => 'libelle', 'type' => 'text', 'label' => 'Libellé', 'width' => '1-2',
+                                    'info' => 'En gras. Ex. : « Plat du jour », « Horaires ».', 'opts' => ['maxlength' => 80]],
+                                ['name' => 'prix', 'type' => 'text', 'label' => 'Prix', 'width' => '1-2',
+                                    'info' => 'Facultatif, écrit tel quel, à droite. Ex. : « 12 € ».', 'opts' => ['maxlength' => 30]],
+                                ['name' => 'detail', 'type' => 'text', 'label' => 'Détail', 'width' => '1-1',
+                                    'info' => 'Facultatif, sous le libellé. Ex. : « caillette ardéchoise, frites maison ».', 'opts' => ['maxlength' => 200]],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'ardoiseNote',
+                        'type' => 'text',
+                        'label' => 'Note en bas de l’ardoise',
+                        'info' => 'Facultatif. Ex. : « Le menu change chaque jour. »',
+                        'width' => '1-1',
+                        'condition' => $isArdoise,
+                        'opts' => ['maxlength' => 200],
                     ],
                     // ── fin CAMPING LES CHÊNES VERTS ─────────────────────────────
                 ],

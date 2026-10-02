@@ -1,0 +1,33 @@
+{% set lignes = bloc.ardoiseLignes|default([])|filter(l => l.libelle|default('')) %}
+{% set note = bloc.ardoiseNote|default('') %}
+{% set style = bloc.ardoiseStyle|default('ardoise') == 'fiche' ? 'fiche' : 'ardoise' %}
+
+{% if lignes is not empty or note %}
+    <section class="bloc bloc-ardoise bloc-ardoise--{{ style }}">
+        <div class="ardoise">
+
+            {% if titre %}
+                <h{{ niveau }} class="ardoise__titre">{{ titre }}</h{{ niveau }}>
+            {% endif %}
+
+            {% if lignes is not empty %}
+                <ul class="ardoise__lignes">
+                    {% for l in lignes %}
+                        <li class="ardoise__ligne">
+                            <span class="ardoise__libelle">
+                                <b>{{ l.libelle }}</b>
+                                {% if l.detail|default('') %}<span class="ardoise__detail">{{ l.detail }}</span>{% endif %}
+                            </span>
+                            {% if l.prix|default('') %}<span class="ardoise__prix">{{ l.prix }}</span>{% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if note %}
+                <p class="ardoise__note">{{ note }}</p>
+            {% endif %}
+
+        </div>
+    </section>
+{% endif %}

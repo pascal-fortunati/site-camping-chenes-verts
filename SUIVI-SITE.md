@@ -18,7 +18,7 @@ encore `2.0.6` pour cette étiquette.
 
 | Fichier | Modification | Pourquoi |
 |---|---|---|
-| `cockpit/models/pages.model.php` | 6 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`) et leurs champs ; `$hasImage` (ligne du socle) inclut `carte`, pour que sa description d'image soit exigée ; libellé des sections dans la liste : titre puis type en clair (« hero » devenait « Bandeau d’ouverture (grande photo) », support 07) | Support 06 : seul fichier partagé prévu par le socle |
+| `cockpit/models/pages.model.php` | 7 types de section (`annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`, `ardoise`) et leurs champs ; `$hasImage` (ligne du socle) inclut `carte`, pour que sa description d'image soit exigée ; libellé des sections dans la liste : titre puis type en clair (« hero » devenait « Bandeau d’ouverture (grande photo) », support 07) | Support 06 : seul fichier partagé prévu par le socle |
 | `cockpit/models/settings.model.php` | 7 champs de l'identité : `classement`, `saisonOuverture`, `saisonFermeture`, `placesDisponibles`, `heureArrivee`, `heureDepart`, `horairesSaisons`, `latitude`, `longitude` | Décisions A1, A2, A6 : saisis une seule fois, affichés sur plusieurs pages |
 | `cockpit/models/messages.model.php` | 9 champs du séjour demandé, en lecture seule | Option A : la demande de réservation arrive complète dans « Messages reçus » |
 | `cockpit/addons/Contact/bootstrap.php` | Le courriel de notification annonce le séjour en tête ; objet « Demande de réservation » | Option A |
@@ -42,7 +42,7 @@ Une correction du socle sur ces fichiers ne s'applique plus : relire `git log so
 
 ## Fichiers propres au site
 
-- `templates-client/blocs/` : `annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`.
+- `templates-client/blocs/` : `annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`, `ardoise`.
 - `public/assets/css/client.css` ; `public/assets/fonts/` (Lexend, Fraunces, licences OFL) ; `public/assets/js/menu.js`.
 - `tests/Site/ReservationTest.php` : 17 tests de la demande de réservation (et du contact inchangé).
 

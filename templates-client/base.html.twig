@@ -19,12 +19,13 @@
     <link rel="stylesheet" href="/assets/css/couleurs.css">
     {# Menu repliable au téléphone. Sans JavaScript, le menu reste déplié. #}
     <script src="/assets/js/menu.js" defer></script>
+    <script src="/assets/js/remonter.js" defer></script>
     {% if jsonld|default('') is not empty %}
         {# Built and encoded in PHP, so it is inserted as is. #}
         <script type="application/ld+json">{{ jsonld|raw }}</script>
     {% endif %}
 </head>
-<body>
+<body id="haut">
 
 <a class="lien-evitement" href="#contenu">Aller au contenu</a>
 
@@ -90,6 +91,29 @@
 </main>
 
 {% include 'partials/pied.html.twig' %}
+
+{# Revenir en haut : un gland et ses feuilles de chêne ; les feuilles bougent au défilement (remonter.js). #}
+<a class="remonter" href="#haut" aria-label="Revenir en haut de la page" title="Revenir en haut">
+    <svg class="remonter__gland" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <g class="remonter__feuille remonter__feuille--gauche">
+            <g transform="translate(31 22) rotate(-48)">
+                <path d="M0 0C-4-4-9-3-8-8C-12-9-12-14-7-14C-11-17-9-22-4-20C-5-25-1-28 0-28C1-28 5-25 4-20C9-22 11-17 7-14C12-14 12-9 8-8C9-3 4-4 0 0Z" fill="#4F8A3A"/>
+                <path d="M0 0V-24" stroke="#2E5E22" stroke-width="1.2" fill="none"/>
+            </g>
+        </g>
+        <g class="remonter__feuille remonter__feuille--droite">
+            <g transform="translate(33 22) rotate(42) scale(.9)">
+                <path d="M0 0C-4-4-9-3-8-8C-12-9-12-14-7-14C-11-17-9-22-4-20C-5-25-1-28 0-28C1-28 5-25 4-20C9-22 11-17 7-14C12-14 12-9 8-8C9-3 4-4 0 0Z" fill="#6FA34F"/>
+                <path d="M0 0V-24" stroke="#3E7A2C" stroke-width="1.2" fill="none"/>
+            </g>
+        </g>
+        <path d="M22 33C22 46 28 54 32 57C36 54 42 46 42 33Z" fill="#C9A27A"/>
+        <path d="M27 36C26 44 29 50 32 53" stroke="#E2C59E" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <rect x="31" y="17" width="2.4" height="8" rx="1.2" fill="#6E4220"/>
+        <path d="M18 34C18 23 46 23 46 34C42 36 22 36 18 34Z" fill="#6E4220"/>
+        <path d="M22 29H42M20 32H44M25 26H39M26 25L22 34M32 24V35M38 25L42 34" stroke="#8A5A2E" stroke-width="1" fill="none"/>
+    </svg>
+</a>
 
 </body>
 </html>
