@@ -146,6 +146,7 @@ final class RepositoryTest extends TestCase
         $repository->settings();
         $repository->settings();
 
-        $this->assertCount(1, $source->demandes, 'Chaque appel supplémentaire coûterait une requête à Cockpit');
+        // CAMPING LES CHÊNES VERTS : l'identité et la saison, une fois chacune (deux fiches depuis le 02/10/2026).
+        $this->assertSame(['settings', 'saison'], array_column($source->demandes, 0), 'Chaque appel supplémentaire coûterait une requête à Cockpit');
     }
 }
