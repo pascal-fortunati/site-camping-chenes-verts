@@ -11,3 +11,8 @@ const REMPLACEMENTS = {
 const ouvrir = VueView.ui.modal.bind(VueView.ui);
 
 VueView.ui.modal = (url, ...reste) => ouvrir(REMPLACEMENTS[url] || url, ...reste);
+
+// L'éditeur de champs des fiches : les listes d'éléments se modifient sur place (champs.js), sans fenêtre.
+VueView.component('fields-renderer', 'admincamping:assets/champs.js');
+// Le champ image : une carte compacte, et l'envoi d'une photo par glisser-déposer (champ-image.js).
+VueView.component('field-asset', 'admincamping:assets/champ-image.js');

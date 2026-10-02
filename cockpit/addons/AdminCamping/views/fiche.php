@@ -146,10 +146,17 @@ $droits = [
                     }
                 };
                 document.addEventListener('keydown', this.raccourci);
+                // Déplier une section n'est pas la modifier (champs.js prévient).
+                this.surDeplie = () => {
+                    if (this.isModified) return;
+                    setTimeout(() => { if (!this.saving) this.resetDirtyState(); }, 400);
+                };
+                window.addEventListener('admincamping-deplie', this.surDeplie);
             },
 
             unmounted() {
                 document.removeEventListener('keydown', this.raccourci);
+                window.removeEventListener('admincamping-deplie', this.surDeplie);
             },
 
             methods: {
