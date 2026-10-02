@@ -12,6 +12,36 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.8 — 2026-10-02
+
+L'administration Cockpit est désormais francisée et n'affiche plus aux comptes non administrateurs les actions qu'ils ne peuvent pas utiliser.
+
+**L'administration est disponible en français.** L'addon `AdminClient` fournit 530 traductions dans `i18n/fr.php`, chargées lorsque la langue de Cockpit est réglée sur `fr`. Les libellés conservent leur casse telle qu'elle est définie dans les traductions : « Nom du site », par exemple, n'est plus transformé en « Nom Du Site ».
+
+**Les comptes non administrateurs ne voient plus les actions qui leur sont interdites.** « Modifier le modèle », l'objet JSON et le menu `⋮` des modèles sont masqués lorsque l'utilisateur n'est pas administrateur. Un menu `…` qui ne contient plus aucune action est également retiré. Cockpit affichait auparavant ces possibilités à tous les utilisateurs avant de répondre `Unauthorized request` lorsqu'un compte non autorisé tentait de les utiliser.
+
+**Les nouveaux addons sont chargés immédiatement après leur installation.** `bin/install-cockpit.php` vide désormais `storage/cache/modules.cache.php`. Sur une installation déjà en service, un addon nouvellement ajouté pouvait jusque-là être correctement copié dans l'administration sans être détecté par Cockpit à cause du cache des modules.
+
+Le README a également été mis à jour : la section « Bon à savoir » ne présente plus la francisation de l'administration comme un travail restant à faire.
+
+Quatre tests couvrent ces changements dans `GardeFous/AdminClientTest`.
+
+**La procédure de mise à jour du socle couvre les dépôts sans historique commun.** La documentation utilise désormais `--allow-unrelated-histories` lors de la fusion d'une version du socle. Cette option permet notamment d'effectuer la mise à jour lorsqu'un dépôt vient d'être initialisé et que son historique Git ne partage pas d'ancêtre avec celui du socle.
+
+Rien à faire sur un site existant au-delà de la fusion et des commandes habituelles d'après-fusion décrites dans `docs/mise-a-jour-socle.md`.
+
+## 2.0.7 — 2026-10-02
+
+Deux corrections concernant l'administration Cockpit et l'environnement de développement.
+
+**La page « Identité du site » ne bloque plus le navigateur.** Deux scripts, `cockpit/addons/EditorGuards/assets/contraste-couleurs.js` et `cockpit/addons/Media/assets/poids-images.js`, utilisaient des `MutationObserver` dont les fonctions `annotate()` modifiaient elles-mêmes le DOM à chaque passage. Chaque modification relançait l'observateur et pouvait créer une boucle infinie, particulièrement sur cette page qui réunit des champs de couleur et d'images.
+
+Le contrôle du contraste ne modifie désormais la classe ou le texte de son alerte que lorsque leur valeur change réellement. Le contrôle du poids des images conserve de la même manière l'alerte existante au lieu de la supprimer puis de la recréer à chaque passage. Les deux traitements sont ainsi idempotents et ne redéclenchent plus inutilement leurs observateurs.
+
+**Les processus Composer ne sont plus interrompus par le timeout par défaut.** `composer.json` définit désormais `"process-timeout": 0`. Les commandes longues lancées par les scripts Composer peuvent ainsi rester actives sans être arrêtées automatiquement.
+
+Rien à faire sur un site existant au-delà de la fusion et de `php bin/install-cockpit.php --force` pour recopier les addons modifiés dans `public/admin/`.
+
 ## 2.0.6 — 2026-09-02
 
 Trois corrections relevées en vérifiant une mise en ligne.

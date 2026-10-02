@@ -132,8 +132,10 @@ remplacent pas. Ce que chacun couvre : [docs/tests.md](docs/tests.md).
 
 ## Bon à savoir
 
-- **L'interface d'administration s'affiche en anglais.** Cockpit ne livre pas de fichiers de
-  traduction ; la francisation reste à faire.
+- **L'interface d'administration est en français** grâce à l'addon `AdminClient` : Cockpit ne
+  livre pas de traduction, l'addon en apporte une (`i18n/fr.php`). Pour les comptes qui ne sont
+  pas administrateurs, il masque aussi les actions sur la structure (modifier un modèle, objet
+  JSON) que Cockpit affiche à tous puis refuse au clic.
 - **Un antivirus peut bloquer l'installation.** Certains bloquent l'écriture d'un `index.php`
   dans un dossier nommé `admin`. Le script d'installation s'arrête alors avec un message
   explicite : ajouter une exception sur le dossier du projet.

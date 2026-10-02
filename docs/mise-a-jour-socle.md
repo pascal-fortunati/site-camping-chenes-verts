@@ -46,12 +46,28 @@ leurs interventions dans l'ordre du journal.
 
 ### 3. Fusionner
 
+Se positionner sur la branche principale et récupérer les dernières modifications :
+
 ```bash
 git checkout main
 git pull
-git checkout -b maj-socle
-git merge v2.0.4
 ```
+
+Créer une branche dédiée à la mise à jour du socle :
+
+```bash
+git checkout -b maj-socle
+```
+
+Fusionner ensuite la nouvelle version du socle :
+
+```bash
+git merge v2.0.8 --allow-unrelated-histories
+```
+
+L’option `--allow-unrelated-histories` permet d’autoriser la fusion lorsque les deux historiques Git n’ont pas d’ancêtre commun.
+
+Ce cas peut notamment se présenter lorsque le dépôt du projet vient d’être initialisé et que la version du socle utilisée pour effectuer la mise à jour possède un historique Git différent.
 
 Toujours sur une branche : la fusion se relit avant d'entrer dans `main`.
 

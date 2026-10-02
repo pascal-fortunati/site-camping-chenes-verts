@@ -227,6 +227,13 @@ foreach (glob("{$root}/cockpit/addons/*", GLOB_ONLYDIR) ?: [] as $addon) {
     step('Extension « '.basename($addon).' » en place.');
 }
 
+// Cockpit keeps the list of its modules in a cache file. On an admin already
+// in service, an addon added since would be copied but never loaded: the list
+// is rebuilt on the next request once this file is gone.
+if (is_file("{$target}/storage/cache/modules.cache.php")) {
+    unlink("{$target}/storage/cache/modules.cache.php");
+}
+
 // Runtime folders. Cockpit resolves #cache, #tmp and #uploads by looking them
 // up on disk: a missing one breaks the admin, so create them all up front.
 // The database itself lives in /var, outside the web root.
