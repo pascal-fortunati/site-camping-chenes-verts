@@ -26,14 +26,23 @@ $avecAvatar = isset($this['modules']['avatar']);
             </section>
 
             <form class="compte__grille" @submit.prevent="enregistrer" autocomplete="off">
-
+                <div class="compte__colonne">
                 <section class="fiche-carte">
                     <h2><icon>badge</icon>Vos informations</h2>
                     <label class="mt-champ"><span>Nom affiché</span><input type="text" v-model="user.name" required></label>
                     <label class="mt-champ"><span>Identifiant de connexion</span><input type="text" v-model="user.user" required autocapitalize="off" spellcheck="false"></label>
                     <label class="mt-champ"><span>Adresse e-mail</span><input type="email" v-model="user.email" required><small>Pour recevoir un lien si vous oubliez votre mot de passe.</small></label>
                 </section>
-
+                <section class="fiche-carte">
+                    <h2><icon>contrast</icon>Affichage</h2>
+                    <div class="fiche-choix" role="radiogroup" aria-label="Thème">
+                        <button type="button" role="radio" :aria-checked="!sombre ? 'true' : 'false'" :class="{'fiche-choix--actif': !sombre}" @click="choisirTheme(false)"><icon>light_mode</icon>Clair</button>
+                        <button type="button" role="radio" :aria-checked="sombre ? 'true' : 'false'" :class="{'fiche-choix--actif': sombre}" @click="choisirTheme(true)"><icon>dark_mode</icon>Sombre</button>
+                    </div>
+                    <p class="fiche-aide">Les deux suivent les couleurs du site. Le choix est gardé sur cet appareil.</p>
+                </section>
+                </div>
+                <div class="compte__colonne">
                 <section class="fiche-carte">
                     <h2><icon>key</icon>Mot de passe</h2>
                     <label class="mt-champ">
@@ -51,16 +60,6 @@ $avecAvatar = isset($this['modules']['avatar']);
                         <small class="compte__erreur" v-if="mdp2 && mdp2 !== mdp">Les deux mots de passe ne sont pas identiques.</small>
                     </label>
                 </section>
-
-                <section class="fiche-carte">
-                    <h2><icon>contrast</icon>Affichage</h2>
-                    <div class="fiche-choix" role="radiogroup" aria-label="Thème">
-                        <button type="button" role="radio" :aria-checked="!sombre ? 'true' : 'false'" :class="{'fiche-choix--actif': !sombre}" @click="choisirTheme(false)"><icon>light_mode</icon>Clair</button>
-                        <button type="button" role="radio" :aria-checked="sombre ? 'true' : 'false'" :class="{'fiche-choix--actif': sombre}" @click="choisirTheme(true)"><icon>dark_mode</icon>Sombre</button>
-                    </div>
-                    <p class="fiche-aide">Les deux suivent les couleurs du site. Le choix est gardé sur cet appareil.</p>
-                </section>
-
                 <section class="fiche-carte">
                     <h2><icon>verified_user</icon>Sécurité</h2>
                     <label class="compte__interrupteur">
@@ -72,6 +71,7 @@ $avecAvatar = isset($this['modules']['avatar']);
                         <p>Scannez ce code avec l’application, puis enregistrez. À la prochaine connexion, elle vous donnera le code à saisir.</p>
                     </div>
                 </section>
+                </div>
             </form>
         </kiss-container>
 

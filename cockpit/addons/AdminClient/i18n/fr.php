@@ -50,7 +50,7 @@ return [
     'Asset link copied!' => 'Lien de l’image copié !',
     'Asset removed!' => 'Image supprimée !',
     'Asset updated!' => 'Image mise à jour !',
-    'Assets' => 'Images et fichiers',
+    'Assets' => 'Médias',
     'Assets removed!' => 'Images supprimées !',
     'Assets url' => 'Adresse des images',
     'Assign folder' => 'Ranger dans un dossier',

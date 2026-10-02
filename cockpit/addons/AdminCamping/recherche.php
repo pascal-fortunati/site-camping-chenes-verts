@@ -108,7 +108,7 @@ return function (Lime\App $app, string $q): array {
             continue;
         }
         $resultats[] = [
-            'groupe' => 'Images et fichiers',
+            'groupe' => 'Médias',
             'titre' => (string) ($a['title'] ?? ''),
             'detail' => !empty($a['width']) ? $a['width'].' × '.$a['height'] : (string) ($a['type'] ?? ''),
             'lien' => $app->routeUrl('/assets').'?image='.$a['_id'],

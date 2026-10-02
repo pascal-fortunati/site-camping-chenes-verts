@@ -11,7 +11,8 @@ if (count($langues) === 1) {
 }
 $icones = ['settings' => 'badge', 'saison' => 'event_seat', 'legal' => 'gavel', 'menu' => 'menu_open', 'pages' => 'description', 'messages' => 'mail', 'articles' => 'newspaper'];
 $noms = ['pages' => 'page', 'messages' => 'message'];
-$retour = $collection ? $this->routeUrl("/content/collection/items/{$nom}") : $this->routeUrl('/content');
+$retour = $collection ? $this->routeUrl("/content/collection/items/{$nom}") : $this->routeUrl('/');
+$groupe = in_array($nom, ['pages', 'messages', 'saison', 'articles'], true) ? 'Au quotidien' : 'Le site';   // comme la barre latérale
 $droits = [
     'publier' => $collection && $acl->isAllowed("content/{$nom}/publish"),
     'creer' => $collection && $acl->isAllowed("content/{$nom}/create"),
@@ -28,7 +29,7 @@ $droits = [
                 <span class="fiche-tete__icone"><icon><?= $icones[$nom] ?? ($collection ? 'folder' : 'tune') ?></icon></span>
                 <div class="fiche-tete__texte">
                     <nav class="fiche-tete__chemin" aria-label="Fil d’Ariane">
-                        <a href="<?= $this->routeUrl('/content') ?>">Contenu</a>
+                        <span><?= $groupe ?></span>
                         <?php if ($collection) : ?><icon>chevron_right</icon><a href="<?= $retour ?>"><?= $this->escape($model['label'] ?: $nom) ?></a><?php endif ?>
                     </nav>
                     <h1>{{ titre }}</h1>

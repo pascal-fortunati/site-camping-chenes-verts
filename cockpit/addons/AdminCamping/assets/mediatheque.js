@@ -356,7 +356,7 @@ export default {
     <div class="mt" :class="{'mt--survol': survol}">
 
         <section class="tdb-accueil tdb-accueil--page mt-bandeau">
-            <h1 class="tdb-accueil__titre">Images et fichiers</h1>
+            <h1 class="tdb-accueil__titre">Médias</h1>
             <p class="tdb-accueil__phrase" v-if="droits.envoyer">Glissez vos photos n’importe où sur cette page pour les envoyer. Cliquez sur une image pour la décrire et voir où elle est utilisée.</p>
             <p class="tdb-accueil__phrase" v-else>Cliquez sur une image pour la décrire et voir où elle est utilisée.</p>
             <div class="mt-bandeau__actions">

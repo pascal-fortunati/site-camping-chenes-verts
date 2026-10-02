@@ -9,7 +9,7 @@ const plat = (t) => String(t || '').normalize('NFD').replace(/\p{M}/gu, '').toLo
 const RACCOURCIS = [
     { titre: 'Tableau de bord', detail: 'Les chiffres et les gestes du quotidien', route: '/', icone: 'space_dashboard', mots: 'accueil tableau bord' },
     { titre: 'Le contenu du site', detail: 'Pages, informations, messages', route: '/content', icone: 'article', mots: 'contenu pages' },
-    { titre: 'Images et fichiers', detail: 'Envoyer, décrire, retrouver une photo', route: '/assets', icone: 'photo_library', mots: 'images photos fichiers medias' },
+    { titre: 'Médias', detail: 'Envoyer, décrire, retrouver une photo', route: '/assets', icone: 'perm_media', mots: 'medias images photos fichiers' },
     { titre: 'Mon compte', detail: 'Nom, adresse e-mail, mot de passe', route: '/system/users/user', icone: 'account_circle', mots: 'compte mot de passe profil' },
 ];
 
@@ -61,7 +61,15 @@ export default {
     },
 
     mounted() {
-        this.$nextTick(() => this.$refs.champ && this.$refs.champ.focus());
+        // La fenêtre de Cockpit place le curseur sur le premier lien à l'ouverture : on le remet dans le champ.
+        const focaliser = () => {
+            const champ = this.$refs.champ;
+            if (champ && document.activeElement !== champ) {
+                champ.focus();
+                champ.setSelectionRange(champ.value.length, champ.value.length);
+            }
+        };
+        [0, 60, 200, 400].forEach((ms) => setTimeout(focaliser, ms));
         if (this.q) this.chercher();
     },
 
@@ -107,6 +115,17 @@ export default {
         },
 
         touche(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                this.$close();
+                return;
+            }
+            // Une lettre tapée alors que le curseur est ailleurs : elle va dans le champ.
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && e.target !== this.$refs.champ) {
+                this.$refs.champ.focus();
+                return;
+            }
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 e.preventDefault();
                 const n = this.tous.length;
@@ -130,17 +149,17 @@ export default {
     },
 
     template: /*html*/`
-    <div id="app-search" class="rc" role="search">
+    <div id="app-search" class="rc" role="search" @keydown="touche">
         <label class="rc-champ">
             <icon aria-hidden="true">{{ chargement ? 'hourglass_top' : 'search' }}</icon>
-            <input ref="champ" type="search" v-model="q" @keydown="touche" placeholder="Chercher une page, une information, une image…" aria-label="Rechercher" autocomplete="off" spellcheck="false">
+            <input ref="champ" type="search" v-model="q" placeholder="Chercher une page, une information, une image…" aria-label="Rechercher" autocomplete="off" spellcheck="false">
             <kbd kiss-dialog-close title="Fermer">Échap</kbd>
         </label>
 
         <div class="rc-resultats">
             <section class="rc-groupe" v-for="g in groupes" :key="g.nom">
                 <h3>{{ g.nom }}</h3>
-                <a v-for="r in g.lignes" :key="r.i" :data-i="r.i" :href="r.lien" class="rc-ligne" :class="{'rc-ligne--choisie': r.i === choisi}" @mouseenter="choisi = r.i">
+                <a v-for="r in g.lignes" :key="r.i" :data-i="r.i" :href="r.lien" tabindex="-1" class="rc-ligne" :class="{'rc-ligne--choisie': r.i === choisi}" @mouseenter="choisi = r.i">
                     <span class="rc-ligne__icone"><icon>{{ r.icone }}</icon></span>
                     <span class="rc-ligne__texte"><b v-html="surligner(r.titre)"></b><small v-if="r.detail" v-html="surligner(r.detail)"></small></span>
                     <icon class="rc-ligne__entree" aria-hidden="true">keyboard_return</icon>

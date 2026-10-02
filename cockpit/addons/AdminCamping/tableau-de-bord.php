@@ -57,7 +57,7 @@ return function (Lime\App $app): string {
     $indicateurs = $tuile('event_available', (string) $places, 'Places restantes', $places > 0 ? 'Affiché sur le site' : 'Rien d’affiché sur le site', $route('/content/singleton/item/saison'), 'tdb--vert')
         .($lireMessages ? $tuile('mark_email_unread', (string) $nonLus, $nonLus > 1 ? 'Demandes non lues' : 'Demande non lue', count($messages).' reçue'.(count($messages) > 1 ? 's' : '').' au total', $route('/content/collection/items/messages'), $nonLus ? 'tdb--alerte' : '') : '')
         .$tuile('web', (string) $enLigne, 'Pages en ligne', (count($pages) - $enLigne) > 0 ? (count($pages) - $enLigne).' hors ligne (brouillons, modèles)' : 'Toutes publiées', $route('/content/collection/items/pages'))
-        .$tuile('photo_library', (string) $images, 'Images', 'Photos du site et cartes', $route('/assets'));
+        .$tuile('perm_media', (string) $images, 'Médias', 'Photos et documents du site', $route('/assets'));
 
     // ── Les gestes du quotidien ──
     $raccourci = static fn (string $icone, string $titre, string $texte, string $lien, bool $externe = false) =>

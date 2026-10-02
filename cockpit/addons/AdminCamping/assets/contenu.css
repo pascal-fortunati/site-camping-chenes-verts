@@ -80,7 +80,7 @@ html[data-theme] .camping-fiche > kiss-container.fiche { max-width: 1440px; }
 .fiche-tete__icone icon { font-size: 28px; }
 .fiche-tete__texte { display: grid; flex: 1 1 320px; gap: 2px; min-width: 0; }
 .fiche-tete__chemin { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; font-size: 0.8125rem; font-weight: 600; }
-.fiche-tete__chemin a { color: var(--admin-texte-doux); text-decoration: none; }
+.fiche-tete__chemin a, .fiche-tete__chemin span { color: var(--admin-texte-doux); text-decoration: none; }
 .fiche-tete__chemin a:hover { color: var(--admin-accent); }
 .fiche-tete__chemin icon { color: var(--admin-texte-doux); font-size: 16px; }
 .fiche-tete h1 { margin: 0; overflow: hidden; color: var(--admin-texte); font-size: 1.75rem; line-height: 1.2; text-overflow: ellipsis; }
@@ -154,6 +154,7 @@ html[data-theme] kiss-container.camping-page[size="small"] { max-width: 640px; }
 .compte__photo .avatar-photo { width: 64px; height: 64px; }
 .compte__grille { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 24px; align-items: start; }
 @media (max-width: 900px) { .compte__grille { grid-template-columns: minmax(0, 1fr); } }
+.compte__colonne { display: grid; gap: 20px; align-content: start; }
 .compte__grille .fiche-carte { display: grid; gap: 14px; }
 .compte__grille .fiche-carte h2 { margin-bottom: 2px; }
 .compte__mdp { display: flex; gap: 6px; }

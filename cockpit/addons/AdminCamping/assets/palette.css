@@ -744,3 +744,12 @@ html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-margi
 html[data-theme] kiss-dialog[data-field-render-uid] > kiss-content > .kiss-margin > .fields-renderer > app-fieldcontainer > div:first-child > .fields-renderer-field { display: none; }
 html[data-theme] kiss-dialog[data-field-render-uid] .kiss-button-group.kiss-child-width-1-2 { position: sticky; bottom: -24px; justify-content: flex-end; gap: 10px; margin: 16px -24px -24px !important; padding: 14px 24px; border-top: 1px solid var(--admin-trait); background: var(--admin-surface); }
 html[data-theme] kiss-dialog[data-field-render-uid] .kiss-button-group.kiss-child-width-1-2 > * { flex: 0 1 auto !important; width: auto !important; border-radius: var(--admin-rayon-petit) !important; margin: 0 !important; }
+
+/* ═══ La barre latérale en groupes (barre-laterale.php) : Au quotidien, Le site ═══ */
+html[data-theme] .app-container-aside-menu .sidebar__groupe { margin: 14px 12px 4px; color: color-mix(in srgb, var(--admin-barre-texte) 62%, transparent); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; list-style: none; }
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li:first-child + .sidebar__groupe { margin-top: 10px; }
+html[data-theme].sidebar-reduite .app-container-aside-menu .sidebar__groupe { height: 1px; margin: 10px 14px; background: rgb(255 255 255 / 12%); }
+html[data-theme].sidebar-reduite .app-container-aside-menu .sidebar__groupe .sidebar__libelle { display: none; }
+html[data-theme] .sidebar__badge { display: grid; place-items: center; min-width: 22px; height: 22px; margin-left: auto; padding: 0 7px; border-radius: 11px; background: var(--admin-alerte-point); color: #FFFFFF; font-size: 0.75rem; font-weight: 700; }
+html[data-theme].sidebar-reduite .sidebar__badge { position: absolute; top: 4px; right: 8px; min-width: 18px; height: 18px; padding: 0 5px; font-size: 0.6875rem; }
+html[data-theme] .app-container-aside-menu kiss-navlist ul > li > a { position: relative; }
