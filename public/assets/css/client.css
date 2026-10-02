@@ -1344,13 +1344,10 @@ select:focus-visible { outline: 3px solid var(--couleur-lien); outline-offset: 2
     .menu__liste a[href="/reserver"]:hover::before { transform: translateX(120%); transition: transform 700ms ease; }
 }
 
-/* Au défilement, l'en-tête se resserre et le logo rapetisse */
-.en-tete__interieur { transition: padding 300ms ease; }
-.en-tete__logo img { transition: width 300ms ease, height 300ms ease; }
-.en-tete--defile .en-tete__interieur { padding-block: 0.4rem; }
-@media (min-width: 80rem) {
-    .en-tete--defile .en-tete__logo img { width: 48px; height: 48px; }
-}
+/* Au défilement, le logo rapetisse. La hauteur de l'en-tête ne change jamais : sinon la page se décale, le
+   navigateur corrige le défilement, la classe saute d'un état à l'autre et le menu tremble. */
+.en-tete__logo img { transition: transform 300ms ease; transform-origin: left center; }
+.en-tete--defile .en-tete__logo img { transform: scale(0.8); }
 
 /* Téléphone : l'icône ☰ devient ✕, les entrées arrivent en cascade */
 .menu__bouton rect { transform-box: fill-box; transform-origin: center; transition: transform 300ms ease; }

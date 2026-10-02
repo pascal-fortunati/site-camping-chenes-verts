@@ -37,8 +37,14 @@
     });
 
     // Une ombre sous l'en-tête dès que la page défile.
+    // Deux seuils distincts : près du seuil, la classe ne bascule pas sans cesse.
     function ombre() {
-        entete.classList.toggle('en-tete--defile', window.scrollY > 8);
+        var y = window.scrollY;
+        if (y > 40) {
+            entete.classList.add('en-tete--defile');
+        } else if (y < 8) {
+            entete.classList.remove('en-tete--defile');
+        }
     }
     window.addEventListener('scroll', ombre, { passive: true });
     ombre();

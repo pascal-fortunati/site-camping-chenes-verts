@@ -1,0 +1,78 @@
+/* La palette du site (public/assets/css/client.css) appliquée à l'administration, en thème clair. */
+
+@font-face { font-family: "Lexend"; src: url("fonts/lexend-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Lexend"; src: url("fonts/lexend-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Fraunces"; src: url("fonts/fraunces-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
+html[data-theme]:root {
+    --camping-creme: #FBF8F1;
+    --camping-lin: #F2ECDF;
+    --camping-trait: #DCD3C3;
+    --camping-texte: #1F2A22;
+    --camping-texte-doux: #4D5A51;      /* 6,83:1 sur crème */
+    --camping-vert: #2B5A16;
+    --camping-vert-profond: #183A23;
+    --camping-sur-vert: #C9DDBE;        /* 8,73:1 sur vert profond */
+
+    --kiss-base-font-family: "Lexend", system-ui, "Segoe UI", Arial, sans-serif;
+    --kiss-base-background-color: var(--camping-creme);
+    --kiss-base-text-color: var(--camping-texte);
+    --kiss-color-primary: var(--camping-vert);
+    --kiss-link-hover-color: var(--camping-vert-profond);
+    --kiss-color-muted: var(--camping-texte-doux);
+    --kiss-hr-color: var(--camping-trait);
+    --kiss-button-default-background: var(--camping-lin);
+    --kiss-button-default-color: var(--camping-texte);
+    --kiss-input-border-color: var(--camping-trait);
+    --kiss-input-background: #FFFFFF;
+    --kiss-input-background-active: #FFFFFF;
+    --kiss-input-placeholder-color: #6B746D;
+    --kiss-dropdown-background: #FFFFFF;
+    --kiss-card-bordered-color: var(--camping-trait);
+    --kiss-table-heading-background-color: var(--camping-lin);
+    --kiss-table-row-hover-color: var(--camping-lin);
+    --app-fieldcontainer-border-color-inactive: var(--camping-trait);
+    --app-scrollbar-color: var(--camping-trait);
+}
+
+html[data-theme] body { background-color: var(--camping-creme); }
+html[data-theme]:has(.auth-wrapper) body { background: transparent; }   /* la photo du site reste visible */
+html[data-theme] body::before { background: none !important; }
+
+/* Les titres en Fraunces, comme sur le site */
+html[data-theme] h1, html[data-theme] h2, html[data-theme] h3,
+html[data-theme] .kiss-size-1, html[data-theme] .kiss-size-2, html[data-theme] .kiss-size-3,
+html[data-theme] .kiss-size-4.kiss-text-bold, html[data-theme] .kiss-size-5.kiss-text-bold,
+html[data-theme] .auth-dialog strong.kiss-size-5 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+}
+
+/* Les icônes sont des mots dessinés par leur police : elle ne doit jamais devenir Fraunces */
+html[data-theme] icon { font-family: "Material Icons Outlined" !important; font-weight: normal; }
+
+/* La colonne d'icônes : vert profond, comme l'en-tête des pages et le pied du site */
+html[data-theme] .app-container-aside-menu { background: var(--camping-vert-profond); }
+html[data-theme] .app-container-aside-menu a,
+html[data-theme] .app-container-aside-menu icon,
+html[data-theme] .app-container-aside-menu svg { color: var(--camping-sur-vert) !important; }
+html[data-theme] .app-container-aside-menu li.active a,
+html[data-theme] .app-container-aside-menu a:hover { color: #FFFFFF !important; background: rgb(255 255 255 / 10%); border-radius: 8px; }
+html[data-theme] .app-container-aside-menu .kiss-nav-divider { border-color: rgb(201 221 190 / 25%); }
+
+/* Cartes et champs : blancs sur crème, coins arrondis du site */
+html[data-theme] kiss-card,
+html[data-theme] .kiss-card { background: #FFFFFF; border-radius: 14px; }
+html[data-theme] .kiss-input, html[data-theme] .kiss-select, html[data-theme] .kiss-textarea { border-radius: 8px; }
+html[data-theme] .kiss-button { border-radius: 999px; }
+
+/* La page de connexion : une carte crème sur la photo du site */
+html[data-theme] .auth-dialog {
+    background: var(--camping-creme);
+    border: 0;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgb(0 0 0 / 35%);
+}
+html[data-theme] bg-fluxanimation { display: none; }
+html[data-theme] .auth-dialog .app-logo { height: 76px !important; }
+html[data-theme] .auth-dialog .kiss-button-primary { border-radius: 999px; }

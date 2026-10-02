@@ -47,6 +47,7 @@ Une correction du socle sur ces fichiers ne s'applique plus : relire `git log so
 
 ## Fichiers propres au site
 
+- `cockpit/addons/AdminCamping/` : l'administration aux couleurs du site, toujours en thème clair (le choix du profil n'est pas modifié) : nom, logo, couleur principale et image de partage lus dans « Identité du site » (fichiers générés dans `public/admin/addons/AdminCamping/generated/`), palette et polices du site dans `assets/`. Propre à ce site, hors de la PR du socle.
 - `cockpit/addons/AdminClient/` : administration en français (Cockpit n'en fournit pas, 530 textes dans `i18n/fr.php`), libellés sans majuscule à chaque mot, et pour les comptes non administrateurs, actions sur la structure masquées (modifier, dupliquer, supprimer un modèle, objet JSON) — Cockpit les affichait puis les refusait. Installé par `bin/install-cockpit.php` comme les autres modules du projet. À proposer au socle.
   **Sur un serveur déjà installé**, après l'ajout d'un module : supprimer `public/admin/storage/cache/modules.cache.php`, sinon Cockpit ne le charge pas (liste des modules en cache).
 - `templates-client/blocs/` : `annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`, `ardoise`.
