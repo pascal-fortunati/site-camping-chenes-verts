@@ -593,4 +593,19 @@ return [
     'Username is already used!' => 'Cet identifiant est déjà utilisé.',
     'Username required' => 'L’identifiant est obligatoire.',
     'Valid email required' => 'Une adresse e-mail valide est obligatoire.',
+
+    // Les bulles d'aide de la barre d'outils du texte riche.
+    'Align Center' => 'Centrer',
+    'Align Justify' => 'Justifier',
+    'Align Left' => 'Aligner à gauche',
+    'Align Right' => 'Aligner à droite',
+    'Format' => 'Format du texte',
+    'Horizontal Rule' => 'Ligne de séparation',
+    'List Bullet' => 'Liste à puces',
+    'List Ordered' => 'Liste numérotée',
+    'Redo' => 'Rétablir',
+    'Strikethrough' => 'Barré',
+    'Table' => 'Tableau',
+    'Task List' => 'Liste de cases à cocher',
+    'Undo' => 'Annuler',
 ];
