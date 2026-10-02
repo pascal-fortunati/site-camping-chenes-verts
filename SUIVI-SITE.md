@@ -43,6 +43,7 @@ Une correction du socle sur ces fichiers ne s'applique plus : relire `git log so
 ## Fichiers propres au site
 
 - `cockpit/addons/AdminClient/` : administration en français (Cockpit n'en fournit pas, 530 textes dans `i18n/fr.php`), libellés sans majuscule à chaque mot, et pour les comptes non administrateurs, actions sur la structure masquées (modifier, dupliquer, supprimer un modèle, objet JSON) — Cockpit les affichait puis les refusait. Installé par `bin/install-cockpit.php` comme les autres modules du projet. À proposer au socle.
+  **Sur un serveur déjà installé**, après l'ajout d'un module : supprimer `public/admin/storage/cache/modules.cache.php`, sinon Cockpit ne le charge pas (liste des modules en cache).
 - `templates-client/blocs/` : `annonce`, `cartes`, `hebergements`, `tarifs`, `reservation`, `carte`, `ardoise`.
 - `public/assets/css/client.css` ; `public/assets/fonts/` (Lexend, Fraunces, licences OFL) ; `public/assets/js/menu.js`.
 - `tests/Site/ReservationTest.php` : 17 tests de la demande de réservation (et du contact inchangé).
