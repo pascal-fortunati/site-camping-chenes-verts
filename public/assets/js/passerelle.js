@@ -1,6 +1,6 @@
-/* Site → administration : si l'administration a déposé son cookie « passerelle » (seulement dans le navigateur de
-   la personne connectée), un avatar avec une pastille verte ouvre l'administration dans un nouvel onglet.
-   Sans ce cookie — chez tous les visiteurs — rien ne se passe. Aucune adresse de l'administration n'est écrite ici. */
+/* Site → admin (cockpit/addons/Passerelle): when the admin has set its « passerelle » cookie — in the
+   signed-in person's browser only — an avatar with a green dot opens the admin in a new tab.
+   Without that cookie, as for every visitor, nothing happens. No address of the admin is written here. */
 (function () {
     'use strict';
 
@@ -37,7 +37,7 @@
         var avatar = document.createElement('span');
         avatar.className = 'passerelle__avatar';
         avatar.setAttribute('aria-hidden', 'true');
-        // La photo du compte (module Avatar) si elle existe, sinon l'initiale.
+        // The account photo when there is one (Avatar addon), the initial otherwise.
         if (typeof infos.photo === 'string' && /^(https?:\/\/[^\s"<>]+|\/[^\s"<>]*)\.webp$/.test(infos.photo)) {
             var photo = document.createElement('img');
             photo.className = 'passerelle__photo';
@@ -66,8 +66,8 @@
         document.body.appendChild(lien);
     }
 
-    // Sur la même adresse que l'administration, on vérifie que la session est toujours ouverte. Ailleurs
-    // (administration sur une autre origine), la vérification échoue sans bruit et le cookie fait foi.
+    // On the admin's own origin, the session is checked to still be open. Elsewhere (admin on another
+    // origin) the check fails silently and the cookie stands.
     fetch(infos.admin.replace(/\/?$/, '/') + 'check-session', { credentials: 'include' })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (session) {
