@@ -192,6 +192,14 @@ $this->on('app.render.view/system:views/users/user.php', function (&$view, &$slo
     }
 });
 
+// Les pages d'erreur (401, 404, 500) : aux couleurs du site, avec un chemin de retour, au lieu de l'écran noir de Cockpit.
+foreach ([401, 404, 500] as $code) {
+    $this->on("app.render.view/app:views/errors/{$code}.php", function (&$view, &$slots) use ($code) {
+        $view = 'admincamping:views/erreur.php';
+        $slots['code'] = $code;
+    });
+}
+
 // Une fiche verrouillée : si c'est par soi-même (autre onglet, autre appareil), on peut la reprendre.
 $this->on('app.render.view/app:views/lockedResouce.php', function (&$view) {
     $view = 'admincamping:views/verrou.php';
@@ -214,6 +222,34 @@ $this->bind('/admincamping/reprendre/:id', function ($params) {
     $this->helper('admin')->unlockResourceId($id);
 
     return ['ok' => true];
+});
+
+// Les éléments non lus (les messages reçus), pour la pastille de la barre latérale tenue à jour sans recharger.
+$this->bind('/admincamping/non-lus', function () {
+    $this->response->mime = 'json';
+    if (!$this->helper('auth')->getUser()) {
+        $this->response->status = 403;
+        return [];
+    }
+    $resultat = [];
+    foreach ($this->module('content')->models() as $nom => $m) {
+        $lu = array_filter($m['fields'] ?? [], static fn (array $c): bool => ($c['name'] ?? '') === 'lu' && ($c['type'] ?? '') === 'boolean');
+        if ($m['type'] !== 'collection' || !$lu || !$this->helper('acl')->isAllowed("content/{$nom}/read")) {
+            continue;
+        }
+        $nonLus = array_values(array_filter($this->module('content')->items($nom, ['sort' => ['_created' => -1]]), static fn (array $i): bool => empty($i['lu'])));
+        $dernier = $nonLus[0] ?? null;
+        $resultat[$nom] = [
+            'nombre' => count($nonLus),
+            'dernier' => $dernier ? [
+                'id' => $dernier['_id'],
+                'nom' => (string) ($dernier['nom'] ?? $dernier['name'] ?? $dernier['titre'] ?? ''),
+                'lien' => $this->routeUrl("/content/collection/item/{$nom}/{$dernier['_id']}"),
+            ] : null,
+        ];
+    }
+
+    return $resultat;
 });
 
 $this->bind('/admincamping/recherche', function () {

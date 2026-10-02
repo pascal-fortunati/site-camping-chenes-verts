@@ -21,13 +21,12 @@ const quand = (secondes) => {
     return `le ${d.getDate()}${d.getDate() === 1 ? 'er' : ''} ${mois[d.getMonth()]}${d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''}`;
 };
 
-const ICONES = { pages: 'description', messages: 'mail', articles: 'newspaper' };
-const NOMS = { pages: ['page', 'pages', 'Nouvelle page'], messages: ['message', 'messages', 'Nouveau message'] };
 
 export default {
 
     props: {
         model: { type: Object, required: true },
+        vue: { type: Object, default: () => ({ icone: 'folder', mots: ['élément', 'éléments', 'Ajouter'] }) },
         droits: { type: Object, default: () => ({}) },
         site: { type: String, default: '' },
         accueil: { type: String, default: 'accueil' }
@@ -50,11 +49,11 @@ export default {
     computed: {
 
         noms() {
-            return NOMS[this.model.name] || ['élément', 'éléments', 'Ajouter'];
+            return this.vue.mots;
         },
 
         icone() {
-            return ICONES[this.model.name] || 'folder';
+            return this.vue.icone;
         },
 
         champs() {

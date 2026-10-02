@@ -753,3 +753,40 @@ html[data-theme].sidebar-reduite .app-container-aside-menu .sidebar__groupe .sid
 html[data-theme] .sidebar__badge { display: grid; place-items: center; min-width: 22px; height: 22px; margin-left: auto; padding: 0 7px; border-radius: 11px; background: var(--admin-alerte-point); color: #FFFFFF; font-size: 0.75rem; font-weight: 700; }
 html[data-theme].sidebar-reduite .sidebar__badge { position: absolute; top: 4px; right: 8px; min-width: 18px; height: 18px; padding: 0 5px; font-size: 0.6875rem; }
 html[data-theme] .app-container-aside-menu kiss-navlist ul > li > a { position: relative; }
+
+/* Le logo garde sa forme ronde quand la barre est réduite (l'espace prévu pour le nom ne doit pas l'écraser) */
+html[data-theme] .sidebar__marque img { flex: 0 0 auto; box-sizing: border-box; width: 36px; height: 36px; object-fit: contain; }
+html[data-theme].sidebar-reduite .sidebar__marque { gap: 0; margin: 2px 0 14px; padding: 6px 0; }
+
+/* ═══ Les pages d'erreur (views/erreur.php) ═══ */
+html[data-theme] body.erreur-page { display: grid; min-height: 100vh; place-items: center; margin: 0; padding: 24px; background: var(--admin-fond); }
+.erreur { display: grid; justify-items: center; gap: 10px; width: min(480px, 100%); padding: 40px 32px; border: 1px solid var(--admin-trait); border-radius: 22px; background: var(--admin-surface); color: var(--admin-texte); box-shadow: var(--admin-ombre-haute); text-align: center; animation: camping-monte 400ms cubic-bezier(.2, .7, .2, 1) backwards; }
+.erreur__logo { width: 64px; height: 64px; margin-bottom: 6px; border-radius: 50%; object-fit: contain; }
+.erreur__icone { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--admin-surface-douce); color: var(--admin-accent); }
+.erreur__icone icon { font-size: 28px; }
+.erreur__code { margin: 4px 0 0; color: var(--admin-texte-doux); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.12em; }
+.erreur h1 { margin: 0; font-size: 1.7rem; }
+.erreur__texte { max-width: 26rem; margin: 0; color: var(--admin-texte-doux); }
+.erreur__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 14px; }
+html[data-theme] .sidebar__badge[hidden] { display: none; }
+
+/* ═══ Le menu du téléphone (barre-laterale.php) : la barre latérale, en tiroir ═══ */
+html[data-theme] kiss-offcanvas#app-offcanvas { background: color-mix(in srgb, var(--admin-barre) 40%, transparent); }
+html[data-theme] kiss-offcanvas#app-offcanvas > kiss-content.tiroir { display: flex; flex-direction: column; gap: 4px; width: min(300px, 86vw); padding: 14px 12px; overflow-y: auto; background: linear-gradient(180deg, var(--admin-barre-haut) 0%, var(--admin-barre) 60%); color: var(--admin-barre-texte); box-shadow: 8px 0 30px rgb(0 0 0 / 25%); }
+.tiroir__tete { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tiroir__tete .sidebar__marque { margin: 0; flex: 1; min-width: 0; }
+.tiroir__fermer { display: grid; flex: none; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 10px; background: rgb(255 255 255 / 8%); color: var(--admin-barre-texte); cursor: pointer; }
+.tiroir__nav ul { margin: 0; padding: 0; list-style: none; }
+html[data-theme] .tiroir__nav li > a { position: relative; display: flex !important; align-items: center; gap: 12px; margin: 2px 0; padding: 11px 12px !important; border-radius: 10px; color: var(--admin-barre-texte) !important; font-size: 0.9375rem; font-weight: 600; text-decoration: none; }
+html[data-theme] .tiroir__nav li > a:hover { background: var(--admin-barre-survol); }
+html[data-theme] .tiroir__nav li.active > a { background: var(--admin-barre-actif); color: var(--admin-barre-actif-texte) !important; }
+html[data-theme] .tiroir__nav li.active > a icon { color: var(--admin-barre-actif-icone); }
+html[data-theme] .tiroir__nav li > a icon { width: 24px; font-size: 22px; }
+html[data-theme] .tiroir .sidebar__groupe { margin: 14px 12px 4px; color: color-mix(in srgb, var(--admin-barre-texte) 62%, transparent); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.tiroir__bas { margin-top: auto; padding-top: 10px; border-top: 1px solid rgb(255 255 255 / 12%); }
+html[data-theme] .tiroir__nav .tiroir__sortie { color: #F7B896 !important; }
+.tiroir__compte { display: grid; margin: 8px 12px 0; color: color-mix(in srgb, var(--admin-barre-texte) 75%, transparent); font-size: 0.8125rem; font-weight: 700; }
+.tiroir__compte small { font-weight: 400; }
+html[data-theme] .tiroir__nav li > a, html[data-theme] .tiroir__nav li > a * { opacity: 1 !important; letter-spacing: 0 !important; text-transform: none !important; }
+html[data-theme] .tiroir__nav li > a icon { margin: 0 !important; transform: none !important; }
+.tiroir__fermer icon { font-size: 22px; }

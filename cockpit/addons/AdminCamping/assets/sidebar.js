@@ -102,3 +102,45 @@ function preparer() {
 
 preparer();
 new MutationObserver(preparer).observe(document.documentElement, { childList: true, subtree: true });
+
+// La pastille des non lus (messages reçus) suit l'arrivée des messages sans recharger la page : on demande au
+// serveur toutes les 30 secondes, et dès qu'on revient sur l'onglet. Un nouveau message est annoncé.
+const pastilles = () => [...document.querySelectorAll('[data-non-lus]')];
+if (pastilles().length) {
+    const titre = document.title.replace(/^\(\d+\)\s*/, '');
+    let connus = null;
+
+    const afficher = (donnees) => {
+        let total = 0;
+        pastilles().forEach((p) => {
+            const n = (donnees[p.dataset.nonLus] || {}).nombre || 0;
+            total += n;
+            p.textContent = n;
+            p.hidden = n === 0;
+            p.setAttribute('aria-label', `${n} non lu${n > 1 ? 's' : ''}`);
+        });
+        document.title = (total ? `(${total}) ` : '') + titre;
+
+        // Un message de plus qu'au dernier passage : on le dit.
+        Object.entries(donnees).forEach(([modele, d]) => {
+            const avant = connus && connus[modele] ? connus[modele].nombre : null;
+            if (avant !== null && d.nombre > avant && d.dernier) {
+                const nom = String(d.dernier.nom || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);   // vient du formulaire du site
+                App.ui.notify(`Nouveau message${nom ? ' de ' + nom : ''} : <a href="${encodeURI(d.dernier.lien)}">le lire</a>`, 'info', { timeout: 8000 });
+            }
+        });
+        connus = donnees;
+    };
+
+    const demander = () => {
+        if (document.hidden) return;
+        fetch(App.route('/admincamping/non-lus'), { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((d) => { if (d) afficher(d); })
+            .catch(() => {});
+    };
+
+    demander();
+    setInterval(demander, 30000);
+    document.addEventListener('visibilitychange', demander);
+}

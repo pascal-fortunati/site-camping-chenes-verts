@@ -79,13 +79,11 @@ return function (Lime\App $app, string $html): string {
 
     // « Contenu » et « Images et fichiers » (Cockpit) laissent la place à des accès directs, en deux groupes : ce qu'on change
     // souvent (pages, messages, saison, médias) et les réglages du site (identité, menu, mentions). Chaque entrée
-    // vient d'un modèle que la personne peut lire ; un modèle inconnu va dans le groupe qui correspond à son type.
+    // vient d'un modèle que la personne peut lire ; son nom, son icône et son groupe sont réglés dans le modèle
+    // (clé « admin », voir modeles.php), sinon déduits de son type.
     $route = rtrim((string) $app->request->route, '/');
     $acl = $app->helper('acl');
-    $libelles = ['pages' => 'Pages', 'messages' => 'Messages', 'saison' => 'Saison et places', 'settings' => 'Identité du site', 'menu' => 'Menu du site', 'legal' => 'Mentions légales', 'articles' => 'Actualités'];
-    $iconesModeles = ['pages' => 'description', 'messages' => 'mail', 'saison' => 'event_seat', 'settings' => 'badge', 'menu' => 'menu_open', 'legal' => 'gavel', 'articles' => 'newspaper'];
-    $quotidien = ['pages', 'messages', 'saison', 'articles'];
-    $ordre = array_flip(['pages', 'messages', 'saison', 'articles', 'settings', 'menu', 'legal']);
+    $presenter = include __DIR__.'/modeles.php';
 
     $entree = static function (string $href, string $libelle, string $icone, bool $actif, string $badge = '') use ($e): string {
         return '<li'.($actif ? ' class="active"' : '').'><a href="'.$e($href).'" aria-label="'.$e($libelle).'" kiss-tooltip="right"'.($actif ? ' aria-current="page"' : '').'>'
@@ -93,7 +91,7 @@ return function (Lime\App $app, string $html): string {
     };
     $groupes = ['quotidien' => [], 'site' => []];
     $modeles = $app->module('content')->models();
-    uasort($modeles, static fn (array $a, array $b): int => ($ordre[$a['name']] ?? 50) <=> ($ordre[$b['name']] ?? 50));
+    uasort($modeles, static fn (array $a, array $b): int => $presenter($a)['ordre'] <=> $presenter($b)['ordre']);
     foreach ($modeles as $nom => $m) {
         if (!$acl->isAllowed("content/{$nom}/read")) {
             continue;
@@ -102,12 +100,14 @@ return function (Lime\App $app, string $html): string {
         $href = $app->routeUrl($singleton ? "/content/singleton/item/{$nom}" : "/content/{$m['type']}/items/{$nom}");
         $actif = (bool) preg_match('#^/content/(singleton|collection|tree)/(item|items|clone)/'.preg_quote($nom, '#').'(/|$)#', $route);
         $badge = '';
-        if ($nom === 'messages') {
-            $nonLus = count(array_filter($app->module('content')->items('messages', ['fields' => ['lu' => 1]]), static fn (array $i): bool => empty($i['lu'])));
-            $badge = $nonLus ? '<span class="sidebar__badge" aria-label="'.$nonLus.' non lu'.($nonLus > 1 ? 's' : '').'">'.$nonLus.'</span>' : '';
+        // Une liste avec une case « lu » (les messages reçus) : une pastille compte ceux qui ne le sont pas.
+        // Toujours présente, masquée à zéro : sidebar.js la met à jour sans recharger la page.
+        if (!$singleton && in_array('lu', array_column(array_filter($m['fields'] ?? [], static fn (array $c): bool => ($c['type'] ?? '') === 'boolean'), 'name'), true)) {
+            $nonLus = count(array_filter($app->module('content')->items($nom, ['fields' => ['lu' => 1]]), static fn (array $i): bool => empty($i['lu'])));
+            $badge = '<span class="sidebar__badge" data-non-lus="'.$e($nom).'"'.($nonLus ? '' : ' hidden').' aria-label="'.$nonLus.' non lu'.($nonLus > 1 ? 's' : '').'">'.$nonLus.'</span>';
         }
-        $groupe = in_array($nom, $quotidien, true) || (!$singleton && !isset($libelles[$nom])) ? 'quotidien' : 'site';
-        $groupes[$groupe][] = $entree($href, $libelles[$nom] ?? ($m['label'] ?: $nom), $iconesModeles[$nom] ?? ($singleton ? 'tune' : 'folder'), $actif, $badge);
+        $vue = $presenter($m);
+        $groupes[$vue['groupe']][] = $entree($href, $vue['libelle'], $vue['icone'], $actif, $badge);
     }
     if ($acl->isAllowed('assets/upload') || $acl->isAllowed('assets/edit') || $acl->isSuperAdmin()) {
         $groupes['quotidien'][] = $entree($app->routeUrl('/assets'), 'Médias', 'perm_media', str_starts_with($route, '/assets'));
@@ -140,6 +140,24 @@ return function (Lime\App $app, string $html): string {
     }
 
     $html = substr($html, 0, $debut).$menu.substr($html, $fin);
+
+    // Le menu du téléphone (le tiroir de Cockpit) : les mêmes entrées que la barre, sur le même fond.
+    if ($bloc !== '' && preg_match('#<kiss-offcanvas id="app-offcanvas">.*?</kiss-offcanvas>#s', $html, $t, PREG_OFFSET_CAPTURE)) {
+        $user = $app->helper('auth')->getUser() ?? [];
+        $tiroir = '<kiss-offcanvas id="app-offcanvas"><kiss-content class="tiroir">'
+            .'<div class="tiroir__tete">'.$marque.'<button type="button" class="tiroir__fermer" kiss-offcanvas-close aria-label="Fermer le menu"><icon aria-hidden="true">close</icon></button></div>'
+            .'<kiss-navlist class="tiroir__nav"><ul>'
+            .$entree($app->routeUrl('/'), 'Tableau de bord', 'space_dashboard', $route === '')
+            .$bloc
+            .'</ul></kiss-navlist>'
+            .'<kiss-navlist class="tiroir__nav tiroir__bas"><ul>'
+            .$entree($compte, 'Mon compte', 'account_circle', str_starts_with($route, '/system/users/user'))
+            .'<li><a class="tiroir__sortie" href="'.$e($app->routeUrl('/auth/logout')).'"><icon aria-hidden="true">logout</icon><span class="sidebar__libelle">Se déconnecter</span></a></li>'
+            .'</ul></kiss-navlist>'
+            .'<p class="tiroir__compte">'.$e($user['name'] ?? '').'<small>'.$e($user['email'] ?? '').'</small></p>'
+            .'</kiss-content></kiss-offcanvas>';
+        $html = substr($html, 0, $t[0][1]).$tiroir.substr($html, $t[0][1] + strlen($t[0][0]));
+    }
 
     // L'état réduit est posé sur <html> dès l'envoi.
     if ($reduite) {

@@ -14,6 +14,8 @@ return [
     'type' => 'singleton',
     'group' => null,
     'preview' => [],
+    // Dans l'administration : nom court, icône et groupe de la barre latérale (addon AdminCamping, modeles.php).
+    'admin' => ['libelle' => 'Saison et places', 'icone' => 'event_seat', 'groupe' => 'quotidien', 'ordre' => 30],
     'meta' => null,
     '_created' => 1790935200,
     '_modified' => 1790935200,

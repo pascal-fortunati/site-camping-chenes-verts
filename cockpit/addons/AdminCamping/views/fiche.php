@@ -9,10 +9,9 @@ if (count($langues) === 1) {
 } else {
     $langues[0]['visible'] = true;
 }
-$icones = ['settings' => 'badge', 'saison' => 'event_seat', 'legal' => 'gavel', 'menu' => 'menu_open', 'pages' => 'description', 'messages' => 'mail', 'articles' => 'newspaper'];
-$noms = ['pages' => 'page', 'messages' => 'message'];
+$vue = (include dirname(__DIR__).'/modeles.php')($model);   // nom court, icône, groupe : réglés dans le modèle
 $retour = $collection ? $this->routeUrl("/content/collection/items/{$nom}") : $this->routeUrl('/');
-$groupe = in_array($nom, ['pages', 'messages', 'saison', 'articles'], true) ? 'Au quotidien' : 'Le site';   // comme la barre latérale
+$groupe = $vue['titreGroupe'];   // comme la barre latérale
 $droits = [
     'publier' => $collection && $acl->isAllowed("content/{$nom}/publish"),
     'creer' => $collection && $acl->isAllowed("content/{$nom}/create"),
@@ -26,7 +25,7 @@ $droits = [
         <kiss-container class="fiche">
 
             <section class="fiche-tete">
-                <span class="fiche-tete__icone"><icon><?= $icones[$nom] ?? ($collection ? 'folder' : 'tune') ?></icon></span>
+                <span class="fiche-tete__icone"><icon><?= $this->escape($vue['icone']) ?></icon></span>
                 <div class="fiche-tete__texte">
                     <nav class="fiche-tete__chemin" aria-label="Fil d’Ariane">
                         <span><?= $groupe ?></span>
@@ -122,7 +121,7 @@ $droits = [
                     fields: <?= json_encode($champs) ?>,
                     locales: <?= json_encode($langues) ?>,
                     droits: <?= json_encode($droits) ?>,
-                    nouveau: <?= json_encode('Nouvelle '.($noms[$nom] ?? 'fiche'), JSON_UNESCAPED_UNICODE) ?>,
+                    nouveau: <?= json_encode($vue['nouveau'], JSON_UNESCAPED_UNICODE) ?>,
                     saving: false
                 };
             },

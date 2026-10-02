@@ -22,6 +22,8 @@ return [
     'type' => 'collection',
     'group' => null,
     'preview' => [],
+    // Dans l'administration : nom court, icône et groupe de la barre latérale (addon AdminCamping, modeles.php).
+    'admin' => ['libelle' => 'Actualités', 'icone' => 'newspaper', 'groupe' => 'quotidien', 'ordre' => 40],
     'meta' => [
         'unique' => ['slug'],
     ],

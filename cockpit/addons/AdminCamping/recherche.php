@@ -54,7 +54,7 @@ return function (Lime\App $app, string $q): array {
 
     $content = $app->module('content');
     $acl = $app->helper('acl');
-    $icones = ['settings' => 'badge', 'saison' => 'event_seat', 'legal' => 'gavel', 'menu' => 'menu_open', 'pages' => 'description', 'messages' => 'mail', 'articles' => 'newspaper'];
+    $presenter = include __DIR__.'/modeles.php';
     $resultats = [];
 
     foreach ($content->models() as $nom => $m) {
@@ -62,7 +62,7 @@ return function (Lime\App $app, string $q): array {
             continue;
         }
         $libelle = $m['label'] ?: $nom;
-        $icone = $icones[$nom] ?? ($m['type'] === 'singleton' ? 'tune' : 'folder');
+        $icone = $presenter($m)['icone'];
         $champs = array_column($m['fields'] ?? [], 'label', 'name');
 
         if ($m['type'] === 'singleton') {

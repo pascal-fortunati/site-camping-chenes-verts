@@ -21,14 +21,10 @@ return function (Lime\App $app): string {
     };
     $pluriel = static fn (int $n, string $mot): string => $n.' '.$mot.($n > 1 ? 's' : '');
 
-    $icones = [
-        'settings' => 'badge', 'saison' => 'event_seat', 'legal' => 'gavel', 'menu' => 'menu_open',
-        'pages' => 'description', 'articles' => 'newspaper', 'messages' => 'mail',
-    ];
-    $ordre = array_flip(array_keys($icones));
+    $presenter = include __DIR__.'/modeles.php';
 
     $modeles = array_filter($content->models(), static fn (array $m): bool => $acl->isAllowed("content/{$m['name']}/read"));
-    uasort($modeles, static fn (array $a, array $b): int => ($ordre[$a['name']] ?? 99) <=> ($ordre[$b['name']] ?? 99));
+    uasort($modeles, static fn (array $a, array $b): int => $presenter($a)['ordre'] <=> $presenter($b)['ordre']);
 
     $carte = static fn (string $icone, string $titre, string $texte, string $detail, string $lien, string $ton = '') =>
         "<a class=\"tdb-raccourci ctn-modele {$ton}\" href=\"{$lien}\"><span class=\"tdb-raccourci__icone\"><icon>{$icone}</icon></span>"
@@ -39,7 +35,7 @@ return function (Lime\App $app): string {
     $listes = '';
     $recents = [];
     foreach ($modeles as $nom => $m) {
-        $icone = $icones[$nom] ?? ($m['type'] === 'singleton' ? 'tune' : 'folder');
+        $icone = $presenter($m)['icone'];
         $titre = $e($m['label'] ?: $nom);
         $texte = $e($m['info'] ?? '');
 
@@ -62,7 +58,7 @@ return function (Lime\App $app): string {
             $mot = $nom === 'pages' ? 'page' : ($nom === 'articles' ? 'actualité' : 'élément');
             $detail = $total ? $pluriel($total, $mot).($horsLigne ? ' · '.$horsLigne.' hors ligne' : ' · tout est en ligne') : 'Aucune '.$mot.' pour l’instant';
             foreach (array_slice($items, 0, 6) as $i) {
-                $recents[] = ['modele' => $nom, 'libelle' => $m['label'] ?: $nom, 'type' => $m['type']] + $i;
+                $recents[] = ['modele' => $nom, 'libelle' => $m['label'] ?: $nom, 'type' => $m['type'], 'icone' => $icone] + $i;
             }
         }
         $listes .= $carte($icone, $titre, $texte, $e($detail), $route("/content/{$m['type']}/items/{$nom}"), $ton);
@@ -72,7 +68,7 @@ return function (Lime\App $app): string {
     $lignes = '';
     foreach (array_slice($recents, 0, 7) as $r) {
         $lignes .= '<a class="tdb-ligne" href="'.$route("/content/{$r['type']}/item/{$r['modele']}/{$r['_id']}").'">'
-            .'<span class="tdb-ligne__avatar tdb-ligne__avatar--page"><icon>'.($icones[$r['modele']] ?? 'description').'</icon></span>'
+            .'<span class="tdb-ligne__avatar tdb-ligne__avatar--page"><icon>'.$e($r['icone'] ?? 'description').'</icon></span>'
             .'<span class="tdb-ligne__texte"><b>'.$e($r['titre'] ?? $r['nom'] ?? 'Sans titre').'</b><span>'.$e($r['libelle'])
             .(($r['_state'] ?? 1) !== 1 ? ' · hors ligne' : '').'</span></span>'
             .'<span class="tdb-ligne__date">'.$e($quand((int) ($r['_modified'] ?? 0))).'</span></a>';
