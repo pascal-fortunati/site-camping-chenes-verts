@@ -17,7 +17,7 @@ $site = preg_match('/^SITE_URL=(.*)$/m', $env, $t) ? rtrim(trim($t[1], " \t\r\"'
 $accueil = preg_match('/^HOME_PAGE_SLUG=(.*)$/m', $env, $t) ? trim($t[1], " \t\r\"'") : 'accueil';
 $vue = (include dirname(__DIR__).'/lib/modeles.php')($model);
 $proprietes = [
-    'vue' => ['icone' => $vue['icone'], 'mots' => [$vue['element'], $vue['elements'], $vue['nouveau']], 'resume' => $vue['resume']],
+    'vue' => ['icone' => $vue['icone'], 'mots' => [$vue['element'], $vue['elements'], $vue['nouveau']], 'resume' => $vue['resume'], 'publication' => $vue['publication']],
     'model' => ['name' => $nom, 'label' => $model['label'] ?? '', 'info' => $model['info'] ?? '', 'fields' => array_map(static fn (array $f): array => ['name' => $f['name'], 'type' => $f['type']], $model['fields'] ?? [])],
     'droits' => [
         'creer' => $acl->isAllowed("content/{$nom}/create"),

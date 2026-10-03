@@ -39,7 +39,7 @@ return function (Lime\App $app): array {
             continue;
         }
 
-        foreach ($content->items($nom) as $item) {
+        foreach ($content->items($nom, ['filter' => (include __DIR__.'/filtre.php')($app, $nom)]) as $item) {
             $titre = $item['titre'] ?? $item['title'] ?? $item['nom'] ?? $item['name'] ?? $modele;
             $libelle = is_string($titre) && $titre !== $modele ? $titre.' ('.$modele.')' : $modele;
             $noter($item, $libelle, $app->routeUrl("/content/{$m['type']}/item/{$nom}/{$item['_id']}"));

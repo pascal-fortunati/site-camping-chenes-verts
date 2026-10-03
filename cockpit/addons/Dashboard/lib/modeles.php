@@ -8,6 +8,8 @@
  *                 'resume' => ['{email}', '{arrivee} → {depart}']],
  *
  * « resume » : la ligne de détail d'un élément dans les listes, chaque morceau affiché si tous ses champs sont remplis.
+ * « publication » : false pour une collection jamais publiée (messages reçus, demandes) : ni pastille « En ligne »
+ * ni carte de publication, et la liste se trie par date de réception. Par défaut, faux pour « messages » seulement.
  * Sans réglage : une collection va dans « Au quotidien », une fiche unique dans « Le site ».
  *
  * @package Dashboard
@@ -15,7 +17,7 @@
  * @link    https://github.com/pascal-fortunati
  *
  * @param  array $modele définition du modèle (Cockpit)
- * @return array{libelle: string, icone: string, groupe: string, titreGroupe: string, ordre: int, element: string, elements: string, nouveau: string, resume: list<string>}
+ * @return array{libelle: string, icone: string, groupe: string, titreGroupe: string, ordre: int, element: string, elements: string, nouveau: string, resume: list<string>, publication: bool}
  */
 return static function (array $modele): array {
 
@@ -33,5 +35,6 @@ return static function (array $modele): array {
         'elements' => (string) ($admin['elements'] ?? 'éléments'),
         'nouveau' => (string) ($admin['nouveau'] ?? 'Ajouter'),
         'resume' => array_values(array_filter((array) ($admin['resume'] ?? []), 'is_string')),
+        'publication' => (bool) ($admin['publication'] ?? (($modele['name'] ?? '') !== 'messages')),
     ];
 };

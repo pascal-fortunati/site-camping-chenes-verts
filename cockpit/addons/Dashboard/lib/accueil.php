@@ -36,12 +36,12 @@ return function (Lime\App $app): string {
     $reglage = is_array($reglage) ? $reglage : [];
 
     $lirePages = isset($modeles['pages']) && $acl->isAllowed('content/pages/read');
-    $pages = $lirePages ? $content->items('pages', ['fields' => ['titre' => 1, 'slug' => 1, '_state' => 1, '_modified' => 1, '_id' => 1], 'sort' => ['_modified' => -1]]) : [];
+    $pages = $lirePages ? $content->items('pages', ['filter' => (include __DIR__.'/filtre.php')($app, 'pages'), 'fields' => ['titre' => 1, 'slug' => 1, '_state' => 1, '_modified' => 1, '_id' => 1], 'sort' => ['_modified' => -1]]) : [];
     $idPage = array_column($pages, '_id', 'slug');
     $page = static fn (string $slug): string => isset($idPage[$slug]) ? $route('/content/collection/item/pages/'.$idPage[$slug]) : $route('/content/collection/items/pages');
 
     $lireMessages = isset($modeles['messages']) && $acl->isAllowed('content/messages/read');
-    $messages = $lireMessages ? $content->items('messages', ['sort' => ['_created' => -1]]) : [];
+    $messages = $lireMessages ? $content->items('messages', ['filter' => (include __DIR__.'/filtre.php')($app, 'messages'), 'sort' => ['_created' => -1]]) : [];
     $nonLus = count(array_filter($messages, static fn (array $m): bool => empty($m['lu'])));
 
     /* ── Bandeau ── */

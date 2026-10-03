@@ -49,7 +49,7 @@ $droits = [
                 </div>
                 <div class="fiche-tete__etats">
                     <span class="fiche-pastille fiche-pastille--attention" v-if="isModified"><icon>edit_note</icon>Modifications non enregistrées</span>
-                    <span class="fiche-pastille" :class="item._state === 1 ? 'fiche-pastille--ligne' : ''" v-if="estCollection && model.name !== 'messages'"><span class="ls-etat__point"></span>{{ item._state === 1 ? 'En ligne' : 'Hors ligne' }}</span>
+                    <span class="fiche-pastille" :class="item._state === 1 ? 'fiche-pastille--ligne' : ''" v-if="estCollection && publication"><span class="ls-etat__point"></span>{{ item._state === 1 ? 'En ligne' : 'Hors ligne' }}</span>
                 </div>
             </section>
 
@@ -67,7 +67,7 @@ $droits = [
 
                 <aside class="fiche-cote">
 
-                    <section class="fiche-carte" v-if="droits.publier && model.name !== 'messages'">
+                    <section class="fiche-carte" v-if="droits.publier && publication">
                         <h2><icon>public</icon>Publication</h2>
                         <div class="fiche-choix" role="radiogroup" aria-label="Publication">
                             <button type="button" role="radio" :aria-checked="item._state === 1 ? 'true' : 'false'" :class="{'fiche-choix--actif': item._state === 1}" @click="item._state = 1"><icon>visibility</icon>En ligne</button>
@@ -135,6 +135,7 @@ $droits = [
                     droits: <?= json_encode($droits) ?>,
                     nouveau: <?= json_encode($vue['nouveau'], JSON_UNESCAPED_UNICODE) ?>,
                     libelle: <?= json_encode($vue['libelle'], JSON_UNESCAPED_UNICODE) ?>,
+                    publication: <?= json_encode($vue['publication']) ?>,
                     saving: false
                 };
             },

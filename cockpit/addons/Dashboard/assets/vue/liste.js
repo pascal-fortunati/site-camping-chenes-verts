@@ -54,7 +54,7 @@ export default {
     },
 
     data() {
-        let tri = this.model.name === 'messages' ? 'cree' : 'modifie';
+        let tri = this.vue.publication === false ? 'cree' : 'modifie';
         try { tri = localStorage.getItem(`dashboard.liste.${this.model.name}.tri`) || tri; } catch (e) {}
 
         return {
@@ -93,7 +93,7 @@ export default {
         },
 
         avecEtat() {
-            return this.model.name !== 'messages';
+            return this.vue.publication !== false;
         },
 
         avecLu() {

@@ -58,7 +58,7 @@ return function (Lime\App $app, string $html, bool $sombre): string {
         $badge = '';
         // Collection avec une case « lu » : pastille des non lus, tenue à jour par dashboard.js.
         if (!$singleton && in_array('lu', array_column(array_filter($m['fields'] ?? [], static fn (array $c): bool => ($c['type'] ?? '') === 'boolean'), 'name'), true)) {
-            $nonLus = count(array_filter($app->module('content')->items($nom, ['fields' => ['lu' => 1]]), static fn (array $i): bool => empty($i['lu'])));
+            $nonLus = count(array_filter($app->module('content')->items($nom, ['filter' => (include __DIR__.'/filtre.php')($app, $nom), 'fields' => ['lu' => 1]]), static fn (array $i): bool => empty($i['lu'])));
             $badge = '<span class="sidebar__badge" data-non-lus="'.$e($nom).'"'.($nonLus ? '' : ' hidden').' aria-label="'.$nonLus.' non lu'.($nonLus > 1 ? 's' : '').'">'.$nonLus.'</span>';
         }
         $vue = $presenter($m);

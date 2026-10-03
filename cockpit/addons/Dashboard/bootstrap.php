@@ -269,7 +269,7 @@ $route('/dashboard/non-lus', function () {
         if ($m['type'] !== 'collection' || !$lu || !$this->helper('acl')->isAllowed("content/{$nom}/read")) {
             continue;
         }
-        $nonLus = array_values(array_filter($this->module('content')->items($nom, ['sort' => ['_created' => -1]]), static fn (array $i): bool => empty($i['lu'])));
+        $nonLus = array_values(array_filter($this->module('content')->items($nom, ['filter' => (include __DIR__.'/lib/filtre.php')($this, $nom), 'sort' => ['_created' => -1]]), static fn (array $i): bool => empty($i['lu'])));
         $dernier = $nonLus[0] ?? null;
         $resultat[$nom] = [
             'nombre' => count($nonLus),

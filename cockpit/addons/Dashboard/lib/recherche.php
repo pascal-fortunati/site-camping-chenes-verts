@@ -41,6 +41,10 @@ return function (Lime\App $app, string $q): array {
             return trim(preg_replace('/\s+/', ' ', strip_tags(str_replace('<', ' <', $v))));
         }
         if (is_array($v)) {
+            // Un média ou un lien vers un autre élément : ses métadonnées (empreinte, couleurs, chemins) ne sont pas du texte.
+            if (isset($v['path'], $v['mime']) || isset($v['_model'])) {
+                return '';
+            }
             // Clés techniques ignorées.
             $ignorer = ['type', 'component', 'lien', 'url', 'href', 'slug', 'id', 'style', 'variante', 'icone', 'path', 'mime'];
             return implode(' ', array_filter(array_map($texte, array_filter($v, static fn ($k): bool => !is_string($k) || ($k[0] !== '_' && !in_array($k, $ignorer, true)), ARRAY_FILTER_USE_KEY))));
@@ -87,7 +91,7 @@ return function (Lime\App $app, string $q): array {
         }
 
         $trouves = [];
-        foreach ($content->items($nom, ['sort' => ['_modified' => -1]]) as $item) {
+        foreach ($content->items($nom, ['filter' => (include __DIR__.'/filtre.php')($app, $nom), 'sort' => ['_modified' => -1]]) as $item) {
             $titre = (string) ($item['titre'] ?? $item['title'] ?? $item['nom'] ?? $item['name'] ?? 'Sans titre');
             $tout = $texte(array_intersect_key($item, $champs));
             if (!$trouve($titre.' '.$tout)) {

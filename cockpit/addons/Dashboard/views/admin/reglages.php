@@ -33,7 +33,13 @@ if ($this->helper('acl')->isAllowed('content/:models/manage')) {
 }
 foreach ($this->helper('settings')->groups(true) as $elements) {
     foreach ($elements as $e) {
-        [$groupe, $icone, $titre, $texte] = $connus[$e['route']] ?? ['systeme', 'extension', t($e['label'] ?? ''), ''];
+        // Un addon peut décrire sa tuile : « description », « icone » (Material Symbols), « groupe » (acces, contenu, systeme).
+        [$groupe, $icone, $titre, $texte] = $connus[$e['route']] ?? [
+            isset($groupes[$e['groupe'] ?? '']) ? $e['groupe'] : 'systeme',
+            (string) ($e['icone'] ?? 'extension'),
+            t($e['label'] ?? ''),
+            (string) ($e['description'] ?? ''),
+        ];
         $groupes[$groupe][2][] = [$icone, $titre, $texte, $this->routeUrl($e['route'])];
     }
 }
