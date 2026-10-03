@@ -16,8 +16,9 @@ return [
     'type' => 'collection',
     'group' => null,
     'preview' => [],
-    // Dans l'administration : nom court, icône et groupe de la barre latérale (addon AdminCamping, modeles.php).
-    'admin' => ['libelle' => 'Messages', 'icone' => 'mail', 'groupe' => 'quotidien', 'ordre' => 20, 'element' => 'message', 'elements' => 'messages', 'nouveau' => 'Nouveau message'],
+    // Dans l'administration : nom court, icône et groupe de la barre latérale (module Dashboard, lib/modeles.php).
+    'admin' => ['libelle' => 'Messages', 'icone' => 'mail', 'groupe' => 'quotidien', 'ordre' => 20, 'element' => 'message', 'elements' => 'messages', 'nouveau' => 'Nouveau message',
+        'resume' => ['{email}', '{arrivee} → {depart}', '{hebergement}', '{personnes} pers.']],
     'meta' => null,
     '_created' => 1754784000,
     '_modified' => 1754784000,

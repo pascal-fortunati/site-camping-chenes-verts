@@ -1591,6 +1591,9 @@ main > .bloc-cartes:last-child { margin-bottom: 0; padding-bottom: 6rem; }
 .pied__classement,
 .pied__saisons dd { color: var(--sur-vert-doux); }
 .pied__legal { border-top-color: var(--vert-fil); }
+.pied__legal { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
+.pied__credit { margin: 0; font-size: 0.875rem; }
+.pied__coeur { color: #F2777A; }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }

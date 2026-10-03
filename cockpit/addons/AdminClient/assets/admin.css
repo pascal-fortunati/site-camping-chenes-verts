@@ -1,5 +1,0 @@
-/* Labels are written in correct French in the models: no capital on every word. */
-.kiss-text-capitalize { text-transform: none !important; }
-
-/* Hidden from the customer by actions-client.js. Important: Cockpit often sets display: flex on these links. */
-.adminclient-masque { display: none !important; }

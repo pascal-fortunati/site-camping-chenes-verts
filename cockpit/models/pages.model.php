@@ -47,7 +47,7 @@ return [
     'type' => 'collection',
     'group' => null,
     'preview' => [],
-    // Dans l'administration : nom court, icône et groupe de la barre latérale (addon AdminCamping, modeles.php).
+    // Dans l'administration : nom court, icône et groupe de la barre latérale (module Dashboard, lib/modeles.php).
     'admin' => ['libelle' => 'Pages', 'icone' => 'description', 'groupe' => 'quotidien', 'ordre' => 10, 'element' => 'page', 'elements' => 'pages', 'nouveau' => 'Nouvelle page'],
     'meta' => [
         'unique' => ['slug'],
