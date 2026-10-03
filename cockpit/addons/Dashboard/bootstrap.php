@@ -159,12 +159,13 @@ $this->on('before', function () {
     }
 });
 
-/* ── Barre latérale et en-tête écrits dans la page ── */
+/* ── Barre latérale, en-tête et habillage des écrans de Cockpit, écrits dans la page ── */
 
 $this->on('after', function () {
     if (is_string($this->response->body ?? null) && str_contains($this->response->body, 'app-container-aside-menu')) {
+        $habillage = include __DIR__.'/lib/habillage.php';
         $interface = include __DIR__.'/lib/interface.php';
-        $this->response->body = $interface($this, $this->response->body, ($_COOKIE['dashboard-theme'] ?? '') === 'sombre');
+        $this->response->body = $interface($this, $habillage($this, $this->response->body), ($_COOKIE['dashboard-theme'] ?? '') === 'sombre');
     }
 });
 
@@ -187,6 +188,18 @@ foreach ([
     'content:views/collection/items.php' => 'dashboard:views/liste.php',
     'content:views/collection/item.php' => 'dashboard:views/fiche.php',
     'content:views/singleton/item.php' => 'dashboard:views/fiche.php',
+    'system:views/users/user.php' => 'dashboard:views/compte.php',
+    'system:views/settings.php' => 'dashboard:views/admin/reglages.php',
+    'system:views/users/index.php' => 'dashboard:views/admin/comptes.php',
+    'system:views/users/roles/index.php' => 'dashboard:views/admin/roles.php',
+    'system:views/users/roles/role.php' => 'dashboard:views/admin/role.php',
+    'system:views/api/index.php' => 'dashboard:views/admin/api.php',
+    'system:views/api/key.php' => 'dashboard:views/admin/cle.php',
+    'system:views/locales/index.php' => 'dashboard:views/admin/langues.php',
+    'system:views/locales/locale.php' => 'dashboard:views/admin/langue.php',
+    'system:views/info.php' => 'dashboard:views/admin/infos.php',
+    'system:views/logs/index.php' => 'dashboard:views/admin/journaux.php',
+    'content:views/index.php' => 'dashboard:views/admin/modeles.php',
 ] as $origine => $remplacement) {
     $this->on("app.render.view/{$origine}", function (&$view) use ($remplacement) {
         if (!$this->param('cockpit')) {
@@ -194,12 +207,6 @@ foreach ([
         }
     });
 }
-
-$this->on('app.render.view/system:views/users/user.php', function (&$view, &$slots) {
-    if (!empty($slots['isAccountView']) && !$this->param('cockpit')) {
-        $view = 'dashboard:views/compte.php';
-    }
-});
 
 foreach ([401, 404, 500] as $code) {
     $this->on("app.render.view/app:views/errors/{$code}.php", function (&$view, &$slots) use ($code) {

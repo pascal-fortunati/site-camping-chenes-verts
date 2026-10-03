@@ -955,10 +955,14 @@ html[data-theme] kiss-container.dashboard-page[size="small"] { max-width: 640px;
 .compte__force--fort { background: var(--admin-accent); }
 .compte__aide { margin-top: -8px; color: var(--admin-texte-doux); font-size: 0.8125rem; }
 .compte__erreur { color: var(--admin-danger) !important; font-weight: 600; }
-.compte__interrupteur { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
-.compte__interrupteur input { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--admin-primaire); }
-.compte__interrupteur span { display: grid; gap: 2px; }
+.compte__interrupteur { display: flex; align-items: flex-start; gap: 14px; width: 100%; margin: 4px 0; padding: 0; border: 0; background: transparent; color: var(--admin-texte); font: inherit; text-align: left; cursor: pointer; }
+.compte__interrupteur .oui-non__piste { flex: none; }
+.compte__interrupteur:focus-visible { outline: none; }
+.compte__interrupteur:focus-visible .oui-non__piste { box-shadow: var(--admin-halo); }
+.compte__interrupteur-texte { display: grid; gap: 2px; }
 .compte__interrupteur small { color: var(--admin-texte-doux); font-size: 0.8125rem; font-weight: 400; }
+.oui-non__piste.oui-non__piste--oui { background: var(--admin-primaire); }
+.oui-non__piste--oui .oui-non__bouton-rond.oui-non__bouton-rond { color: var(--admin-primaire); transform: translateX(22px); }
 .compte__qr { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px; border-radius: 12px; background: var(--admin-surface-douce); }
 .compte__qr img { padding: 8px; border-radius: 10px; background: #FFFFFF; }
 .compte__qr p { flex: 1 1 200px; margin: 0; color: var(--admin-texte-doux); font-size: 0.8125rem; }
@@ -1440,3 +1444,80 @@ html[data-theme] body.erreur-page { display: grid; min-height: 100vh; place-item
 
 /* Actions de structure masquées aux comptes qui ne sont pas administrateurs. */
 .dashboard-masque { display: none !important; }
+
+/* ═══ 14. Écrans de l’administrateur ═══ */
+
+/* ── Listes : comptes, rôles, clés ── */
+.ls-ligne__icone--photo { overflow: hidden; border-radius: 50%; background: var(--admin-accent-doux); font-size: 0.875rem; font-weight: 700; }
+.ls-ligne__icone--photo img { width: 100%; height: 100%; object-fit: cover; }
+.ls-ligne__moi { margin-left: 8px; padding: 1px 8px; border-radius: 6px; background: var(--admin-surface-douce); color: var(--admin-texte-doux); font-size: 0.75rem; font-weight: 700; vertical-align: 1px; }
+.ls-etat icon { font-size: 16px; }
+.ls-rond--danger:hover { color: var(--admin-danger); }
+
+/* ── Fiche d’un compte ── */
+.fiche-choix--liste { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.compte__photo img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.compte__cle code { display: block; overflow-wrap: anywhere; padding: 10px 12px; border-radius: 10px; background: var(--admin-surface-douce); color: var(--admin-texte); font-size: 0.8125rem; }
+.compte__cle-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+/* ── Fiche d’un rôle ── */
+.role__grille { display: grid; gap: 20px; align-items: start; margin-top: 20px; }
+@media (min-width: 1100px) { .role__grille { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } .role__infos { position: sticky; top: 90px; } }
+.role__droits-tete { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.role__droits-tete h2 { margin: 0; }
+.role__filtre { flex: 0 1 280px; }
+.role__groupe { margin-top: 10px; }
+.role__groupe .el__numero icon { font-size: 18px; }
+.role__compte { margin-left: auto; padding: 2px 10px; border-radius: 8px; background: var(--admin-accent-doux); color: var(--admin-accent); font-size: 0.75rem; font-weight: 700; }
+.role__liste { display: grid; gap: 4px; }
+.role__droit { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 4px 8px; border-radius: 10px; }
+.role__droit:hover { background: var(--admin-surface-douce); }
+.role__regle--active { color: var(--admin-accent); }
+.role__groupe app-fieldcontainer { display: block; margin: 8px 0 !important; padding: 0 !important; overflow: hidden; border: 1px solid var(--admin-trait); border-radius: 12px; background: var(--admin-surface); }
+.role__groupe app-fieldcontainer::before, .role__groupe app-fieldcontainer::after { display: none !important; }
+.role__groupe app-fieldcontainer > .kiss-bgcolor-contrast { padding: 10px 14px !important; background: var(--admin-surface-douce) !important; }
+.role__groupe app-fieldcontainer > .kiss-bgcolor-contrast icon { color: var(--admin-accent) !important; }
+.role__groupe app-fieldcontainer > .kiss-padding-small { padding: 12px 14px !important; }
+.role__groupe app-fieldcontainer kiss-row > div { display: inline-flex; align-items: center; gap: 6px; margin-right: 14px; }
+
+/* ── Cases à cocher de Cockpit, aux couleurs du site ── */
+html[data-theme] input[type="checkbox"].kiss-checkbox { appearance: none; display: inline-grid; flex: none; place-items: center; width: 20px; height: 20px; margin: 0; border: 2px solid var(--admin-trait); border-radius: 6px; background: var(--admin-surface); vertical-align: -5px; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease; }
+html[data-theme] input[type="checkbox"].kiss-checkbox:hover { border-color: var(--admin-accent); }
+html[data-theme] input[type="checkbox"].kiss-checkbox:checked { border-color: var(--admin-primaire); background: var(--admin-primaire) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round' d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 14px no-repeat; }
+html[data-theme] input[type="checkbox"].kiss-checkbox:focus-visible { outline: none; box-shadow: var(--admin-halo); }
+
+/* ── API et langues ── */
+.api__adresses { display: grid; gap: 10px; }
+.api__adresse { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border: 1px solid var(--admin-trait); border-radius: 14px; }
+.api__adresse .ls-ligne__texte { flex: 1; min-width: 0; }
+.api__adresse code, .ls-ligne__texte code { overflow-wrap: anywhere; color: var(--admin-texte-doux); font-size: 0.8125rem; }
+.api__public { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.api__public p { margin: 0; color: var(--admin-texte-doux); }
+.api__public b { color: var(--admin-texte); }
+.ls-ligne__icone--code { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; }
+.langue__suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 14px; }
+
+/* ── Informations système et journaux ── */
+.infos__grille { display: grid; gap: 22px; }
+@media (min-width: 1100px) { .infos__grille { grid-template-columns: 1fr 1fr; } .infos__large { grid-column: 1 / -1; } }
+.infos__liste > div { grid-template-columns: minmax(140px, 38%) 1fr; }
+.infos__liste code { overflow-wrap: anywhere; color: var(--admin-texte); font-size: 0.8125rem; }
+.infos__boutons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.infos__puces { display: flex; flex-wrap: wrap; gap: 8px; }
+.infos__puce { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; background: var(--admin-surface-douce); font-size: 0.875rem; font-weight: 700; }
+.infos__puce icon { color: var(--admin-accent); font-size: 18px; }
+.infos__texte code { color: var(--admin-texte-doux); font-size: 0.8125rem; line-height: 1.7; }
+.infos__filtre { margin-bottom: 12px; }
+.journal--chargement { opacity: .6; transition: opacity 150ms ease; }
+.journal__icone--error, .journal__icone--critical, .journal__icone--alert, .journal__icone--emergency { background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); }
+.journal__icone--warning { background: var(--admin-alerte-fond); color: var(--admin-alerte-point); }
+.journal__pages { display: flex; align-items: center; justify-content: center; gap: 16px; color: var(--admin-texte-doux); font-weight: 700; }
+
+/* ── Écrans de Cockpit habillés : éditeur de modèle, fichiers, espaces, tâches, console ── */
+html[data-theme] main kiss-container:has(> .habillage-tete) { max-width: 1280px; margin-top: 28px !important; }
+html[data-theme] main kiss-container[size="small"]:has(> .habillage-tete) { max-width: 1100px; }
+.habillage-tete { margin-bottom: 24px; }
+.habillage-chemin { margin: 0 0 16px; }
+.modeles__note { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 14px 18px; border-radius: 14px; background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); font-size: 0.875rem; }
+.modeles__note icon { flex: none; font-size: 20px; }
+.modeles__note code { font-weight: 700; }

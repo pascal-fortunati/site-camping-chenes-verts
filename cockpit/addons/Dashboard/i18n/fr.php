@@ -608,4 +608,19 @@ return [
     'Table' => 'Tableau',
     'Task List' => 'Liste de cases à cocher',
     'Undo' => 'Annuler',
+
+    // Droits des rôles.
+    'Api & Security' => 'API et sécurité',
+    'Manage Api access' => 'Gérer l’accès à l’API',
+    'Manage locales' => 'Gérer les langues',
+    'View system information' => 'Voir les informations système',
+    'Unlock resources' => 'Débloquer les fiches verrouillées',
+    'View app logs' => 'Voir les journaux',
+    'Manage spaces' => 'Gérer les espaces',
+    'Upload assets' => 'Envoyer des médias',
+    'Edit assets' => 'Modifier les médias',
+    'Delete assets' => 'Supprimer des médias',
+    'Create folders' => 'Créer des dossiers',
+    'Edit folders' => 'Modifier les dossiers',
+    'Delete folders' => 'Supprimer des dossiers',
 ];
