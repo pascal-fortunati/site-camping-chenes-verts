@@ -200,6 +200,10 @@ foreach ([
     'system:views/info.php' => 'dashboard:views/admin/infos.php',
     'system:views/logs/index.php' => 'dashboard:views/admin/journaux.php',
     'content:views/index.php' => 'dashboard:views/admin/modeles.php',
+    'system:views/spaces/index.php' => 'dashboard:views/admin/espaces.php',
+    'system:views/spaces/create.php' => 'dashboard:views/admin/espace.php',
+    'system:views/worker/index.php' => 'dashboard:views/admin/taches.php',
+    'updater:views/index.php' => 'dashboard:views/admin/maj.php',
 ] as $origine => $remplacement) {
     $this->on("app.render.view/{$origine}", function (&$view) use ($remplacement) {
         if (!$this->param('cockpit')) {

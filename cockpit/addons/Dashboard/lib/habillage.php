@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Habillage des écrans de Cockpit gardés tels quels (éditeur de modèle, fichiers, espaces, tâches, console, mise
- * à jour) : le fil d'Ariane et le titre deviennent l'en-tête de fiche du Dashboard. Un écran inconnu garde son
+ * Habillage des écrans de Cockpit gardés tels quels (éditeur de modèle, fichiers, console) : le fil d'Ariane et le titre deviennent l'en-tête de fiche du Dashboard. Un écran inconnu garde son
  * titre ; seul son fil d'Ariane change.
  *
  * @package Dashboard
@@ -27,10 +26,7 @@ return function (Lime\App $app, string $html): string {
         ['#^/content/models/create#', 'schema', 'Nouveau modèle', 'Choisissez les champs, leur ordre et leurs réglages.', '#<div class="kiss-margin-large-bottom kiss-size-4">\s*<strong v-if="!isUpdate">.*?</div>#s'],
         ['#^/content/models/edit/([\w-]+)#', 'schema', null, 'Les champs du modèle, leur ordre et leurs réglages.', '#<div class="kiss-margin-large-bottom kiss-size-4">\s*<strong v-if="!isUpdate">.*?</div>#s'],
         ['#^/finder#', 'folder_open', 'Fichiers', 'Les fichiers de l’administration sur le serveur : à manier avec précaution.', '#<div class="kiss-margin-large-bottom kiss-size-3 kiss-text-bold">\s*[^<]*</div>#'],
-        ['#^/system/spaces#', 'workspaces', 'Espaces', 'Des administrations séparées sur la même installation.', '#<span class="kiss-size-4 kiss-text-bold">[^<]*</span>#'],
-        ['#^/system/worker#', 'pending_actions', 'Tâches', 'Les tâches lancées en arrière-plan.', '#<div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle" gap="small">\s*<div class="kiss-size-4"><strong>[^<]*</strong></div>\s*<span class="kiss-badge">BETA</span>\s*</div>#'],
         ['#^/system/tower#', 'terminal', 'Console', 'Les commandes de Cockpit, dans le navigateur.', '#<icon class="kiss-size-4 kiss-margin-small-end" size="larger">terminal</icon>\s*<div class="kiss-size-4 kiss-flex-1">\s*<strong>Tower</strong>\s*</div>#'],
-        ['#^/updater#', 'system_update', 'Mise à jour de Cockpit', 'Ce site installe Cockpit avec bin/install-cockpit.php : préférez ce script.', '#<div class="kiss-margin-large-bottom kiss-size-4"><strong>[^<]*</strong></div>#'],
     ];
 
     $ecran = null;

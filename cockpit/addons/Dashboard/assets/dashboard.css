@@ -1303,7 +1303,7 @@ html[data-theme] kiss-container.dashboard-page { max-width: 1280px; margin-top: 
 
 /* ── Vide, plus, choix multiple ── */
 .mt-vide { display: grid; justify-items: center; gap: 10px; padding: 60px 20px; border-radius: 16px; background: var(--admin-surface); color: var(--admin-texte-doux); box-shadow: var(--admin-ombre); text-align: center; }
-.mt-vide icon { color: var(--admin-accent); font-size: 48px; }
+.mt-vide > icon { color: var(--admin-accent); font-size: 48px; }
 .mt-vide p { margin: 0; font-size: 1rem; }
 .mt-plus { display: flex; justify-content: center; }
 .mt-selection { position: fixed; bottom: 24px; left: 50%; z-index: 50; display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 20px; border-radius: 14px; background: var(--admin-barre); color: #FFFFFF; box-shadow: var(--admin-ombre-haute); transform: translateX(-50%); }
@@ -1550,3 +1550,11 @@ html[data-theme="dark"] .gc__type img { filter: invert(1); opacity: .8; }
 .gc__options { display: grid; gap: 10px; }
 .gc__boutons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 .gc__nouveau { border-color: var(--admin-primaire); }
+
+/* ── Espaces, tâches, mise à jour ── */
+.espace__cree p { margin: 0; }
+.espace__cree code { color: var(--admin-texte-doux); }
+.taches__types { margin: -8px 0 0; }
+.maj__note { margin: 20px 0 0; }
+.maj__numero { margin: 0; color: var(--admin-texte); font: 600 2.2rem "Fraunces", serif; }
+.maj__avis { margin: 12px 0; }
