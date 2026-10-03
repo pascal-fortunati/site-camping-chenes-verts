@@ -1521,3 +1521,32 @@ html[data-theme] main kiss-container[size="small"]:has(> .habillage-tete) { max-
 .modeles__note { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 14px 18px; border-radius: 14px; background: var(--admin-alerte-fond); color: var(--admin-alerte-texte); font-size: 0.875rem; }
 .modeles__note icon { flex: none; font-size: 20px; }
 .modeles__note code { font-weight: 700; }
+
+/* ── Champs d’un modèle : des cartes qui se déplient, le type choisi dans la carte ── */
+.gc { display: grid; gap: 10px; }
+.gc .el__resume { gap: 12px; }
+.gc__type { display: grid; flex: none; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--admin-surface-douce); }
+.gc__type img { opacity: .7; }
+html[data-theme="dark"] .gc__type img { filter: invert(1); opacity: .8; }
+.gc__resume { display: grid; flex: 1; min-width: 0; text-align: left; }
+.gc__resume small { overflow: hidden; color: var(--admin-texte-doux); font-size: 0.75rem; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+.gc__marques { display: flex; gap: 4px; color: var(--admin-texte-doux); }
+.gc__marques icon { font-size: 16px; }
+.gc__panneau { display: grid; gap: 14px; }
+.gc__deux { display: grid; gap: 14px; }
+@media (min-width: 900px) { .gc__deux { grid-template-columns: 1fr 1fr; } }
+.gc__type-actuel { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 1px solid var(--admin-trait); border-radius: 12px; background: var(--admin-surface); color: var(--admin-texte); font: inherit; text-align: left; cursor: pointer; }
+.gc__type-actuel:hover { border-color: var(--admin-accent); }
+.gc__type-texte { display: grid; flex: 1; min-width: 0; }
+.gc__type-texte small { color: var(--admin-texte-doux); font-size: 0.75rem; }
+.gc__types { display: grid; gap: 10px; margin-top: 10px; padding: 12px; border-radius: 12px; background: var(--admin-surface-douce); }
+.gc__grille-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; max-height: 360px; overflow-y: auto; }
+.gc__choix-type { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid transparent; border-radius: 10px; background: var(--admin-surface); color: var(--admin-texte); font: inherit; text-align: left; cursor: pointer; }
+.gc__choix-type:hover { border-color: var(--admin-trait); }
+.gc__choix-type--actif { border-color: var(--admin-primaire); box-shadow: var(--admin-halo); }
+.gc__choix-type .gc__type { width: 30px; height: 30px; }
+.gc__onglets, .gc__vue-options { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
+.gc__groupes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -6px; }
+.gc__options { display: grid; gap: 10px; }
+.gc__boutons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+.gc__nouveau { border-color: var(--admin-primaire); }

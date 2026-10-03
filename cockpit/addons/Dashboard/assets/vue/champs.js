@@ -969,3 +969,191 @@ export async function ouiNon() {
         `
     };
 }
+
+/**
+ * Gestionnaire des champs d'un modèle (administrateur) : chaque champ est une carte qui se déplie pour ses
+ * réglages, et le type se choisit dans la carte, au lieu de la fenêtre et du menu de Cockpit.
+ *
+ * @returns {Promise<object>} le composant Vue
+ */
+export async function gestionnaireChamps() {
+    const { default: origine } = await import(App.base('system:assets/vue-components/fields/manager.js') + version);
+
+    const panneau = /*html*/`
+        <div class="gc__panneau">
+            <div class="gc__deux">
+                <label class="mt-champ"><span>Nom technique</span><input type="text" v-model="field.name" required pattern="[A-Za-z0-9_]+" autocapitalize="off" spellcheck="false" placeholder="titre"><small>Lettres, chiffres et _ ; il sert dans les gabarits et l’API.</small></label>
+                <label class="mt-champ"><span>Libellé affiché</span><input type="text" v-model="field.label" placeholder="Titre de la page"></label>
+            </div>
+
+            <div class="mt-champ">
+                <span>Type</span>
+                <button type="button" class="gc__type-actuel" @click="choixType = !choixType" :aria-expanded="choixType ? 'true' : 'false'">
+                    <span class="gc__type" :style="{background: couleur(field.type)}"><img :src="$baseUrl(icone(field.type))" alt="" width="20" height="20"></span>
+                    <span class="gc__type-texte"><b>{{ libelleType(field.type) }}</b><small>{{ t(fieldTypes?.[field.type]?.info || '') }}</small></span>
+                    <span class="kiss-button kiss-button-small"><icon>{{ choixType ? 'expand_less' : 'swap_horiz' }}</icon>{{ choixType ? 'Fermer' : 'Changer' }}</span>
+                </button>
+                <div class="gc__types" v-if="choixType">
+                    <label class="mt-recherche"><icon aria-hidden="true">search</icon><input type="search" v-model="fieldType.filter" placeholder="Chercher un type" aria-label="Chercher un type"></label>
+                    <div class="gc__grille-types">
+                        <button type="button" v-for="(f, nom) in filteredFieldTypes" :key="nom" class="gc__choix-type" :class="{'gc__choix-type--actif': field.type === nom}" @click="setFieldType(nom); choixType = false">
+                            <span class="gc__type" :style="{background: f.color || ''}"><img :src="$baseUrl(f.icon || 'system:assets/icons/edit.svg')" alt="" width="18" height="18"></span>
+                            <span class="gc__type-texte"><b>{{ t(f.label || nom) }}</b><small>{{ t(f.info || '') }}</small></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fiche-choix gc__onglets" role="tablist" aria-label="Réglages du champ">
+                <button type="button" role="tab" v-for="o in onglets" :key="o[0]" :aria-selected="onglet === o[0] ? 'true' : 'false'" :class="{'fiche-choix--actif': onglet === o[0]}" @click="onglet = o[0]"><icon>{{ o[1] }}</icon>{{ o[2] }}</button>
+            </div>
+
+            <template v-if="onglet === 'general'">
+                <label class="mt-champ"><span>Aide <em>affichée sous le libellé</em></span><input type="text" v-model="field.info"></label>
+                <label class="mt-champ"><span>Groupe <em>un onglet de la fiche</em></span><input type="text" v-model="field.group"></label>
+                <div class="gc__groupes" v-if="fieldGroups.length">
+                    <button type="button" class="kiss-button kiss-button-small" v-for="g in fieldGroups" :key="g" @click="field.group = g">{{ g }}</button>
+                </div>
+                <div class="gc__options">
+                    <field-boolean v-model="field.required" label="Obligatoire"></field-boolean>
+                    <field-boolean v-model="field.i18n" label="Traduisible" v-if="i18n"></field-boolean>
+                    <field-boolean v-model="field.multiple" label="Plusieurs valeurs"></field-boolean>
+                </div>
+            </template>
+
+            <template v-if="onglet === 'options'">
+                <div class="fiche-choix gc__vue-options" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
+                    <button type="button" :class="{'fiche-choix--actif': state.optionsView !== 'json'}" @click="state.optionsView = 'form'"><icon>tune</icon>Réglages</button>
+                    <button type="button" :class="{'fiche-choix--actif': state.optionsView === 'json'}" @click="state.optionsView = 'json'"><icon>data_object</icon>JSON</button>
+                </div>
+                <fields-renderer v-model="field.opts" :fields="fieldTypes[field.type].settings" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings && state.optionsView !== 'json'"></fields-renderer>
+                <field-object v-model="field.opts" v-else></field-object>
+            </template>
+
+            <template v-if="onglet === 'avance'">
+                <div class="mt-champ"><span>Méta <em>données libres, en JSON</em></span><field-object v-model="field.meta" :height="150"></field-object></div>
+                <div class="mt-champ"><span>Condition d’affichage <em>JavaScript</em></span><field-code v-model="field.condition" mode="js" :height="100"></field-code><small>Le champ n’apparaît que si la condition est vraie.</small></div>
+            </template>
+        </div>`;
+
+    return {
+        ...origine,
+
+        data() {
+            return { ...origine.data.call(this), choixType: false, onglet: 'general', onglets: [['general', 'tune', 'Général'], ['options', 'settings', 'Options'], ['avance', 'code', 'Avancé']] };
+        },
+
+        watch: {
+            ...origine.watch,
+            field(v) {
+                this.fieldType = {};
+                this.choixType = false;
+                this.onglet = 'general';
+                if (v) this.$nextTick(() => this.$el.querySelector('.gc__panneau input')?.focus({ preventScroll: true }));
+            }
+        },
+
+        methods: {
+            ...origine.methods,
+
+            basculer(element) {
+                if (this.field === element) {
+                    this.field = null;
+                } else {
+                    this.edit(element);
+                }
+            },
+
+            /**
+             * Ferme le panneau, ou ajoute le nouveau champ, après vérification du nom.
+             */
+            valider() {
+                if (!String(this.field.name || '').trim()) {
+                    App.ui.notify('Donnez un nom technique au champ.', 'error');
+                    return;
+                }
+                if (this.fields.some((f) => f !== this.field && f.name === this.field.name)) {
+                    App.ui.notify('Un autre champ porte déjà ce nom.', 'error');
+                    return;
+                }
+                this.addOrEditField();
+            },
+
+            async retirer(element) {
+                const oui = await confirmer({ titre: `Supprimer le champ « ${element.label || element.name} » ?`, texte: 'Il disparaît du modèle à l’enregistrement ; les valeurs déjà saisies restent dans les éléments.', bouton: 'Supprimer', danger: true });
+                if (!oui) return;
+                if (this.field === element) this.field = null;
+                this.remove(element);
+            },
+
+            deplacer(index, sens) {
+                const cible = index + sens;
+                if (cible < 0 || cible >= this.fields.length) return;
+                this.fields.splice(cible, 0, this.fields.splice(index, 1)[0]);
+            },
+
+            libelleType(type) {
+                return this.t(this.fieldTypes?.[type]?.label || type);
+            },
+
+            icone(type) {
+                return this.fieldTypes?.[type]?.icon || 'system:assets/icons/edit.svg';
+            },
+
+            couleur(type) {
+                return this.fieldTypes?.[type]?.color || '';
+            }
+        },
+
+        template: /*html*/`
+            <div class="gc">
+                <p class="el-vide" v-if="!fields.length && !field"><icon>playlist_add</icon>Aucun champ pour l’instant.</p>
+                <app-loader v-if="!fieldTypes"></app-loader>
+
+                <vue-draggable v-model="fields" :animation="150" handle=".el-poignee" class="el-liste" v-if="fieldTypes && fields.length" @start="field = null">
+                    <section class="el" v-for="(element, index) in fields" :class="{'el--ouvert': field === element}">
+                        <header class="el__tete">
+                            <button type="button" class="el__poignee el-poignee" aria-label="Déplacer" title="Glisser pour déplacer"><icon>drag_indicator</icon></button>
+                            <button type="button" class="el__resume" @click="basculer(element)" :aria-expanded="field === element ? 'true' : 'false'">
+                                <span class="gc__type" :style="{background: couleur(element.type)}"><img :src="$baseUrl(icone(element.type))" alt="" width="18" height="18"></span>
+                                <span class="gc__resume">
+                                    <span class="el__titre">{{ element.label || element.name || 'Sans nom' }}</span>
+                                    <small>{{ element.name }} · {{ libelleType(element.type) }}<template v-if="element.group"> · {{ element.group }}</template></small>
+                                </span>
+                                <span class="gc__marques">
+                                    <icon v-if="element.required" title="Obligatoire">emergency</icon>
+                                    <icon v-if="element.i18n" title="Traduisible">translate</icon>
+                                    <icon v-if="element.multiple" title="Plusieurs valeurs">format_list_numbered</icon>
+                                    <icon v-if="element.condition" title="Affichage conditionnel">conversion_path</icon>
+                                </span>
+                                <icon class="el__fleche">expand_more</icon>
+                            </button>
+                            <div class="el__actions">
+                                <button type="button" class="el__rond" @click="deplacer(index, -1)" :disabled="index === 0" aria-label="Monter" title="Monter"><icon>arrow_upward</icon></button>
+                                <button type="button" class="el__rond" @click="deplacer(index, 1)" :disabled="index === fields.length - 1" aria-label="Descendre" title="Descendre"><icon>arrow_downward</icon></button>
+                                <button type="button" class="el__rond" @click="add(element)" aria-label="Insérer un champ après" title="Insérer un champ après"><icon>add</icon></button>
+                                <button type="button" class="el__rond el__rond--danger" @click="retirer(element)" aria-label="Supprimer" title="Supprimer"><icon>delete</icon></button>
+                            </div>
+                        </header>
+                        <div class="el__corps" v-if="field === element">
+                            ${panneau}
+                            <div class="gc__boutons"><button type="button" class="kiss-button" @click="valider"><icon>expand_less</icon>Replier</button></div>
+                        </div>
+                    </section>
+                </vue-draggable>
+
+                <section class="el el--ouvert gc__nouveau" v-if="field && !state.editField">
+                    <header class="el__tete"><span class="el__resume"><span class="el__numero"><icon>add</icon></span><span class="el__titre">Nouveau champ</span></span></header>
+                    <div class="el__corps">
+                        ${panneau}
+                        <div class="gc__boutons">
+                            <button type="button" class="kiss-button" @click="field = null"><icon>undo</icon>Annuler</button>
+                            <button type="button" class="kiss-button kiss-button-primary" @click="valider"><icon>add</icon>Ajouter le champ</button>
+                        </div>
+                    </div>
+                </section>
+
+                <button type="button" class="kiss-button el-ajouter" @click="add()" v-if="fieldTypes && !(field && !state.editField)"><icon>add</icon>Ajouter un champ</button>
+            </div>`
+    };
+}

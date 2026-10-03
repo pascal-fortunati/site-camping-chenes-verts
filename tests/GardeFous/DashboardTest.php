@@ -121,7 +121,7 @@ final class DashboardTest extends TestCase
         foreach ($cibles as [, $fichier, $nom]) {
             $this->assertStringContainsString("export async function {$nom}()", (string) file_get_contents(self::MODULE."/assets/vue/{$fichier}.js"), "{$fichier}.js#{$nom}");
         }
-        $this->assertCount(8, $champs[1]);
+        $this->assertCount(9, $champs[1]);
         foreach ($champs[1] as $nom) {
             $this->assertStringContainsString("export async function {$nom}()", (string) file_get_contents(self::MODULE.'/assets/vue/champs.js'), "champs.js#{$nom}");
         }

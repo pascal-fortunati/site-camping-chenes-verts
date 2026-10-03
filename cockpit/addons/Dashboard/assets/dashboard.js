@@ -29,6 +29,7 @@ const CHAMPS = {
     'field-number': 'nombre',
     'field-color': 'couleur',
     'field-boolean': 'ouiNon',
+    'fields-manager': 'gestionnaireChamps',
 };
 
 const importer = App.utils.import.bind(App.utils);
