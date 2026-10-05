@@ -12,6 +12,31 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.12 — 2026-10-05
+
+La pastille de la passerelle restait affichée sur le site alors qu'elle n'avait plus lieu
+d'être : addon Passerelle désactivé ou retiré, ou session d'administration terminée.
+
+**La pastille ne s'affiche plus que sur une réponse affirmative.** L'addon répond désormais
+lui-même sur `/passerelle/etat`. Désactivé, il ne répond plus, et le site efface la pastille et
+son cookie, que l'administration redépose à sa page suivante. Auparavant, le site interrogeait
+`/check-session`, qui appartient à Cockpit et répondait même quand l'addon n'était plus là.
+
+**La vérification fonctionne aussi en développement.** Site et administration y occupent deux
+origines, et le navigateur bloquait la question : la pastille s'affichait alors par défaut, même
+après la fin de la session. Seule l'adresse inscrite dans `SITE_URL` peut maintenant poser la
+question depuis une autre origine.
+
+**La question ne prolonge pas la session.** Elle suit les mêmes règles que le contrôle natif de
+Cockpit : l'inactivité met fin à la session, et l'interrogation de fond ne la rafraîchit pas.
+
+Deux tests ajoutés dans `GardeFous/PasserelleTest`.
+
+Rien à faire sur un site existant au-delà de la fusion et de `php bin/install-cockpit.php
+--force`, qui recopie l'addon modifié dans `public/admin/`.
+
+Proposé par Pascal Fortunati (#53).
+
 ## 2.0.11 — 2026-10-05
 
 `composer.json` déclarait `ext-curl` et `ext-json`, mais pas `ext-pdo_sqlite` ni `ext-gd`. Les
