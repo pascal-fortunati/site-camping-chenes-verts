@@ -131,7 +131,8 @@ $this->bind('/avatar/retirer', function () use ($avatarAllowed, $avatarRemoveFil
 
 $this->on('app.layout.assets', function (&$assets, $context) {
 
-    if (!$this->helper('auth')->getUser()) {
+    // On the login page too: the account card shown after signing in, before the redirect, gets the photo.
+    if (!$this->helper('auth')->getUser() && !str_starts_with((string) $this->request->route, '/auth/login')) {
         return;
     }
 

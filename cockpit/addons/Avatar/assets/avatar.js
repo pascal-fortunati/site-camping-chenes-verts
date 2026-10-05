@@ -35,15 +35,37 @@ function remplacer() {
         });
         (compte || menu.firstElementChild).after(ligne);
     }
+
+    // On the login page nobody is signed in yet, so the list is empty: once the account card appears (signed
+    // in, just before the redirect), it is asked again, a few times at most.
+    if (!charge && essais < 3 && document.querySelector('app-avatar:not([data-avatar])')) {
+        charger();
+    }
 }
 
-fetch(App.route('/avatar/liste'), { credentials: 'same-origin' })
-    .then((r) => (r.ok ? r.json() : { comptes: [] }))
-    .then((data) => {
-        (data.comptes || []).forEach((c) => { photos[c.nom] = c.url; });
-    })
-    .catch(() => {})
-    .finally(() => {
-        remplacer();
-        new MutationObserver(remplacer).observe(document.documentElement, { childList: true, subtree: true });
-    });
+let charge = false;
+let essais = 0;
+let demande = null;
+
+function charger() {
+    if (demande) return demande;
+    essais++;
+    demande = fetch(App.route('/avatar/liste'), { credentials: 'same-origin' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+            const comptes = (data && data.comptes) || [];
+            // Signed out, the list comes back empty: it is not taken as loaded.
+            charge = comptes.length > 0;
+            comptes.forEach((c) => { photos[c.nom] = c.url; });
+        })
+        .catch(() => {})
+        .finally(() => {
+            demande = null;
+            remplacer();
+        });
+    return demande;
+}
+
+charger().finally(() => {
+    new MutationObserver(remplacer).observe(document.documentElement, { childList: true, subtree: true });
+});
