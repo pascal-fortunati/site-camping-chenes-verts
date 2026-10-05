@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichiers du serveur (administrateur), par racine : Cockpit, le site, chaque espace.
+ * Explorateur de fichiers du serveur (administrateur), par racine : l'administration, le site, chaque espace.
  *
  * @var array<string, string> $roots les racines (Cockpit)
  *
@@ -18,22 +18,22 @@ foreach ($roots as $libelle => $chemin) {
     ];
 }
 ?>
-<kiss-container class="kiss-margin-small dashboard-page">
+<kiss-container class="kiss-margin-small dashboard-page fichiers-page">
     <vue-view>
         <template>
-            <div class="mt">
-                <section class="tdb-accueil tdb-accueil--page">
-                    <h1 class="tdb-accueil__titre">Fichiers</h1>
-                    <p class="tdb-accueil__phrase">Les fichiers sur le serveur. Une erreur ici peut casser le site : modifiez ou supprimez avec précaution.</p>
-                    <ul class="mt-bandeau__chiffres"><li><b>{{ racines.length }}</b> racine{{ racines.length > 1 ? 's' : '' }}</li></ul>
-                </section>
-
-                <div class="mt-filtres fichiers__racines" role="group" aria-label="Racine" v-if="racines.length > 1">
-                    <button type="button" class="mt-filtre" v-for="r in racines" :key="r.chemin" :class="{'mt-filtre--actif': racine === r.chemin}" :aria-pressed="racine === r.chemin ? 'true' : 'false'" @click="racine = r.chemin"><icon>folder_special</icon>{{ r.libelle }}</button>
+            <section class="fiche-tete fichiers__tete">
+                <span class="fiche-tete__icone"><icon>folder_open</icon></span>
+                <div class="fiche-tete__texte">
+                    <nav class="fiche-tete__chemin" aria-label="Fil d’Ariane"><a href="<?= $this->routeUrl('/system') ?>">Réglages</a></nav>
+                    <h1>Fichiers</h1>
+                    <p class="fiche-tete__info">Les fichiers sur le serveur. Une erreur ici peut casser le site : rien ne va dans une corbeille.</p>
                 </div>
+                <div class="fiche-choix fichiers__racines" role="radiogroup" aria-label="Racine" v-if="racines.length > 1">
+                    <button type="button" role="radio" v-for="r in racines" :key="r.chemin" :aria-checked="racine === r.chemin ? 'true' : 'false'" :class="{'fiche-choix--actif': racine === r.chemin}" @click="racine = r.chemin"><icon>hard_drive</icon>{{ r.libelle }}</button>
+                </div>
+            </section>
 
-                <fichiers :root="racine"></fichiers>
-            </div>
+            <fichiers :root="racine" :racine="libelle"></fichiers>
         </template>
 
         <script type="module">
@@ -45,6 +45,12 @@ foreach ($roots as $libelle => $chemin) {
                 data() {
                     const racines = <?= json_encode($racines, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
                     return { racines, racine: racines[0] ? racines[0].chemin : '#root:' };
+                },
+
+                computed: {
+                    libelle() {
+                        return (this.racines.find((r) => r.chemin === this.racine) || { libelle: 'Racine' }).libelle;
+                    }
                 }
             };
         </script>
