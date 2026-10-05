@@ -5,6 +5,8 @@ Ce fichier liste ce qui s'écarte du socle, pour relire chaque fusion d'une mise
 
 ## Version du socle
 
+Fusion de `v2.0.12` le 05/10/2026 (branche `maj-socle-2.0.12`, sans conflit) : le correctif de Passerelle proposé depuis ce site (PR #53). La pastille du site suit l'état de l'addon : le site demande `/passerelle/etat` (et non plus `/check-session`), qui n'existe plus quand Passerelle est désactivée (addon Modules) ; la pastille et son cookie disparaissent alors. Fonctionne aussi en local, site et administration sur deux adresses (:8080, :8090).
+
 Fusion de `v2.0.11` le 05/10/2026 (branche `maj-socle-2.0.11`, sans conflit), qui reprend aussi `v2.0.9` et `v2.0.10`. Apports : la Passerelle proposée depuis ce site (PR #49), déjà présente ici dans sa version plus récente (fichiers inchangés) ; le fichier `VERSION` rétabli et vérifié par `tests/GardeFous/VersionTest.php` (il indique enfin la bonne version) ; le workflow `.github/workflows/tests.yml` (la suite de tests sur chaque proposition et chaque envoi sur `main`) ; les modèles d'issues, `CONTRIBUTING.md` et `CONTRIBUTORS.md` ; les extensions `gd` et `pdo_sqlite` déclarées dans `composer.json` (aucune bibliothèque modifiée, pas de `composer install` à refaire sur le serveur). Le script de Passerelle ajouté à `templates/base.html.twig` est déjà dans la copie `templates-client/base.html.twig`.
 
 Fusion de `v2.0.8` le 02/10/2026 (branche `maj-socle-2.0.8`, sans conflit) : elle apporte le module `AdminClient` proposé depuis ce site (PR #44, remplacé depuis par Dashboard), le vidage du cache des modules dans `bin/install-cockpit.php` et la documentation de `--allow-unrelated-histories`.
