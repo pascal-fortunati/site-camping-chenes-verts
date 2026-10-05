@@ -83,7 +83,7 @@ $this->on('before', function () {
         }
 
         $palette = include __DIR__.'/lib/theme.php';
-        $regles = [$palette($lisible($couleur) ? $couleur : '#2B5A16', preg_match('/^#[0-9A-F]{6}$/', $texte) ? $texte : '#1F2A22')];
+        $regles = [$palette($lisible($couleur) ? $couleur : '#1E5FA8', preg_match('/^#[0-9A-F]{6}$/', $texte) ? $texte : '#1F2933')];
         if ($image !== '' && $medias !== '') {
             $regles[] = "html[data-theme]:root { --admin-photo: url(\"{$medias}{$image}\"); }";
             $regles[] = "html[data-theme]:has(.auth-wrapper) { background: linear-gradient(var(--admin-voile-photo), var(--admin-voile-photo)), var(--admin-barre) var(--admin-photo) center / cover no-repeat fixed !important; }";

@@ -903,7 +903,7 @@ export async function couleur() {
             <div field="color" class="couleur">
                 <div class="couleur__ligne">
                     <button type="button" class="couleur__pastille" :style="val ? {background: val} : {}" :class="{'couleur__pastille--vide': !val}" @click="ouvert = !ouvert" :aria-expanded="ouvert ? 'true' : 'false'" aria-label="Choisir une couleur"></button>
-                    <input ref="code" type="text" class="kiss-input couleur__code" v-model="saisie" @input="surSaisie" placeholder="#2B5A16" maxlength="7" spellcheck="false" aria-label="Code de la couleur">
+                    <input ref="code" type="text" class="kiss-input couleur__code" v-model="saisie" @input="surSaisie" placeholder="#1E5FA8" maxlength="7" spellcheck="false" aria-label="Code de la couleur">
                     <button type="button" class="kiss-button kiss-button-small" @click="ouvert = !ouvert"><icon>palette</icon>{{ ouvert ? 'Fermer' : 'Choisir' }}</button>
                 </div>
 

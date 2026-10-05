@@ -18,20 +18,20 @@ html[data-theme]:root {
     --admin-surface-douce: #F2ECDF;
     --admin-surface-forte: #E7DFCD;
     --admin-trait: #DCD3C3;
-    --admin-texte: #1F2A22;
-    --admin-texte-doux: #4D5A51;
-    --admin-primaire: #2B5A16;
-    --admin-primaire-fort: #1E4010;
+    --admin-texte: #1F2933;
+    --admin-texte-doux: #55616D;
+    --admin-primaire: #1E5FA8;
+    --admin-primaire-fort: #174981;
     --admin-sur-primaire: #FFFFFF;
-    --admin-accent: #2B5A16;
-    --admin-accent-doux: rgb(43 90 22 / 10%);
-    --admin-barre: #183A23;
-    --admin-barre-haut: #1D4529;
-    --admin-barre-texte: #E4EEDD;
+    --admin-accent: #1E5FA8;
+    --admin-accent-doux: rgb(30 95 168 / 10%);
+    --admin-barre: #152537;
+    --admin-barre-haut: #1C324A;
+    --admin-barre-texte: #DEE5ED;
     --admin-barre-survol: rgb(255 255 255 / 10%);
     --admin-barre-actif: #FFFFFF;
-    --admin-barre-actif-texte: #183A23;
-    --admin-barre-actif-icone: #2B5A16;
+    --admin-barre-actif-texte: #152537;
+    --admin-barre-actif-icone: #1E5FA8;
     --admin-alerte-fond: #FBE3D6;
     --admin-alerte-texte: #8A3A12;
     --admin-alerte-point: #D2541E;
@@ -40,10 +40,10 @@ html[data-theme]:root {
     --admin-succes: #1E5A32;
     --admin-ombre: 0 1px 2px rgb(31 42 34 / 6%), 0 6px 18px rgb(31 42 34 / 7%);
     --admin-ombre-haute: 0 2px 4px rgb(31 42 34 / 8%), 0 14px 32px rgb(31 42 34 / 12%);
-    --admin-halo: 0 0 0 4px rgb(43 90 22 / 18%);
+    --admin-halo: 0 0 0 4px rgb(30 95 168 / 18%);
     --admin-entete: rgb(251 248 241 / 88%);
-    --admin-voile: rgb(24 58 35 / 92%);
-    --admin-voile-leger: rgb(24 58 35 / 15%);
+    --admin-voile: rgb(21 37 55 / 92%);
+    --admin-voile-leger: rgb(21 37 55 / 15%);
     --admin-rayon: 12px;
     --admin-rayon-petit: 10px;
 }
@@ -317,7 +317,7 @@ html[data-theme] .sidebar__marque {
 html[data-theme] .sidebar__marque img { flex: none; width: 36px; height: 36px; border-radius: 50%; background: #FFFFFF; padding: 2px; }
 html[data-theme] .sidebar__nom { font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1rem; line-height: 1.15; }
 
-/* Les entrées : icône et libellé, contraste élevé (#E4EEDD sur #183A23 : 11,6:1) */
+/* Les entrées : icône et libellé ; le thème garantit au moins 4,5:1 entre le texte et la barre */
 html[data-theme] .app-container-aside-menu kiss-navlist ul > li > a {
     display: flex !important;
     align-items: center;

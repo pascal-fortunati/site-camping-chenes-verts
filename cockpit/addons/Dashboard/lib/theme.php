@@ -86,7 +86,7 @@ return function (string $principale, string $texte): string {
 
     // ── Clair : le papier crème du site, la couleur principale pour les boutons et les icônes ──
     $clairFond = '#FBF8F1';
-    $clairTexte = $contraste($texte, $clairFond) >= 4.5 ? $texte : '#1F2A22';
+    $clairTexte = $contraste($texte, $clairFond) >= 4.5 ? $texte : '#1F2933';
     [$th, $ts] = $versTsl($clairTexte);
     $barre = $tsl($h, min($s, 45), 15);
     $clair = [
