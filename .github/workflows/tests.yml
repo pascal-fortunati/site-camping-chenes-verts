@@ -1,0 +1,45 @@
+# La suite de tests, sur chaque proposition de modification.
+#
+# Deux contributions extérieures ont été fusionnées sans qu'aucun contrôle
+# automatique ne tourne : la relecture reposait entièrement sur une personne.
+# Ce travail doit être fait par la machine avant d'arriver sur un bureau.
+#
+# Les tests ne touchent ni au réseau ni à Cockpit : ils s'exécutent en moins
+# d'une seconde et ne demandent rien d'autre que PHP et Composer.
+
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Le travail ne fait que lire le dépôt.
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: PHP 8.3
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Les extensions sont celles que le projet exige : pdo_sqlite pour la
+      # base, gd pour les images allégées, les autres pour l'installation de
+      # Cockpit et la lecture des archives.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_sqlite, gd, curl, zip, fileinfo
+          coverage: none
+
+      - name: Vérifier composer.json
+        run: composer validate --strict
+
+      - name: Installer les dépendances
+        run: composer install --prefer-dist --no-progress
+
+      - name: Lancer la suite
+        run: composer test

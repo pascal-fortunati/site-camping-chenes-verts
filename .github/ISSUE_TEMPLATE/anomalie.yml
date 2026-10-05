@@ -1,0 +1,59 @@
+name: Signaler une anomalie
+description: Un comportement incorrect, ou qui ne correspond pas à la documentation
+labels: ["anomalie"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Un défaut qu'on ne sait pas reproduire ne peut être ni constaté avant correction,
+        ni vérifié après. Les étapes comptent donc autant que la description.
+
+  - type: textarea
+    id: symptome
+    attributes:
+      label: Ce qui se passe
+      description: Ce que vous observez, et ce que vous attendiez à la place.
+      placeholder: |
+        La page « Identité du site » se fige au bout de quelques secondes.
+        Le serveur répond normalement, c'est le navigateur qui ne répond plus.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Comment le reproduire
+      description: Depuis une installation neuve, les étapes dans l'ordre.
+      placeholder: |
+        1. php bin/install-cockpit.php puis php bin/cockpit-init.php
+        2. composer serve-admin
+        3. Ouvrir http://localhost:8090/content/singleton/item/settings
+        4. Attendre cinq secondes
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version du socle
+      description: Le contenu du fichier VERSION, à la racine.
+      placeholder: "2.0.10"
+    validations:
+      required: true
+
+  - type: input
+    id: environnement
+    attributes:
+      label: Environnement
+      description: Système, version de PHP, et navigateur si le défaut est à l'écran.
+      placeholder: "Windows 11, PHP 8.3.16, Chrome 141"
+    validations:
+      required: false
+
+  - type: textarea
+    id: pistes
+    attributes:
+      label: Ce que vous avez déjà cherché
+      description: Facultatif. Fichiers inspectés, hypothèses écartées, messages dans la console.
+    validations:
+      required: false

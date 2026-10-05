@@ -25,11 +25,15 @@ antérieur à `v1.0.0` : la première fusion le posera.
 
 ```bash
 git fetch socle --tags
-git tag -l 'v*'
+git tag -l 'v*' --sort=v:refname
 ```
 
 `git tag -l` sans motif listerait aussi les étiquettes propres au site ; `'v*'` ne garde que
 celles du socle.
+
+`--sort=v:refname` n'est pas un détail : le tri par défaut est alphabétique, et il place
+`v2.0.10` entre `v2.0.1` et `v2.0.2`. La dernière version de la liste ne serait pas la plus
+récente.
 
 Lire ensuite ce qu'apporte chaque version entre celle du site et celle visée, dans
 [CHANGELOG.md](../CHANGELOG.md).

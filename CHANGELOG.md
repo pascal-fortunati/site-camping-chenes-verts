@@ -12,6 +12,57 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.11 — 2026-10-05
+
+`composer.json` déclarait `ext-curl` et `ext-json`, mais pas `ext-pdo_sqlite` ni `ext-gd`. Les
+deux sont pourtant indispensables : la première porte la base de données de l'administration,
+la seconde fabrique les copies allégées des images. Le README les présentait d'ailleurs comme
+des prérequis.
+
+**L'installation échoue désormais au bon endroit.** Sur un hébergement dépourvu de ces
+extensions, `composer install` réussissait et l'échec survenait plus loin, à l'installation de
+Cockpit ou au premier envoi d'image, avec un message qui ne nommait pas la cause. Composer
+refuse maintenant d'installer et indique l'extension manquante.
+
+Rien à faire sur un site existant : un site en service tourne forcément sur un hébergement qui
+possède ces extensions, sans quoi il ne fonctionnerait pas.
+
+## 2.0.10 — 2026-10-03
+
+Le fichier `VERSION` était resté à 2.0.6 alors que les versions 2.0.7, 2.0.8 et 2.0.9 ont été
+publiées. Un site qui fusionnait la dernière version affichait donc un numéro faux, et la
+première étape de la mise à jour, la lecture de `VERSION`, ne disait pas la vérité.
+
+**`VERSION` porte de nouveau le numéro publié.** Un test le vérifie désormais à chaque
+exécution de la suite : `tests/GardeFous/VersionTest.php` compare `VERSION` à la première
+entrée de ce journal et refuse un numéro qui ne suit pas la forme `X.Y.Z`.
+
+**Les étiquettes se listent dans l'ordre des versions.** `docs/mise-a-jour-socle.md` indique
+`git tag -l 'v*' --sort=v:refname`. Le tri alphabétique par défaut plaçait `v2.0.10` entre
+`v2.0.1` et `v2.0.2`.
+
+**L'étiquette `v2.0.6`, jamais posée, l'a été sur l'état qui portait ce numéro.**
+
+Rien à faire sur un site existant au-delà de la fusion.
+
+## 2.0.9 — 2026-10-02
+
+Une passerelle facilite désormais la navigation entre le site public et l’administration pour la personne connectée, sans exposer l’adresse de l’administration aux visiteurs.
+
+**Le site indique discrètement qu’une session d’administration est active.** Une pastille affichant l’avatar de la personne connectée et un point vert « en ligne » apparaît en bas à gauche du site. Un clic ouvre le tableau de bord de l’administration dans un nouvel onglet. La pastille n’est jamais affichée aux visiteurs et son interface s’adapte aux écrans mobiles.
+
+**L’administration permet de revenir rapidement sur le site.** Les actions « Voir le site » et « Voir cette page » permettent de passer de Cockpit au site public sans avoir à rechercher manuellement la page correspondante.
+
+**L’adresse de l’administration n’est pas inscrite dans les fichiers publics.** La passerelle repose sur un cookie de session déposé uniquement dans le navigateur authentifié et supprimé à la déconnexion. Lorsque le site et l’administration partagent la même origine, le site vérifie la session via `/check-session` avant d’afficher la passerelle.
+
+**Le cache des pages publiques reste utilisable.** La pastille n’est pas intégrée au HTML mis en cache : elle est ajoutée dans le navigateur après vérification de la session. Une même page en cache peut ainsi être servie aux visiteurs comme aux utilisateurs connectés sans exposer d’information liée à l’administration.
+
+Quatre tests dans `GardeFous/PasserelleTest` couvrent le fonctionnement et les garde-fous associés à cette passerelle.
+
+Rien à faire sur un site existant au-delà de la fusion et des commandes habituelles d’après-fusion décrites dans `docs/mise-a-jour-socle.md`.
+
+Proposé par Pascal Fortunati (#49).
+
 ## 2.0.8 — 2026-10-02
 
 L'administration Cockpit est désormais francisée et n'affiche plus aux comptes non administrateurs les actions qu'ils ne peuvent pas utiliser.
@@ -30,6 +81,8 @@ Quatre tests couvrent ces changements dans `GardeFous/AdminClientTest`.
 
 Rien à faire sur un site existant au-delà de la fusion et des commandes habituelles d'après-fusion décrites dans `docs/mise-a-jour-socle.md`.
 
+Proposé par Pascal Fortunati (#44).
+
 ## 2.0.7 — 2026-10-02
 
 Deux corrections concernant l'administration Cockpit et l'environnement de développement.
@@ -41,6 +94,8 @@ Le contrôle du contraste ne modifie désormais la classe ou le texte de son ale
 **Les processus Composer ne sont plus interrompus par le timeout par défaut.** `composer.json` définit désormais `"process-timeout": 0`. Les commandes longues lancées par les scripts Composer peuvent ainsi rester actives sans être arrêtées automatiquement.
 
 Rien à faire sur un site existant au-delà de la fusion et de `php bin/install-cockpit.php --force` pour recopier les addons modifiés dans `public/admin/`.
+
+Proposé par Céline Devaux (#42).
 
 ## 2.0.6 — 2026-09-02
 

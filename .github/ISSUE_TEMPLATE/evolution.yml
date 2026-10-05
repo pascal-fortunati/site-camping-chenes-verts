@@ -1,0 +1,49 @@
+name: Proposer une évolution
+description: Une capacité qui manque au socle
+labels: ["évolution"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Décrivez d'abord le besoin, pas la solution. Une solution arrive toujours ;
+        un besoin mal posé produit une solution qui ne sert à personne.
+
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Le besoin
+      description: À qui il sert, et ce qui se passe aujourd'hui faute de cette capacité.
+      placeholder: |
+        Un client qui n'a pas de formulaire reçoit quand même l'addon Contact, et
+        voit dans son administration des messages qu'il n'attend pas.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposition
+    attributes:
+      label: Ce que vous proposez
+      description: Facultatif. Si vous avez une piste, décrivez-la ici, pas plus haut.
+    validations:
+      required: false
+
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Ce que cela change pour un site existant
+      description: |
+        Rien du tout, une fusion suffit, ou une intervention manuelle est nécessaire ?
+        C'est cette réponse qui décide du rang de la version.
+      placeholder: "Rien : tout reste actif par défaut."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: regles
+    attributes:
+      label: Règles du socle
+      description: Les contraintes que toute proposition doit respecter.
+      options:
+        - label: Aucune ressource chargée depuis un autre site
+        - label: Le contenu reste présent dans le HTML de la première réponse
+        - label: Le client ne peut pas casser son site depuis l'administration

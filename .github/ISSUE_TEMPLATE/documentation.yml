@@ -1,0 +1,48 @@
+name: Signaler un écart de documentation
+description: La documentation annonce une chose, le code ou l'outil en fait une autre
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Une instruction fausse coûte plus cher qu'une instruction manquante : on la suit.
+        Signaler l'écart suffit, la correction peut venir de quelqu'un d'autre.
+
+  - type: input
+    id: emplacement
+    attributes:
+      label: Où c'est écrit
+      description: Le fichier, et la section ou la ligne.
+      placeholder: "docs/mise-a-jour-socle.md, étape 5"
+    validations:
+      required: true
+
+  - type: textarea
+    id: annonce
+    attributes:
+      label: Ce que la documentation annonce
+      description: Recopiez le passage, même court.
+      placeholder: "« --force n'est nécessaire que si la version de Cockpit a changé. »"
+    validations:
+      required: true
+
+  - type: textarea
+    id: realite
+    attributes:
+      label: Ce qui se passe réellement
+      description: Et, si vous l'avez, où vous l'avez constaté dans le code ou à l'écran.
+      placeholder: |
+        Sans --force, le script s'arrête dès que la version installée correspond,
+        et ne recopie ni la configuration ni les addons.
+        Constaté dans bin/install-cockpit.php, lignes 109 à 117.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version du socle
+      description: Le contenu du fichier VERSION, à la racine.
+      placeholder: "2.0.10"
+    validations:
+      required: false

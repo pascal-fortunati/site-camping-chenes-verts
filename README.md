@@ -136,6 +136,10 @@ remplacent pas. Ce que chacun couvre : [docs/tests.md](docs/tests.md).
   livre pas de traduction, l'addon en apporte une (`i18n/fr.php`). Pour les comptes qui ne sont
   pas administrateurs, il masque aussi les actions sur la structure (modifier un modèle, objet
   JSON) que Cockpit affiche à tous puis refuse au clic.
+- **Une passerelle relie le site et l'administration** (addon `Passerelle`) : connecté, le client
+  voit en bas à gauche du site une pastille qui le ramène au tableau de bord ; dans l'administration,
+  « Voir le site » et « Voir cette page ». Les visiteurs ne voient rien, et aucun fichier public ne
+  donne l'adresse de l'administration : elle passe par un cookie déposé dans le seul navigateur connecté.
 - **Un antivirus peut bloquer l'installation.** Certains bloquent l'écriture d'un `index.php`
   dans un dossier nommé `admin`. Le script d'installation s'arrête alors avec un message
   explicite : ajouter une exception sur le dossier du projet.

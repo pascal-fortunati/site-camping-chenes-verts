@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Poser une question
+    url: https://github.com/jean-ely-pro/site-vitrine-cockpit-php/discussions
+    about: Pour une question d'usage ou d'installation, les Discussions conviennent mieux qu'une issue.
+  - name: Avant de contribuer
+    url: https://github.com/jean-ely-pro/site-vitrine-cockpit-php/blob/main/CONTRIBUTING.md
+    about: Le circuit, les conventions de commit, et ce que la relecture vérifie.
