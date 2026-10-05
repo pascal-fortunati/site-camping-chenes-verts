@@ -15,7 +15,7 @@ $nom = $model['name'];
 $vue = (include dirname(__DIR__).'/lib/modeles.php')($model);
 $proprietes = [
     'vue' => ['icone' => $vue['icone'], 'mots' => [$vue['element'], $vue['elements'], $vue['nouveau']]],
-    'model' => ['name' => $nom, 'label' => $model['label'] ?? '', 'info' => $model['info'] ?? '', 'fields' => array_map(static fn (array $f): array => ['name' => $f['name'], 'type' => $f['type']], $model['fields'] ?? [])],
+    'model' => ['name' => $nom, 'label' => $model['label'] ?? '', 'info' => $model['info'] ?? '', 'publication' => $vue['publication'], 'fields' => array_map(static fn (array $f): array => ['name' => $f['name'], 'type' => $f['type']], $model['fields'] ?? [])],
     'droits' => [
         'creer' => $acl->isAllowed("content/{$nom}/create"),
         'supprimer' => $acl->isAllowed("content/{$nom}/delete"),

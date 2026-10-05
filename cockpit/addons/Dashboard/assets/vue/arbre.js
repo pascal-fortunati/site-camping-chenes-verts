@@ -28,7 +28,7 @@ const branche = {
                         <span class="ls-ligne__icone"><icon>{{ e._children ? 'folder' : 'description' }}</icon></span>
                         <span class="ls-ligne__texte"><b>{{ titre(e) }}</b><small>{{ e._children ? e._children + ' sous-élément' + (e._children > 1 ? 's' : '') : 'Aucun sous-élément' }}</small></span>
                     </a>
-                    <span class="ls-etat" :class="e._state === 1 ? 'ls-etat--ligne' : 'ls-etat--brouillon'"><span class="ls-etat__point"></span>{{ e._state === 1 ? 'En ligne' : 'Hors ligne' }}</span>
+                    <span class="ls-etat" v-if="modele.publication !== false" :class="e._state === 1 ? 'ls-etat--ligne' : 'ls-etat--brouillon'"><span class="ls-etat__point"></span>{{ e._state === 1 ? 'En ligne' : 'Hors ligne' }}</span>
                     <div class="ls-actions">
                         <template v-if="droits.ordre">
                             <button type="button" class="ls-rond" :disabled="i === 0" @click="$emit('deplacer', elements, i, -1)" title="Monter" aria-label="Monter"><icon>arrow_upward</icon></button>

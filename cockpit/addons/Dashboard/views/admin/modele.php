@@ -96,6 +96,10 @@ $fichier = $isUpdate && is_file(dirname(__DIR__, 6).'/cockpit/models/'.$model['n
                                 <label class="mt-champ"><span>Des éléments</span><input type="text" v-model="model.admin.elements" placeholder="éléments"></label>
                             </div>
                             <label class="mt-champ"><span>Bouton de création</span><input type="text" v-model="model.admin.nouveau" placeholder="Ajouter"></label>
+                            <button type="button" role="switch" class="compte__interrupteur" :aria-checked="publication ? 'true' : 'false'" @click="model.admin.publication = !publication">
+                                <span class="oui-non__piste" :class="{'oui-non__piste--oui': publication}"><span class="oui-non__bouton-rond"><icon>{{ publication ? 'check' : 'close' }}</icon></span></span>
+                                <span class="compte__interrupteur-texte"><b>Se publie (en ligne / brouillon)</b><small>{{ publication ? 'Chaque élément est en ligne ou hors ligne, avec sa carte Publication.' : 'Pas d’état en ligne : pour des messages reçus, des commandes… La liste se trie par date de réception.' }}</small></span>
+                            </button>
                         </template>
                     </section>
 
@@ -169,6 +173,10 @@ $fichier = $isUpdate && is_file(dirname(__DIR__, 6).'/cockpit/models/'.$model['n
                 },
                 groupe() {
                     return this.model.admin.groupe || (this.model.type === 'singleton' ? 'site' : 'quotidien');
+                },
+                // Même règle par défaut que lib/modeles.php : vrai, sauf pour « messages ».
+                publication() {
+                    return this.model.admin.publication ?? (this.model.name !== 'messages');
                 },
                 lienElements() {
                     const m = this.model;
