@@ -11,7 +11,7 @@ const version = new URL(import.meta.url).search;
 const { confirmer, menuTri } = await import(`./communs.js${version}`);
 
 /**
- * Ligne de détail d'un élément d'après la clé « resume » du modèle : « {arrivee} → {depart} », etc.
+ * Ligne de détail d'un élément d'après la clé « resume » du modèle : « {debut} → {fin} », etc.
  *
  * @param {string[]} morceaux
  * @param {object} e l'élément

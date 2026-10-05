@@ -3,9 +3,9 @@
 /**
  * Présentation d'un modèle dans l'administration, réglée par sa clé « admin » :
  *
- *     'admin' => ['libelle' => 'Saison et places', 'icone' => 'event_seat', 'groupe' => 'quotidien', 'ordre' => 10,
+ *     'admin' => ['libelle' => 'Pages', 'icone' => 'description', 'groupe' => 'quotidien', 'ordre' => 10,
  *                 'element' => 'page', 'elements' => 'pages', 'nouveau' => 'Nouvelle page',
- *                 'resume' => ['{email}', '{arrivee} → {depart}']],
+ *                 'resume' => ['{email}', '{debut} → {fin}']],
  *
  * « resume » : la ligne de détail d'un élément dans les listes, chaque morceau affiché si tous ses champs sont remplis.
  * « publication » : false pour une collection jamais publiée (messages reçus, demandes) : ni pastille « En ligne »
