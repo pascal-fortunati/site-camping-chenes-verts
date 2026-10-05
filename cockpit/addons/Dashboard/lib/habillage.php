@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Habillage des écrans de Cockpit gardés tels quels (éditeur de modèle, fichiers, console) : le fil d'Ariane et le titre deviennent l'en-tête de fiche du Dashboard. Un écran inconnu garde son
- * titre ; seul son fil d'Ariane change.
+ * Habillage de secours d'un écran de Cockpit que le Dashboard ne remplace pas (celui d'un autre addon) : son fil
+ * d'Ariane prend l'allure du Dashboard. Une entrée de $ecrans donne en plus l'en-tête complet.
  *
  * @package Dashboard
  * @author  Pascal Fortunati
@@ -21,13 +21,8 @@ return function (Lime\App $app, string $html): string {
     $e = static fn ($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
     $route = rtrim((string) $app->request->route, '/');
 
-    // [motif de la route, icône, titre, texte, titre d'origine à retirer]
-    $ecrans = [
-        ['#^/content/models/create#', 'schema', 'Nouveau modèle', 'Choisissez les champs, leur ordre et leurs réglages.', '#<div class="kiss-margin-large-bottom kiss-size-4">\s*<strong v-if="!isUpdate">.*?</div>#s'],
-        ['#^/content/models/edit/([\w-]+)#', 'schema', null, 'Les champs du modèle, leur ordre et leurs réglages.', '#<div class="kiss-margin-large-bottom kiss-size-4">\s*<strong v-if="!isUpdate">.*?</div>#s'],
-        ['#^/finder#', 'folder_open', 'Fichiers', 'Les fichiers de l’administration sur le serveur : à manier avec précaution.', '#<div class="kiss-margin-large-bottom kiss-size-3 kiss-text-bold">\s*[^<]*</div>#'],
-        ['#^/system/tower#', 'terminal', 'Console', 'Les commandes de Cockpit, dans le navigateur.', '#<icon class="kiss-size-4 kiss-margin-small-end" size="larger">terminal</icon>\s*<div class="kiss-size-4 kiss-flex-1">\s*<strong>Tower</strong>\s*</div>#'],
-    ];
+    // [motif de la route, icône, titre (null : nom du modèle), texte, titre d'origine à retirer]
+    $ecrans = [];
 
     $ecran = null;
     foreach ($ecrans as $candidat) {

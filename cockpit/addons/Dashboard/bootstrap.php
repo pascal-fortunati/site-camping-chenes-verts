@@ -204,6 +204,11 @@ foreach ([
     'system:views/spaces/create.php' => 'dashboard:views/admin/espace.php',
     'system:views/worker/index.php' => 'dashboard:views/admin/taches.php',
     'updater:views/index.php' => 'dashboard:views/admin/maj.php',
+    'content:views/models/model.php' => 'dashboard:views/admin/modele.php',
+    'finder:views/index.php' => 'dashboard:views/admin/fichiers.php',
+    'system:views/tower.php' => 'dashboard:views/admin/console.php',
+    'content:views/tree/items.php' => 'dashboard:views/arbre.php',
+    'content:views/tree/item.php' => 'dashboard:views/fiche.php',
 ] as $origine => $remplacement) {
     $this->on("app.render.view/{$origine}", function (&$view) use ($remplacement) {
         if (!$this->param('cockpit')) {

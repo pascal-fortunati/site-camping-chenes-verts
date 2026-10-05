@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fiche d'un élément de collection ou d'une fiche unique, avec l'éditeur de champs de Cockpit.
+ * Fiche d'un élément de collection ou d'arborescence, ou d'une fiche unique, avec l'éditeur de champs de Cockpit.
  *
  * @var array $model le modèle
  * @var array $item  l'élément
@@ -13,7 +13,7 @@
 
 $acl = $this->helper('acl');
 $nom = $model['name'];
-$collection = $model['type'] === 'collection';
+$collection = in_array($model['type'], ['collection', 'tree'], true);
 $champs = $model['fields'] ?? [];
 $langues = $this->helper('locales')->locales();
 if (count($langues) === 1) {
@@ -22,7 +22,7 @@ if (count($langues) === 1) {
     $langues[0]['visible'] = true;
 }
 $vue = (include dirname(__DIR__).'/lib/modeles.php')($model);   // nom court, icône, groupe : réglés dans le modèle
-$retour = $collection ? $this->routeUrl("/content/collection/items/{$nom}") : $this->routeUrl('/');
+$retour = $collection ? $this->routeUrl("/content/{$model['type']}/items/{$nom}") : $this->routeUrl('/');
 $groupe = $vue['titreGroupe'];   // comme la barre latérale
 $droits = [
     'publier' => $collection && $acl->isAllowed("content/{$nom}/publish"),
@@ -87,8 +87,8 @@ $droits = [
 
                     <section class="fiche-carte" v-if="droits.creer && item._id">
                         <h2><icon>bolt</icon>Actions</h2>
-                        <a class="fiche-action" :href="$routeUrl('/content/collection/clone/' + model.name + '/' + item._id)"><icon>content_copy</icon>Dupliquer</a>
-                        <a class="fiche-action" :href="$routeUrl('/content/collection/item/' + model.name)"><icon>add</icon>{{ nouveau }}</a>
+                        <a class="fiche-action" :href="$routeUrl('/content/' + model.type + '/clone/' + model.name + '/' + item._id)"><icon>content_copy</icon>Dupliquer</a>
+                        <a class="fiche-action" :href="$routeUrl('/content/' + model.type + '/item/' + model.name)"><icon>add</icon>{{ nouveau }}</a>
                     </section>
 
                     <section class="fiche-carte fiche-carte--astuce">
@@ -142,7 +142,7 @@ $droits = [
 
             computed: {
                 estCollection() {
-                    return this.model.type === 'collection';
+                    return ['collection', 'tree'].includes(this.model.type);
                 },
                 titre() {
                     if (!this.estCollection) return this.libelle;
@@ -198,7 +198,7 @@ $droits = [
                         this.saving = false;
                         App.ui.notify(nouveau ? 'Créé.' : 'Enregistré.');
                         if (nouveau && this.estCollection && item._id) {
-                            history.replaceState(null, '', this.$routeUrl(`/content/collection/item/${this.model.name}/${item._id}`));
+                            history.replaceState(null, '', this.$routeUrl(`/content/${this.model.type}/item/${this.model.name}/${item._id}`));
                         }
                     }).catch((rsp) => {
                         this.saving = false;
