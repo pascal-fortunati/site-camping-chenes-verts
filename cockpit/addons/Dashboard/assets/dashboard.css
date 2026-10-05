@@ -645,6 +645,8 @@ html[data-theme] .app-dashboard:has(.dashboard-tableau) .app-dashboard-widget-co
 html[data-theme] .app-dashboard:has(.dashboard-tableau) kiss-container { max-width: 1280px; }
 html[data-theme] .app-dashboard:has(.dashboard-tableau) { margin-top: 28px !important; }
 html[data-theme] .app-dashboard:has(.dashboard-tableau) .app-dashboard-widget-container { margin-top: 0 !important; }
+html[data-theme] .app-dashboard:has(.dashboard-tableau) .app-dashboard-widget-container:not(:has(.dashboard-tableau)) { margin-top: 22px !important; padding: 22px 24px; border-radius: 16px; background: var(--admin-surface); color: var(--admin-texte); box-shadow: var(--admin-ombre); }   /* widgets des autres addons */
+html[data-theme] .app-dashboard:has(.dashboard-tableau) .app-dashboard-widget-container:not(:has(.dashboard-tableau)) h2 { margin: 0 0 16px; font-size: 1.25rem; }
 html[data-theme] .app-dashboard:has(.dashboard-tableau) section.kiss-flex-1 > div:empty { display: none; }   /* les zones vides de Cockpit gardaient 45 px de marge */
 
 .dashboard-tableau { display: grid; gap: 22px; }

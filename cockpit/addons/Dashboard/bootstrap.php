@@ -169,17 +169,22 @@ $this->on('after', function () {
     }
 });
 
-/* ── Tableau de bord, à la place des blocs de Cockpit ── */
+/* ── Tableau de bord, à la place des blocs de Cockpit ; ceux des autres addons restent, en cartes dessous ── */
 
 $this->on('app.dashboard.widgets', function ($widgets) {
+    $cockpit = ['dashboard-content-widget', 'dashboard-assets-widget', 'dashboard-spaces-widget', 'dashboard-license-widget'];
+    $autres = array_values(array_filter($widgets->getArrayCopy(), static fn ($w): bool => is_array($w) && !in_array($w['name'] ?? '', $cockpit, true)));
+    // Une seule colonne : les colonnes latérales de Cockpit sont masquées par le Dashboard.
+    $autres = array_map(static fn (array $w): array => ['area' => 'primary', 'prio' => min(99, (int) ($w['prio'] ?? 1))] + $w, $autres);
+
     $accueil = include __DIR__.'/lib/accueil.php';
-    $widgets->exchangeArray([[
+    $widgets->exchangeArray(array_merge([[
         'name' => 'dashboard-tableau',
         'area' => 'primary',
         'prio' => 100,
         'html' => $accueil($this),
-    ]]);
-}, -100);
+    ]], $autres));
+}, -1000);
 
 /* ── Écrans remplacés ; « ?cockpit=1 » rend celui de Cockpit ── */
 

@@ -111,6 +111,24 @@ final class DashboardTest extends TestCase
     }
 
     #[Test]
+    public function les_addons_enrichissent_le_tableau_de_bord(): void
+    {
+        $accueil = (string) file_get_contents(self::MODULE.'/lib/accueil.php');
+
+        $this->assertStringContainsString("trigger('dashboard.accueil', [&\$accueil", $accueil, 'événement dashboard.accueil, par référence');
+        $this->assertStringContainsString("\$reglage['cartes']", $accueil, 'cartes du réglage du site');
+    }
+
+    #[Test]
+    public function les_widgets_des_autres_addons_sont_gardes(): void
+    {
+        $amorce = (string) file_get_contents(self::MODULE.'/bootstrap.php');
+
+        $this->assertStringContainsString("'dashboard-content-widget'", $amorce, 'seuls les widgets de Cockpit sont retirés');
+        $this->assertStringContainsString('$autres', $amorce, 'les autres widgets restent');
+    }
+
+    #[Test]
     public function l_aiguillage_vise_des_exports_qui_existent(): void
     {
         $script = (string) file_get_contents(self::MODULE.'/assets/dashboard.js');
