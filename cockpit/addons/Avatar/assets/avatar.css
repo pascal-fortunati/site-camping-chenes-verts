@@ -1,6 +1,9 @@
 /* The photo drawn in place of Cockpit's initials (assets/avatar.js). */
 .avatar-cache { display: none !important; }
 
+/* Login page: the initials wait until the photo is known (no flash before the redirect). */
+.auth-wrapper app-avatar:not([data-avatar]):not([data-sans-photo]) { visibility: hidden; }
+
 .avatar-photo {
     display: inline-block;
     border-radius: 50%;

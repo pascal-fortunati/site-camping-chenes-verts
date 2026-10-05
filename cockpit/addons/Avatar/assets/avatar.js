@@ -40,6 +40,9 @@ function remplacer() {
     // in, just before the redirect), it is asked again, a few times at most.
     if (!charge && essais < 3 && document.querySelector('app-avatar:not([data-avatar])')) {
         charger();
+    } else if (!demande) {
+        // Known to have no photo: the initials may show (they are hidden on the login page until then).
+        document.querySelectorAll('app-avatar:not([data-avatar]):not([data-sans-photo])').forEach((a) => { a.dataset.sansPhoto = '1'; });
     }
 }
 
