@@ -1,0 +1,91 @@
+# Une proposition qui change le produit porte son numéro de version et son
+# entrée de journal.
+#
+# Ce contrôle ne s'exécute que sur le dépôt du socle. Un dépôt de site créé
+# depuis le modèle en reçoit une copie, qui ne se déclenche jamais : la version
+# du socle n'y a pas de sens.
+
+name: Version
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+    if: github.event.repository.is_template || github.repository == 'jean-ely-pro/site-vitrine-cockpit-php'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Vérifier VERSION et le journal
+        env:
+          BASE: ${{ github.base_ref }}
+          ETIQUETTES: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -euo pipefail
+
+          modifies=$(git diff --name-only "origin/${BASE}...HEAD")
+
+          # Ce qu'un site reçoit et suit. Le reste est de l'outillage de dépôt.
+          produit=$(echo "$modifies" | grep -E '^(src|templates|templates-client|cockpit|public|bin|docs)/' || true)
+
+          if [ -z "$produit" ]; then
+            echo "Aucun fichier de produit modifié : rien à vérifier."
+            exit 0
+          fi
+
+          if echo "$ETIQUETTES" | grep -q 'sans version'; then
+            echo "Étiquette « sans version » posée : contrôle ignoré."
+            exit 0
+          fi
+
+          echo "Fichiers de produit modifiés :"
+          echo "$produit" | sed 's/^/  /'
+
+          if ! echo "$modifies" | grep -qx 'VERSION'; then
+            echo "::error::VERSION n'a pas changé. Une proposition qui touche le produit porte son numéro, ou l'étiquette « sans version »."
+            exit 1
+          fi
+
+          if ! echo "$modifies" | grep -qx 'CHANGELOG.md'; then
+            echo "::error::CHANGELOG.md n'a pas changé. Chaque version a son entrée."
+            exit 1
+          fi
+
+          version=$(tr -d ' \t\r\n' < VERSION)
+
+          if ! echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::VERSION doit contenir un numéro de la forme X.Y.Z, trouvé : ${version}"
+            exit 1
+          fi
+
+          # Titre attendu : « ## 2.0.13 — 2026-10-12 », tiret cadratin et date ISO.
+          if ! grep -qE "^## ${version} — [0-9]{4}-[0-9]{2}-[0-9]{2}$" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md n'a pas d'entrée « ## ${version} — AAAA-MM-JJ »."
+            exit 1
+          fi
+
+          # La première entrée numérotée du journal doit être celle de VERSION.
+          premiere=$(grep -oE '^## [0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | head -1 | cut -d' ' -f2)
+
+          if [ "$premiere" != "$version" ]; then
+            echo "::error::La première entrée du journal est ${premiere}, VERSION dit ${version}."
+            exit 1
+          fi
+
+          # Chaque entrée dit ce qu'un site existant doit faire.
+          section=$(awk -v v="## ${version} " 'index($0, v) == 1 {trouve=1; next} /^## [0-9]/ {trouve=0} trouve' CHANGELOG.md)
+
+          if ! echo "$section" | grep -q 'site existant'; then
+            echo "::error::L'entrée ${version} ne dit pas ce qu'un site existant doit faire."
+            exit 1
+          fi
+
+          echo "Version ${version}, entrée de journal conforme."

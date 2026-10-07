@@ -105,6 +105,8 @@ dossier ne dépend de `Controller`.
 | Changer ce qui est mis en cache | `src/Cache/PageCache.php` |
 | Changer ce qui se passe à l'enregistrement | `cockpit/bootstrap.php` |
 | Contraindre le client dans l'administration | `cockpit/addons/EditorGuards/` |
+| Traduire l'administration, masquer les actions interdites | `cockpit/addons/AdminClient/` |
+| Relier le site public et l'administration | `cockpit/addons/Passerelle/` |
 
 ## Ajouter une adresse
 

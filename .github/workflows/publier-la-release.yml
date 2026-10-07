@@ -1,0 +1,82 @@
+# Quand une proposition qui porte un nouveau numéro est fusionnée, l'étiquette
+# est posée et la version publiée, avec sa discussion d'annonce.
+#
+# Ce travail ne s'exécute que sur le dépôt du socle. Un dépôt de site créé
+# depuis le modèle en reçoit une copie, qui ne se déclenche jamais : il ne
+# publie pas les versions du socle.
+
+name: Publier la version
+
+on:
+  push:
+    branches: [main]
+    paths: ['VERSION']
+
+permissions:
+  contents: write
+  discussions: write
+
+jobs:
+  publier:
+    name: Publier la version
+    runs-on: ubuntu-latest
+    if: github.event.repository.is_template || github.repository == 'jean-ely-pro/site-vitrine-cockpit-php'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Lire la version
+        id: version
+        run: |
+          set -euo pipefail
+
+          version=$(tr -d ' \t\r\n' < VERSION)
+          precedente=$(git show 'HEAD~1:VERSION' 2>/dev/null | tr -d ' \t\r\n' || echo '')
+
+          if [ "$version" = "$precedente" ]; then
+            echo "VERSION inchangé (${version}) : rien à publier."
+            echo "publier=non" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git rev-parse "v${version}" >/dev/null 2>&1; then
+            echo "::error::L'étiquette v${version} existe déjà."
+            exit 1
+          fi
+
+          # Les notes de la version sont celles du journal : une seule source.
+          awk -v v="## ${version} " 'index($0, v) == 1 {trouve=1; next} /^## [0-9]/ {trouve=0} trouve' CHANGELOG.md > notes.md
+
+          if [ ! -s notes.md ]; then
+            echo "::error::Aucune entrée « ## ${version} » dans CHANGELOG.md."
+            exit 1
+          fi
+
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "publier=oui" >> "$GITHUB_OUTPUT"
+
+      - name: Poser l'étiquette
+        if: steps.version.outputs.publier == 'oui'
+        run: |
+          set -euo pipefail
+
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Version ${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+
+      - name: Publier la version
+        if: steps.version.outputs.publier == 'oui'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          gh release create "v${{ steps.version.outputs.version }}" \
+            --title "v${{ steps.version.outputs.version }}" \
+            --notes-file notes.md \
+            --discussion-category "Announcements" \
+            --latest \
+            --verify-tag

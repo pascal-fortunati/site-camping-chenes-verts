@@ -11,6 +11,31 @@ qui existe, et en installer un nouveau.
 Tout se passe dans le dépôt du site, sur un poste de développement. La mise en ligne vient
 après, à l'étape 6.
 
+### La commande
+
+```bash
+php bin/maj-socle.php                 # où en est le site, et ce qui existe
+php bin/maj-socle.php --vers=2.0.13   # fusionne et enchaîne les commandes qui suivent
+```
+
+Elle déroule les étapes 1 à 5 décrites plus bas : branche dédiée, fusion de l'étiquette, puis
+`composer install`, `install-cockpit.php --force`, `purge-cache.php` et les tests.
+
+Elle s'arrête, sans rien faire, dans quatre cas :
+
+| Cas | Pourquoi |
+|---|---|
+| Arbre de travail non propre | Une fusion par-dessus des modifications en cours est irrattrapable |
+| Version inconnue, ou numéro mal formé | La liste des versions disponibles est affichée |
+| Version plus ancienne que celle du site | Elle n'apporterait rien |
+| Version **majeure** | Elle demande une intervention manuelle, décrite sous la version dans le journal |
+
+En cas de conflit, elle s'arrête et affiche les fichiers à reprendre. Elle ne pousse pas et ne
+fusionne jamais dans `main` : la relecture reste humaine.
+
+Les étapes qui suivent décrivent ce que fait cette commande. Les lire reste utile pour
+comprendre, pour reprendre la main après un conflit, ou pour une version majeure.
+
 ### 1. Voir où en est le site
 
 ```bash

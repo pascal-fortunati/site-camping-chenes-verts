@@ -18,6 +18,16 @@ Le compte `client` porte un rôle qui ne donne accès qu'au contenu :
 **Le client ne peut pas casser son site** : la structure est figée dans le dépôt, pas dans
 l'administration. Au pire, il publie un contenu inexact — et le corrige.
 
+**L'administration est en français**, et les actions qu'un compte client ne peut pas utiliser
+ne lui sont plus proposées : « Modifier le modèle », l'objet JSON et le menu des modèles sont
+masqués. Cockpit les affichait auparavant à tout le monde avant de répondre « Unauthorized
+request » au clic.
+
+**Une pastille relie le site à l'administration.** Quand le client est connecté, une pastille
+discrète apparaît en bas à gauche du site public et ouvre son administration. Les visiteurs ne
+la voient pas, et elle disparaît dès que la session est terminée. Dans l'autre sens,
+l'administration propose « Voir le site » et « Voir cette page ».
+
 ## Créer une page à partir d'un modèle
 
 Trois modèles sont fournis, laissés **non publiés** : « Modèle — Services »,

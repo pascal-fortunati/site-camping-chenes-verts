@@ -37,6 +37,18 @@ Les commits sont **en français, à l'impératif** : « Corriger la boucle des o
 « correction de la boucle » ni « fix observers ». Le corps du message dit pourquoi, pas
 comment : le comment est dans le diff.
 
+## La langue
+
+| Où | Langue |
+|---|---|
+| `src/`, `cockpit/` : code, noms et commentaires | anglais |
+| `tests/` : noms de méthodes et commentaires | français |
+| `docs/`, journal, `.github/` | français |
+| Commits, propositions, issues | français |
+
+L'administration et le site public sont en français, comme tout ce qui est lu par un client ou
+par l'équipe. Le code du produit reste en anglais.
+
 Aucune mention d'outil, aucun co-auteur automatique dans les commits et les propositions.
 
 ## Avant de pousser
@@ -56,17 +68,60 @@ php bin/install-cockpit.php --force
 
 ## Version et journal
 
-| La modification | `VERSION` et `CHANGELOG.md` |
+**Une proposition qui change le produit porte son numéro.** Elle modifie `VERSION` et ajoute
+son entrée dans [CHANGELOG.md](CHANGELOG.md).
+
+| La modification touche | `VERSION` et `CHANGELOG.md` |
 |---|---|
-| change ce qu'un site reçoit ou exige | **oui**, avec une entrée qui dit ce qu'un site existant doit faire |
-| ne touche que l'outillage du projet (intégration continue, modèles d'issue, ce fichier) | **non** |
+| `src/`, `templates/`, `templates-client/`, `cockpit/`, `public/`, `bin/`, `docs/` | **oui** |
+| l'outillage du projet : `.github/`, ce fichier, `CONTRIBUTORS.md` | **non**, rien à faire |
 
-Un test refuse que `VERSION` et la première entrée du journal annoncent deux numéros
-différents.
+Le contrôle décide d'après les dossiers touchés : une proposition d'outillage passe sans que
+rien ne lui soit demandé.
 
-Les numéros suivent le versionnage sémantique, avec le sens décrit en tête de
-[CHANGELOG.md](CHANGELOG.md) : majeur quand un site demande une intervention manuelle, mineur
-pour une capacité nouvelle, correctif pour une correction.
+Les numéros suivent le versionnage sémantique, avec le sens décrit en tête du journal : majeur
+quand un site demande une intervention manuelle, mineur pour une capacité nouvelle, correctif
+pour une correction.
+
+### L'étiquette `sans version`
+
+Elle sert à une modification **dans les dossiers du produit** qui ne mérite pas d'être
+racontée : une faute dans un commentaire, un lien mort. Jamais à un changement de comportement
+ni à une instruction corrigée.
+
+Une modification fusionnée sans version n'est pas perdue pour autant : elle part chez les sites
+avec la version suivante, puisqu'une étiquette embarque tout l'historique qui la précède. Ce
+qu'elle n'a pas, c'est sa mention dans le journal.
+
+Dans le doute, publier la version. Un numéro ne coûte rien ; une correction qui arrive chez un
+client sans être documentée coûte une enquête.
+
+### La forme de l'entrée
+
+```markdown
+## 2.0.13 — 2026-10-12
+
+Ce qui ne fonctionnait pas, ou ce qui manquait, en une ou deux phrases.
+
+**Ce qui change.** Le détail, du point de vue de la personne qui exploite un site.
+
+Rien à faire sur un site existant au-delà de la fusion.
+```
+
+Trois règles, vérifiées automatiquement :
+
+- le titre reprend exactement le numéro de `VERSION`, suivi de la date au format `AAAA-MM-JJ` ;
+- cette entrée est la première du journal ;
+- elle dit ce qu'un **site existant** doit faire. Le plus souvent « Rien à faire sur un site
+  existant au-delà de la fusion », ou la commande exacte quand `cockpit/` est touché :
+  `php bin/install-cockpit.php --force`.
+
+Une entrée issue d'une contribution extérieure se termine par « Proposé par Prénom Nom (#NN) ».
+
+### Après la fusion
+
+Rien à faire. Dès que `VERSION` change sur `main`, l'étiquette est posée, la version publiée et
+sa discussion d'annonce ouverte.
 
 ## Ce que la relecture vérifie
 

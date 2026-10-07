@@ -46,6 +46,30 @@ du code. Aucune couche d'authentification serveur supplémentaire n'est donc né
 
 Anonyme, `/admin` ne répond jamais 200 : il redirige vers le formulaire de connexion.
 
+### La pastille du site, et son cookie
+
+Le site public affiche une pastille vers l'administration à la personne connectée. Aucun
+fichier public ne contient l'adresse de l'administration : elle voyage dans un cookie
+`passerelle`, déposé par l'addon dans le seul navigateur authentifié.
+
+| Propriété | Valeur |
+|---|---|
+| Portée | cookie de session, effacé à la fermeture du navigateur |
+| `secure` | oui dès que le site est servi en HTTPS |
+| `samesite` | `Lax` |
+| `httponly` | **non**, et c'est nécessaire : le script du site doit le lire |
+
+Le cookie ne porte aucun secret : l'adresse de l'administration, un nom et une image. Le script
+vérifie le format de l'adresse avant de s'en servir, ce qui ferme la porte à une adresse
+`javascript:` qu'on y aurait glissée.
+
+Avant d'afficher la pastille, le site demande à l'addon si la session est toujours ouverte.
+Seule l'adresse inscrite dans `SITE_URL` obtient une réponse depuis une autre origine, et cette
+réponse se limite à un oui ou un non. La question ne prolonge pas la session.
+
+Sans réponse affirmative, la pastille ne s'affiche pas et son cookie est effacé : addon
+désactivé, session terminée, administration injoignable.
+
 ## Politique de mot de passe
 
 Cockpit n'en propose aucune. Elle est ajoutée par l'extension `PasswordPolicy`, installée dans
