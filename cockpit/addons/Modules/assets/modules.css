@@ -1,0 +1,16 @@
+/* Réglages › Modules. Les couleurs viennent des variables du Dashboard (--admin-*). */
+
+.mod-categorie { margin: 28px 0 10px; color: var(--admin-texte-doux, #555); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.mod-ligne { align-items: center; }
+.mod-ligne--off .ls-ligne__texte b { color: var(--admin-texte-doux, #666); }
+.mod-ligne--off .ls-ligne__icone { opacity: .55; }
+.mod-version { margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: var(--admin-surface-douce, #eee); color: var(--admin-texte-doux, #555); font-size: 0.72rem; font-weight: 600; }
+.mod-details { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 2px; }
+.mod-details a { color: inherit; }
+.mod-manque { color: var(--admin-alerte-texte, #8a3a12); font-weight: 600; }
+.mod-interrupteur { width: auto; margin: 0; }
+.mod-interrupteur[disabled] { opacity: .5; cursor: progress; }
+.mod-alerte { display: flex; gap: 14px; margin: 18px 0; padding: 16px 18px; border-radius: 12px; background: var(--admin-alerte-fond, #fbe3d6); color: var(--admin-alerte-texte, #8a3a12); }
+.mod-alerte p { margin: 4px 0 8px; }
+.mod-alerte pre { overflow-x: auto; margin: 0; padding: 10px 12px; border-radius: 8px; background: rgb(0 0 0 / 6%); color: var(--admin-texte, #222); font-size: 0.78rem; white-space: pre; }
+.mod-note { display: flex; align-items: center; gap: 8px; margin: 22px 0 0; color: var(--admin-texte-doux, #555); font-size: 0.85rem; }

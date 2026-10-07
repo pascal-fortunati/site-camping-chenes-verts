@@ -1,0 +1,8 @@
+{
+    "nom": "Mots de passe solides",
+    "description": "Refuse les mots de passe trop faibles et affiche leur force à la saisie.",
+    "version": "socle",
+    "auteur": "Jean-Ely-Gendrau",
+    "categorie": "Administration",
+    "dependances": []
+}

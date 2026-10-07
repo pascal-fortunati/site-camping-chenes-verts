@@ -1,0 +1,12 @@
+{
+    "nom": "Modules",
+    "description": "Active ou désactive les addons de l'administration, site par site. Toujours actif.",
+    "version": "1.1.0",
+    "auteur": "Pascal Fortunati",
+    "lien": "https://github.com/pascal-fortunati/cockpit-modules",
+    "categorie": "Administration",
+    "obligatoire": true,
+    "dependances": [
+        "Dashboard"
+    ]
+}

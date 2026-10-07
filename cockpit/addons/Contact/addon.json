@@ -1,0 +1,8 @@
+{
+    "nom": "Formulaire de contact",
+    "description": "Prévient par e-mail à chaque message reçu et permet d'envoyer un message d'essai.",
+    "version": "socle",
+    "auteur": "Jean-Ely-Gendrau",
+    "categorie": "Site",
+    "dependances": []
+}

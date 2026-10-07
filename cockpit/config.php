@@ -73,6 +73,16 @@ return [
         'options' => [],
     ],
 
+
+    // Modules activés ou non (addon Modules, Réglages › Modules). Cockpit ne charge pas un addon cité dans
+    // « modules.disabled » ; l'état est tenu hors de la racine web, avec la base de données. Dashboard et
+    // Modules ne peuvent jamais être désactivés, même si le fichier est modifié à la main.
+    'modules.fichier' => "{$root}/var/modules.json",
+    'modules.disabled' => array_values(array_diff(
+        (array) (is_file("{$root}/var/modules.json") ? json_decode((string) file_get_contents("{$root}/var/modules.json"), true)['desactives'] ?? [] : []),
+        ['Dashboard', 'Modules'],
+    )),
+
     // Notification of a contact message. « mail » is PHP's own function, which
     // is what shared hosting provides; the address it is sent from is the one
     // in the site identity, so it belongs to the customer's domain and passes

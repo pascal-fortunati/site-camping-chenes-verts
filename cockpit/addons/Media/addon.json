@@ -1,0 +1,8 @@
+{
+    "nom": "Images allégées",
+    "description": "Copies légères des images (WebP, plusieurs largeurs) et alerte sur les images trop lourdes.",
+    "version": "socle",
+    "auteur": "Jean-Ely-Gendrau",
+    "categorie": "Contenu",
+    "dependances": []
+}

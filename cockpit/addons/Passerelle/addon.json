@@ -1,0 +1,9 @@
+{
+    "nom": "Passerelle",
+    "description": "« Voir le site » et « Voir cette page » dans l'administration ; sur le site, la pastille qui ramène la personne connectée à l'administration.",
+    "version": "1.0.0",
+    "auteur": "Pascal Fortunati",
+    "lien": "https://github.com/pascal-fortunati",
+    "categorie": "Site",
+    "dependances": []
+}

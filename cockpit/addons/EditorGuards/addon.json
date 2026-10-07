@@ -1,0 +1,8 @@
+{
+    "nom": "Garde-fous de saisie",
+    "description": "Titres de niveau 2 et 3 seulement dans le texte riche, contraste des couleurs, adresses de page réservées.",
+    "version": "socle",
+    "auteur": "Jean-Ely-Gendrau",
+    "categorie": "Contenu",
+    "dependances": []
+}

@@ -1,0 +1,9 @@
+{
+    "nom": "Avatar",
+    "description": "Une photo par compte, dans l'administration et sur la pastille de la Passerelle.",
+    "version": "1.0.0",
+    "auteur": "Pascal Fortunati",
+    "lien": "https://github.com/pascal-fortunati",
+    "categorie": "Administration",
+    "dependances": []
+}
